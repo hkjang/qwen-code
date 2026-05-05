@@ -1,27 +1,27 @@
-# Phase 1 技术设计文档：基础设施重建
+# 1단계 기술 설계 문서: 인프라 재구성
 
-## 1. 设计目标与约束
+## 1. 설계 목표 및 제약
 
-### 1.1 目标
+### 1.1 목표
 
-- 建立统一的命令元数据模型，覆盖来源（source）、执行类型（commandType）、模式能力（supportedModes）、可见性（userInvocable / modelInvocable）四个维度
-- 用 capability-based 过滤替换 non-interactive/acp 中的硬编码白名单
-- 为 Phase 2/3 的能力扩展提供稳定的底层接口
+* 소스(source), 실행 유형(commandType), 모드 기능(supportedModes) 및 가시성(userInvocable/modelInvocable)의 4가지 차원을 포괄하는 통합 명령 메타데이터 모델을 설정합니다.
+* 비대화형/acp의 하드코딩된 화이트리스트를 기능 기반 필터링으로 대체
+* 2/3단계 기능 확장을 위한 안정적인 기본 인터페이스 제공
 
-### 1.2 硬性约束
+### 1.2 하드 제약
 
-- **零行为变化**：non-interactive 和 acp 模式下现有可用命令集保持不变（例外：修复 MCP_PROMPT 被错误拦截，属于 bug fix）
-- **向后兼容**：`SlashCommand` 接口的新增字段全部为可选或有合理默认值，现有命令代码无需立即修改
-- **不新增执行器**：不创建 ModeAdapter / CommandExecutor 等新执行架构，只扩展现有 CommandService 和过滤逻辑
-- **不改变现有命令能力**：不为任何命令新增 local 子命令，不修改任何命令的 action 实现
+* **행동 변화 없음**: 비대화형 및 acp 모드에서 사용 가능한 기존 명령 세트는 변경되지 않습니다. (예외: 잘못 가로채는 MCP\_PROMPT 수정, 버그 수정)
+* **이전 버전과 호환 가능**：`SlashCommand`인터페이스의 모든 새 필드는 선택 사항이거나 합리적인 기본값을 갖습니다. 기존 명령 코드를 즉시 수정할 필요는 없습니다.
+* **새로운 실행자가 추가되지 않았습니다.**: ModeAdapter/CommandExecutor와 같은 새로운 실행 구조를 생성하지 않고 기존 CommandService 및 필터링 로직만 확장합니다.
+* **기존 명령 기능을 변경하지 않습니다.**: 명령에 로컬 하위 명령을 추가하지 말고 명령의 작업 구현을 수정하지 마십시오.
 
----
+***
 
-## 2. 新增类型定义
+## 2. 새로운 유형 정의 추가
 
-### 2.1 文件位置
+### 2.1 파일 위치
 
-所有新增类型定义在 `packages/cli/src/ui/commands/types.ts`，与现有 `SlashCommand` 接口共文件。
+모든 새로운 유형은 다음에 정의되어 있습니다.`packages/cli/src/ui/commands/types.ts`, 그리고 기존`SlashCommand`인터페이스 파일.
 
 ### 2.2 `ExecutionMode`
 
@@ -81,9 +81,9 @@ export type CommandSource =
 export type CommandType = 'prompt' | 'local' | 'local-jsx';
 ```
 
-### 2.5 扩展 `SlashCommand` 接口
+### 2.5 확장`SlashCommand`인터페이스
 
-在现有接口上追加新字段，**全部为可选**以保证向后兼容：
+기존 인터페이스에 새 필드를 추가합니다.**모두 선택 사항입니다.**&#xC774;전 버전과의 호환성을 보장하려면:
 
 ```typescript
 export interface SlashCommand {
@@ -168,16 +168,16 @@ export interface SlashCommand {
 }
 ```
 
----
+***
 
-## 3. 各 Loader 的字段填充规范
+## 3. 로더별 현장 충진 사양
 
-### 3.1 填充原则
+### 3.1 충전 원리
 
-- `source` 和 `sourceLabel` 由 Loader 在构建 `SlashCommand` 时填充，命令自身不声明
-- `commandType`：Loader 填充默认值；built-in 命令由命令文件自身声明
-- `supportedModes`：通过 `getEffectiveSupportedModes()` 推断，不需要显式填充（除非需要覆盖默认值）
-- `modelInvocable`：Loader 填充，built-in 命令始终为 `false`，prompt 类型命令为 `true`
+* `source`그리고`sourceLabel`로더에 의해 구축됨`SlashCommand`명령 자체가 선언되지 않은 경우 채워집니다.
+* `commandType`: 로더는 기본값으로 채워집니다. 내장 명령은 명령 파일 자체에 의해 선언됩니다.
+* `supportedModes`:통과하다`getEffectiveSupportedModes()`추론됨, 명시적 패딩이 필요하지 않음(기본값 재정의가 필요하지 않은 경우)
+* `modelInvocable`:로더 채우기, 내장 명령은 항상`false`, 프롬프트 유형 명령은 다음과 같습니다.`true`
 
 ### 3.2 `BuiltinCommandLoader`
 
@@ -232,7 +232,7 @@ return {
 };
 ```
 
-> **注**：插件命令（plugin-command）暂不标记为 `modelInvocable`，避免安全隐患。后续 Phase 可以按需开放，由用户通过配置控制。
+> **메모**: 플러그인 명령(plugin-command)은 다음과 같이 표시되지 않습니다.`modelInvocable`, 안전 위험을 방지하기 위해. 후속 단계는 요청 시 열릴 수 있으며 구성을 통해 사용자가 제어할 수 있습니다.
 
 ### 3.5 `McpPromptLoader`
 
@@ -250,79 +250,79 @@ const newPromptCommand: SlashCommand = {
 };
 ```
 
----
+***
 
-## 4. Built-in 命令的 `commandType` 声明规范
+## 4. 내장 명령`commandType`선언 사양
 
-### 4.1 分类标准
+### 4.1 분류기준
 
-| commandType | 判断标准                                                                                                                                                                   |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `local`     | action 只使用 `ui.addItem`（文本类型）、返回 `message` / `stream_messages` / `submit_prompt` / `tool`，不依赖 React 组件渲染                                               |
-| `local-jsx` | action 返回 `dialog`，或 action 中调用 `ui.addItem` 时传入含 JSX 的复杂类型（如 `HistoryItemHelp`、`HistoryItemStats`），或依赖 `confirm_action` / `load_history` / `quit` |
+| 명령 유형       | 판정기준                                                                                                                                                       |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `local`     | 행동은 단지 사용`ui.addItem`(텍스트 유형), 반환`message` / `stream_messages` / `submit_prompt` / `tool`, React 구성 요소 렌더링에 의존하지 않습니다.                                     |
+| `local-jsx` | 액션 리턴`dialog`, 또는 실제로 호출됨`ui.addItem`JSX를 포함하는 복합 유형(예:`HistoryItemHelp`、`HistoryItemStats`) 또는 다음 사항에 따라 달라집니다.`confirm_action` / `load_history` / `quit` |
 
-> **注意**：`ui.addItem(message/error/info 类型)` 是 `local`；`ui.addItem(help/stats/tools/about 等复杂 UI 类型)` 是 `local-jsx`。
+> **알아채다**：`ui.addItem(message/error/info 类型)`예`local`;`ui.addItem(help/stats/tools/about 等复杂 UI 类型)`예`local-jsx`。
 
-### 4.2 Built-in 命令分类表
+### 4.2 내장 명령어 분류표
 
-**`local` 类**（声明 `commandType: 'local'`，`supportedModes` 推断为 all modes）：
+**`local`친절한**(성명`commandType: 'local'`,`supportedModes`모든 모드에 대해 추론됨):
 
-| 命令文件             | 命令名     | 说明                                                    |
-| -------------------- | ---------- | ------------------------------------------------------- |
-| `btwCommand.ts`      | `btw`      | 返回 `submit_prompt` 或 `stream_messages`               |
-| `bugCommand.ts`      | `bug`      | 返回 `submit_prompt` 或 `stream_messages`               |
-| `compressCommand.ts` | `compress` | 已有 executionMode 适配，返回 `message`/`submit_prompt` |
-| `contextCommand.ts`  | `context`  | 返回 `message`（含 UI 渲染但文本可替代）                |
-| `exportCommand.ts`   | `export`   | 文件 I/O，返回 `message`                                |
-| `initCommand.ts`     | `init`     | 返回 `submit_prompt`/`message`/`confirm_action`         |
-| `memoryCommand.ts`   | `memory`   | 子命令返回 `message`（文件 I/O）                        |
-| `planCommand.ts`     | `plan`     | 返回 `submit_prompt`                                    |
-| `summaryCommand.ts`  | `summary`  | 已有 executionMode 适配，返回 `submit_prompt`/`message` |
-| `insightCommand.ts`  | `insight`  | 返回 `stream_messages`                                  |
+| 명령 파일                | 명령 이름      | 설명하다                                                |
+| -------------------- | ---------- | --------------------------------------------------- |
+| `btwCommand.ts`      | `btw`      | 반품`submit_prompt`또는`stream_messages`                |
+| `bugCommand.ts`      | `bug`      | 반품`submit_prompt`또는`stream_messages`                |
+| `compressCommand.ts` | `compress` | ExecutionMode가 조정되었습니다. 반환`message`/`submit_prompt` |
+| `contextCommand.ts`  | `context`  | 반품`message`(UI 렌더링이 포함되어 있지만 텍스트는 대체될 수 있습니다)       |
+| `exportCommand.ts`   | `export`   | 파일 I/O, 반환`message`                                 |
+| `initCommand.ts`     | `init`     | 반품`submit_prompt`/`message`/`confirm_action`        |
+| `memoryCommand.ts`   | `memory`   | 하위 명령 반환`message`(파일 I/O)                           |
+| `planCommand.ts`     | `plan`     | 반품`submit_prompt`                                   |
+| `summaryCommand.ts`  | `summary`  | ExecutionMode가 조정되었습니다. 반환`submit_prompt`/`message` |
+| `insightCommand.ts`  | `insight`  | 반품`stream_messages`                                 |
 
-> **注意**：`contextCommand` 和 `insightCommand` 虽然当前返回 `addItem` 调用，但其本质是文本内容，属于 `local`。
+> **알아채다**：`contextCommand`그리고`insightCommand`현재 복귀하고 있지만`addItem`호출하지만 그 본질은 텍스트 내용이며 다음에 속합니다.`local`。
 
-**`local-jsx` 类**（声明 `commandType: 'local-jsx'`，`supportedModes` 推断为 `['interactive']`）：
+**`local-jsx`친절한**(성명`commandType: 'local-jsx'`,`supportedModes`다음과 같이 추론됨`['interactive']`)：
 
-| 命令文件                  | 命令名           | 不能 headless 的原因                       |
-| ------------------------- | ---------------- | ------------------------------------------ |
-| `aboutCommand.ts`         | `about`          | `addItem(HistoryItemAbout)` — 复杂 UI 组件 |
-| `agentsCommand.ts`        | `agents`         | `dialog: subagent_create/subagent_list`    |
-| `approvalModeCommand.ts`  | `approval-mode`  | `dialog: approval-mode`                    |
-| `arenaCommand.ts`         | `arena`          | `dialog: arena_*`                          |
-| `authCommand.ts`          | `auth`           | `dialog: auth`                             |
-| `clearCommand.ts`         | `clear`          | `ui.clear()` 直接操作终端                  |
-| `copyCommand.ts`          | `copy`           | 剪贴板操作，无 headless 路径               |
-| `directoryCommand.tsx`    | `directory`      | JSX 组件                                   |
-| `docsCommand.ts`          | `docs`           | 打开浏览器                                 |
-| `editorCommand.ts`        | `editor`         | `dialog: editor`                           |
-| `extensionsCommand.ts`    | `extensions`     | `dialog: extensions_manage`                |
-| `helpCommand.ts`          | `help`           | `addItem(HistoryItemHelp)` — 复杂 Help UI  |
-| `hooksCommand.ts`         | `hooks`          | `dialog: hooks`                            |
-| `ideCommand.ts`           | `ide`            | IDE 进程检测与交互                         |
-| `languageCommand.ts`      | `language`       | `dialog` + `reloadCommands`                |
-| `mcpCommand.ts`           | `mcp`            | `dialog: mcp`                              |
-| `modelCommand.ts`         | `model`          | `dialog: model/fast-model`                 |
-| `permissionsCommand.ts`   | `permissions`    | `dialog: permissions`                      |
-| `quitCommand.ts`          | `quit`           | `quit` result 类型                         |
-| `restoreCommand.ts`       | `restore`        | `load_history` result 类型                 |
-| `resumeCommand.ts`        | `resume`         | `dialog: resume`                           |
-| `settingsCommand.ts`      | `settings`       | `dialog: settings`                         |
-| `setupGithubCommand.ts`   | `setup-github`   | `confirm_shell_commands` + 交互式操作      |
-| `skillsCommand.ts`        | `skills`         | `addItem(HistoryItemSkillsList)` — 复杂 UI |
-| `statsCommand.ts`         | `stats`          | `addItem(HistoryItemStats)` — 复杂 UI      |
-| `statuslineCommand.ts`    | `statusline`     | UI 状态配置                                |
-| `terminalSetupCommand.ts` | `terminal-setup` | 终端配置向导                               |
-| `themeCommand.ts`         | `theme`          | `dialog: theme`                            |
-| `toolsCommand.ts`         | `tools`          | `addItem(HistoryItemTools)` — 复杂 UI      |
-| `trustCommand.ts`         | `trust`          | `dialog: trust`                            |
-| `vimCommand.ts`           | `vim`            | `toggleVimEnabled()` — UI 状态             |
+| 명령 파일                     | 명령 이름            | 머리가 없을 수 없는 이유                            |
+| ------------------------- | ---------------- | ----------------------------------------- |
+| `aboutCommand.ts`         | `about`          | `addItem(HistoryItemAbout)`— 복잡한 UI 구성 요소 |
+| `agentsCommand.ts`        | `agents`         | `dialog: subagent_create/subagent_list`   |
+| `approvalModeCommand.ts`  | `approval-mode`  | `dialog: approval-mode`                   |
+| `arenaCommand.ts`         | `arena`          | `dialog: arena_*`                         |
+| `authCommand.ts`          | `auth`           | `dialog: auth`                            |
+| `clearCommand.ts`         | `clear`          | `ui.clear()`단말기를 직접 운영                    |
+| `copyCommand.ts`          | `copy`           | 클립보드 작업, 헤드리스 경로 없음                       |
+| `directoryCommand.tsx`    | `directory`      | JSX 구성 요소                                 |
+| `docsCommand.ts`          | `docs`           | 브라우저 열기                                   |
+| `editorCommand.ts`        | `editor`         | `dialog: editor`                          |
+| `extensionsCommand.ts`    | `extensions`     | `dialog: extensions_manage`               |
+| `helpCommand.ts`          | `help`           | `addItem(HistoryItemHelp)`— 복잡한 도움말 UI    |
+| `hooksCommand.ts`         | `hooks`          | `dialog: hooks`                           |
+| `ideCommand.ts`           | `ide`            | IDE 프로세스 감지 및 상호 작용                       |
+| `languageCommand.ts`      | `language`       | `dialog`+`reloadCommands`                 |
+| `mcpCommand.ts`           | `mcp`            | `dialog: mcp`                             |
+| `modelCommand.ts`         | `model`          | `dialog: model/fast-model`                |
+| `permissionsCommand.ts`   | `permissions`    | `dialog: permissions`                     |
+| `quitCommand.ts`          | `quit`           | `quit`결과 유형                               |
+| `restoreCommand.ts`       | `restore`        | `load_history`결과 유형                       |
+| `resumeCommand.ts`        | `resume`         | `dialog: resume`                          |
+| `settingsCommand.ts`      | `settings`       | `dialog: settings`                        |
+| `setupGithubCommand.ts`   | `setup-github`   | `confirm_shell_commands`+ 대화형 작업          |
+| `skillsCommand.ts`        | `skills`         | `addItem(HistoryItemSkillsList)`— 복잡한 UI  |
+| `statsCommand.ts`         | `stats`          | `addItem(HistoryItemStats)`— 복잡한 UI       |
+| `statuslineCommand.ts`    | `statusline`     | UI 상태 구성                                  |
+| `terminalSetupCommand.ts` | `terminal-setup` | 터미널 구성 마법사                                |
+| `themeCommand.ts`         | `theme`          | `dialog: theme`                           |
+| `toolsCommand.ts`         | `tools`          | `addItem(HistoryItemTools)`— 복잡한 UI       |
+| `trustCommand.ts`         | `trust`          | `dialog: trust`                           |
+| `vimCommand.ts`           | `vim`            | `toggleVimEnabled()`— UI 상태               |
 
----
+***
 
-## 5. `getEffectiveSupportedModes` 推断规则
+## 5. `getEffectiveSupportedModes`추론 규칙
 
-此函数是 Phase 1 的核心逻辑，替代原有白名单，将被 `filterCommandsForMode` 调用。
+이 기능은 1단계의 핵심 로직입니다. 원래의 화이트리스트를 대체하며`filterCommandsForMode`부르다.
 
 ```typescript
 /**
@@ -387,11 +387,11 @@ export function filterCommandsForMode(
 }
 ```
 
----
+***
 
-## 6. `CommandService` 接口扩展
+## 6. `CommandService`인터페이스 확장
 
-在 `packages/cli/src/services/CommandService.ts` 中新增两个方法：
+존재하다`packages/cli/src/services/CommandService.ts`두 가지 새로운 방법이 추가되었습니다:
 
 ```typescript
 export class CommandService {
@@ -430,13 +430,13 @@ export class CommandService {
 }
 ```
 
-> **注意**：`getEffectiveSupportedModes` 和 `filterCommandsForMode` 应作为 `CommandService` 内部使用的工具函数，或提取到独立的 `packages/cli/src/services/commandUtils.ts` 文件并导出，以便测试和复用。
+> **알아채다**：`getEffectiveSupportedModes`그리고`filterCommandsForMode`다음과 같이 사용해야합니다.`CommandService`내부적으로 사용되거나 독립형으로 추출된 유틸리티 기능`packages/cli/src/services/commandUtils.ts`테스트 및 재사용을 위해 파일을 만들고 내보냅니다.
 
----
+***
 
-## 7. `nonInteractiveCliCommands.ts` 重构
+## 7. `nonInteractiveCliCommands.ts`리팩터링
 
-### 7.1 删除内容
+### 7.1 콘텐츠 삭제
 
 ```typescript
 // ❌ 删除
@@ -451,14 +451,14 @@ function filterCommandsForNonInteractive(
 ): SlashCommand[] { ... }
 ```
 
-### 7.2 新增内容
+### 7.2 새로운 콘텐츠
 
 ```typescript
 // ✅ 新增（或从 commandUtils 导入）
 import { filterCommandsForMode } from '../services/commandUtils.js';
 ```
 
-### 7.3 `handleSlashCommand` 函数签名变更
+### 7.3 `handleSlashCommand`함수 시그니처 변경
 
 ```typescript
 // ❌ 旧签名
@@ -479,7 +479,7 @@ export const handleSlashCommand = async (
 ): Promise<NonInteractiveSlashCommandResult>
 ```
 
-### 7.4 内部实现变更
+### 7.4 내부 구현 변경
 
 ```typescript
 // 旧：
@@ -493,7 +493,7 @@ const executionMode = isAcpMode ? 'acp' : 'non_interactive';
 const filteredCommands = filterCommandsForMode(allCommands, executionMode);
 ```
 
-### 7.5 `getAvailableCommands` 函数签名变更
+### 7.5 `getAvailableCommands`함수 시그니처 변경
 
 ```typescript
 // ❌ 旧签名
@@ -511,11 +511,11 @@ export const getAvailableCommands = async (
 ): Promise<SlashCommand[]>
 ```
 
-> 新增 `mode` 参数替代原来的白名单参数，ACP Session 调用时可明确指定 `'acp'`，non-interactive 调用时指定 `'non_interactive'`。
+> 새로운`mode`매개변수는 원래 화이트리스트 매개변수를 대체하며 ACP 세션을 호출할 때 명시적으로 지정할 수 있습니다.`'acp'`, 호출 시 비대화형이 지정됩니다.`'non_interactive'`。
 
----
+***
 
-## 8. `Session.ts`（ACP）调用变更
+## 8. `Session.ts`(ACP) 통화 변경
 
 ```typescript
 // ❌ 旧调用
@@ -551,70 +551,70 @@ const slashCommands = await getAvailableCommands(
 );
 ```
 
----
+***
 
-## 9. 文件变更总览
+## 9. 파일 변경 개요
 
-### 9.1 修改的文件
+### 9.1 수정된 파일
 
-| 文件                                                                    | 修改内容                                                                                         |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `packages/cli/src/ui/commands/types.ts`                                 | 新增 `ExecutionMode`、`CommandSource`、`CommandType` 类型；扩展 `SlashCommand` 接口              |
-| `packages/cli/src/services/CommandService.ts`                           | 新增 `getCommandsForMode()`、`getModelInvocableCommands()` 方法                                  |
-| `packages/cli/src/nonInteractiveCliCommands.ts`                         | 删除白名单常量和旧过滤函数；更新两个导出函数的签名；引入 `filterCommandsForMode`                 |
-| `packages/cli/src/acp-integration/session/Session.ts`                   | 更新 `handleSlashCommand` 和 `getAvailableCommands` 调用                                         |
-| `packages/cli/src/services/BuiltinCommandLoader.ts`                     | 在构建命令时注入 `source: 'builtin-command'`、`sourceLabel: 'Built-in'`、`modelInvocable: false` |
-| `packages/cli/src/services/BundledSkillLoader.ts`                       | 注入 `source: 'bundled-skill'`、`commandType: 'prompt'`、`modelInvocable: true`                  |
-| `packages/cli/src/services/FileCommandLoader.ts` / `command-factory.ts` | 注入 `source`、`commandType: 'prompt'`、`modelInvocable`（根据 extensionName）                   |
-| `packages/cli/src/services/McpPromptLoader.ts`                          | 注入 `source: 'mcp-prompt'`、`commandType: 'prompt'`、`modelInvocable: true`                     |
-| **各 built-in 命令文件（10 个 local + 27 个 local-jsx）**               | 声明 `commandType: 'local'` 或 `commandType: 'local-jsx'`                                        |
+| 문서                                                                      | 콘텐츠 수정                                                                                    |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `packages/cli/src/ui/commands/types.ts`                                 | 새로운`ExecutionMode`、`CommandSource`、`CommandType`유형; 확대`SlashCommand`인터페이스                 |
+| `packages/cli/src/services/CommandService.ts`                           | 새로운`getCommandsForMode()`、`getModelInvocableCommands()`방법                                 |
+| `packages/cli/src/nonInteractiveCliCommands.ts`                         | 화이트리스트 상수와 기존 필터 기능을 제거합니다. 내보낸 두 함수의 서명을 업데이트합니다. 소개하다`filterCommandsForMode`            |
+| `packages/cli/src/acp-integration/session/Session.ts`                   | 고쳐 쓰다`handleSlashCommand`그리고`getAvailableCommands`부르다                                     |
+| `packages/cli/src/services/BuiltinCommandLoader.ts`                     | 명령을 빌드할 때 주입`source: 'builtin-command'`、`sourceLabel: 'Built-in'`、`modelInvocable: false` |
+| `packages/cli/src/services/BundledSkillLoader.ts`                       | 주입`source: 'bundled-skill'`、`commandType: 'prompt'`、`modelInvocable: true`                |
+| `packages/cli/src/services/FileCommandLoader.ts` / `command-factory.ts` | 주입`source`、`commandType: 'prompt'`、`modelInvocable`(extensionName에 따라)                    |
+| `packages/cli/src/services/McpPromptLoader.ts`                          | 주입`source: 'mcp-prompt'`、`commandType: 'prompt'`、`modelInvocable: true`                   |
+| **각 내장 명령 파일(10 local + 27 local-jsx)**                                 | 성명`commandType: 'local'`또는`commandType: 'local-jsx'`                                      |
 
-### 9.2 新增的文件
+### 9.2 새로 추가된 파일
 
-| 文件                                        | 内容                                                                       |
-| ------------------------------------------- | -------------------------------------------------------------------------- |
-| `packages/cli/src/services/commandUtils.ts` | `getEffectiveSupportedModes()`、`filterCommandsForMode()` 工具函数及其导出 |
+| 문서                                          | 콘텐츠                                                                    |
+| ------------------------------------------- | ---------------------------------------------------------------------- |
+| `packages/cli/src/services/commandUtils.ts` | `getEffectiveSupportedModes()`、`filterCommandsForMode()`유틸리티 기능 및 내보내기 |
 
-### 9.3 不变的文件
+### 9.3 불변 파일
 
-- `packages/cli/src/utils/commands.ts`（`parseSlashCommand` 无需修改）
-- `packages/cli/src/ui/hooks/slashCommandProcessor.ts`（interactive 路径无需修改）
-- `packages/cli/src/ui/noninteractive/nonInteractiveUi.ts`（stub UI 无需修改）
-- 所有命令的 `action` 实现（Phase 1 不修改任何命令行为）
+* `packages/cli/src/utils/commands.ts`（`parseSlashCommand`수정이 필요하지 않습니다)
+* `packages/cli/src/ui/hooks/slashCommandProcessor.ts`(대화형 경로는 수정할 필요가 없습니다)
+* `packages/cli/src/ui/noninteractive/nonInteractiveUi.ts`(스텁 UI는 수정할 필요가 없습니다)
+* 모든 명령 중`action`구현(1단계에서는 명령 동작을 수정하지 않음)
 
----
+***
 
-## 10. 行为影响分析
+## 10. 행동 영향 분석
 
-### 10.1 变化汇总
+### 10.1 변경 사항 요약
 
-| 场景                                 | 旧行为                       | 新行为                                                   | 性质        |
-| ------------------------------------ | ---------------------------- | -------------------------------------------------------- | ----------- |
-| non-interactive 下执行 `/init`       | ✅ 允许（白名单）            | ✅ 允许（`commandType: local`）                          | 无变化      |
-| non-interactive 下执行 `/summary`    | ✅ 允许                      | ✅ 允许                                                  | 无变化      |
-| non-interactive 下执行 `/compress`   | ✅ 允许                      | ✅ 允许                                                  | 无变化      |
-| non-interactive 下执行 `/btw`        | ✅ 允许                      | ✅ 允许                                                  | 无变化      |
-| non-interactive 下执行 `/bug`        | ✅ 允许                      | ✅ 允许                                                  | 无变化      |
-| non-interactive 下执行 `/context`    | ✅ 允许                      | ✅ 允许                                                  | 无变化      |
-| non-interactive 下执行 `/model`      | ❌ unsupported               | ❌ unsupported（`commandType: local-jsx`）               | 无变化      |
-| non-interactive 下执行 file command  | ✅ 允许（CommandKind.FILE）  | ✅ 允许（`commandType: prompt`）                         | 无变化      |
-| non-interactive 下执行 bundled skill | ✅ 允许（CommandKind.SKILL） | ✅ 允许（`commandType: prompt`）                         | 无变化      |
-| non-interactive 下执行 MCP prompt    | ❌ 被 CommandKind 拦截       | ✅ 允许（`commandType: prompt`）                         | **Bug fix** |
-| non-interactive 下执行 `/export`     | ❌ 不在白名单                | ❌ 不允许（`commandType: local`，默认 interactive only） | 无变化      |
-| non-interactive 下执行 `/memory`     | ❌ 不在白名单                | ❌ 不允许（`commandType: local`，默认 interactive only） | 无变化      |
-| non-interactive 下执行 `/plan`       | ❌ 不在白名单                | ❌ 不允许（`commandType: local`，默认 interactive only） | 无变化      |
+| 장면                    | 오래된 행동                  | 새로운 행동                                       | 자연        |
+| --------------------- | ----------------------- | -------------------------------------------- | --------- |
+| 비대화형으로 실행`/init`      | ✅ 허용(허용 목록)             | ✅허용(`commandType: local`)                    | 변화 없음     |
+| 비대화형으로 실행`/summary`   | ✅허용                     | ✅허용                                          | 변화 없음     |
+| 비대화형으로 실행`/compress`  | ✅허용                     | ✅허용                                          | 변화 없음     |
+| 비대화형으로 실행`/btw`       | ✅허용                     | ✅허용                                          | 변화 없음     |
+| 비대화형으로 실행`/bug`       | ✅허용                     | ✅허용                                          | 변화 없음     |
+| 비대화형으로 실행`/context`   | ✅허용                     | ✅허용                                          | 변화 없음     |
+| 비대화형으로 실행`/model`     | ❌ 지원되지 않음               | ❌ 지원되지 않음（`commandType: local-jsx`)          | 변화 없음     |
+| 비대화형 모드에서 파일 명령 실행    | ✅ 허용(CommandKind.FILE)  | ✅허용(`commandType: prompt`)                   | 변화 없음     |
+| 비대화형 모드에서 번들 스킬 실행    | ✅ 허용(CommandKind.SKILL) | ✅허용(`commandType: prompt`)                   | 변화 없음     |
+| 비대화형 모드에서 MCP 프롬프트 실행 | ❌ CommandKind에 의해 차단됨   | ✅허용(`commandType: prompt`)                   | **버그 수정** |
+| 비대화형으로 실행`/export`    | ❌ 화이트리스트에 없음            | ❌ 허용되지 않음 (`commandType: local`, 기본 대화형만 해당) | 변화 없음     |
+| 비대화형으로 실행`/memory`    | ❌ 화이트리스트에 없음            | ❌ 허용되지 않음 (`commandType: local`, 기본 대화형만 해당) | 변화 없음     |
+| 비대화형으로 실행`/plan`      | ❌ 화이트리스트에 없음            | ❌ 허용되지 않음 (`commandType: local`, 기본 대화형만 해당) | 변화 없음     |
 
-> **关于 `local` 命令的保守默认策略**：`commandType: 'local'` 的默认 `supportedModes` 为 `['interactive']`，这与 Claude Code 的设计一致——`local` 类型命令需要显式声明 `supportsNonInteractive: true` 才能在非交互模式下运行。Phase 1 中白名单内的 6 个命令（`init`、`summary`、`compress`、`btw`、`bug`、`context`）通过显式声明 `supportedModes: ['interactive', 'non_interactive', 'acp']` 来等价替换原白名单效果。Phase 2 中需要扩展的命令（如 `/export`、`/memory`、`/plan`）在验证 action 实现 headless-friendly 之后，再逐个解锁。
+> **\~에 대한`local`명령에 대한 보수적인 기본 정책**：`commandType: 'local'`기본값`supportedModes`\~을 위한`['interactive']`, 이는 Claude Code의 디자인과 일치합니다.`local`유형 명령에는 명시적인 선언이 필요합니다.`supportsNonInteractive: true`비대화형 모드로 실행합니다. 1단계 화이트리스트의 명령 6개(`init`、`summary`、`compress`、`btw`、`bug`、`context`) 명시적으로 선언함으로써`supportedModes: ['interactive', 'non_interactive', 'acp']`원래의 화이트리스트 효과를 동등하게 대체합니다. 2단계에서 확장이 필요한 명령(예:`/export`、`/memory`、`/plan`) 액션이 헤드리스 친화적인지 확인한 후 하나씩 잠금을 해제합니다.
 
----
+***
 
-## 10.2 Phase 2 模式差异命令：双注册模式
+## 10.2 2단계 모드 차이 명령: 이중 등록 모드
 
-对于 Phase 2 中需要"交互模式有 UI，非交互模式有文本输出"的命令（如 `/model`），应采用 **双注册模式**，而非在单个命令的 `action` 内部分支。
+"대화형 모드의 UI 및 비대화형 모드의 텍스트 출력"이 필요한 2단계 명령의 경우(예:`/model`)을 사용해야 한다**이중 등록 모드**, 단일 명령이 아닌`action`내부 지점.
 
-这是 Claude Code 的标准模式，以 `/context` 为例（参见 `src/commands/context/index.ts`）：两个同名 `Command` 对象，一个 `local-jsx` 仅 interactive，另一个 `local` 仅 non-interactive，通过 `isEnabled()` 互斥。
+클로드 코드의 표준 모드입니다.`/context`예를 들어 (참조`src/commands/context/index.ts`): 이름이 같은 두 사람`Command`객체, 에`local-jsx`오직 대화형, 또 다른`local`비대화형 전용, 다음을 통해`isEnabled()`상호 배타적입니다.
 
-Qwen Code 在 Phase 2 中应采用等价方式，以 `supportedModes` 替代 `isEnabled()` 实现互斥：
+Qwen Code는 2단계에서 동등한 접근 방식을 채택해야 합니다.`supportedModes`대리자`isEnabled()`상호 배제를 달성하려면:
 
 ```typescript
 // ① 交互模式版：local-jsx，仅 interactive
@@ -636,17 +636,17 @@ export const modelCommandHeadless: SlashCommand = {
 };
 ```
 
-两个对象同名，`supportedModes` 互斥，`filterCommandsForMode` 自动选择正确版本。与 Claude Code 的 `isEnabled()` 互斥相比，`supportedModes` 过滤更显式、更易测试，且不需要运行时环境检测。
+두 개체의 이름이 동일합니다.`supportedModes`상호 배타적,`filterCommandsForMode`올바른 버전을 자동으로 선택합니다. 클로드 코드와 함께`isEnabled()`상호 배제에 비해,`supportedModes`필터링은 더 명확하고 테스트하기 쉬우며 런타임 환경 감지가 필요하지 않습니다.
 
-**Phase 1 不实现任何双注册命令**，该模式仅作为 Phase 2 的实施规范预留在此。
+**1단계에서는 이중 등록 명령을 구현하지 않습니다.**, 이 패턴은 여기에서 2단계 구현 사양으로만 예약되어 있습니다.
 
----
+***
 
-## 11. 测试策略
+## 11. 테스트 전략
 
-### 11.1 新增工具函数测试
+### 11.1 새로운 도구 기능 테스트
 
-在 `packages/cli/src/services/commandUtils.test.ts`（新文件）中：
+존재하다`packages/cli/src/services/commandUtils.test.ts`(새 파일):
 
 ```typescript
 describe('getEffectiveSupportedModes', () => {
@@ -697,69 +697,68 @@ describe('filterCommandsForMode', () => {
 });
 ```
 
-### 11.2 更新 `nonInteractiveCliCommands.test.ts`
+### 11.2 업데이트`nonInteractiveCliCommands.test.ts`
 
-- 删除对 `ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE` 的所有引用
-- 删除对 `allowedBuiltinCommandNames` 参数的测试用例
-- 新增：验证 commandType: local 的命令在 non-interactive 下通过过滤
-- 新增：验证 commandType: local-jsx 的命令在 non-interactive 下被过滤
-- 保留：验证 file command / skill command 在 non-interactive 下通过过滤
+* 쌍 삭제`ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE`다음에 대한 모든 참조
+* 쌍 삭제`allowedBuiltinCommandNames`매개변수 테스트 사례
+* 신규: 비대화형에서 commandType: 로컬 통과 필터링이 포함된 명령을 확인합니다.
+* 신규: commandType: local-jsx가 포함된 명령이 비대화형으로 필터링되는지 확인합니다.
+* 예약됨: 파일 명령/기술 명령이 비대화형 조건에서 필터링을 통과하는지 확인합니다.
 
-### 11.3 更新 `CommandService.test.ts`
+### 11.3 업데이트`CommandService.test.ts`
 
-- 新增 `getCommandsForMode` 的测试用例
-- 新增 `getModelInvocableCommands` 的测试用例
+* 새로운`getCommandsForMode`테스트 케이스
+* 새로운`getModelInvocableCommands`테스트 케이스
 
-### 11.4 各 Loader 测试
+### 11.4 각 로더 테스트
 
-- `BuiltinCommandLoader.test.ts`：验证所有命令都有 `source: 'builtin-command'`
-- `BundledSkillLoader.test.ts`：验证 `source: 'bundled-skill'` 和 `modelInvocable: true`
-- `FileCommandLoader.test.ts`：验证用户命令有 `source: 'skill-dir-command'`，插件命令有 `source: 'plugin-command'`
-- `McpPromptLoader.test.ts`：验证 `source: 'mcp-prompt'` 和 `modelInvocable: true`
+* `BuiltinCommandLoader.test.ts`: 모든 명령에`source: 'builtin-command'`
+* `BundledSkillLoader.test.ts`:확인하다`source: 'bundled-skill'`그리고`modelInvocable: true`
+* `FileCommandLoader.test.ts`: 사용자 명령이 다음과 같은지 확인하십시오.`source: 'skill-dir-command'`, 플러그인 명령은 다음과 같습니다`source: 'plugin-command'`
+* `McpPromptLoader.test.ts`:확인하다`source: 'mcp-prompt'`그리고`modelInvocable: true`
 
----
+***
 
-## 12. 实施顺序
+## 12. 구현 순서
 
-建议按以下顺序实施，每步可独立 commit 和 review：
+다음 순서로 구현하는 것이 권장되며, 각 단계는 독립적으로 커밋되고 검토될 수 있습니다.
 
-**Step 1**（~30min）：修改 `types.ts`，新增 `ExecutionMode`、`CommandSource`、`CommandType` 和 `SlashCommand` 新字段
-→ 纯类型变更，TypeScript 编译检查
+**1단계**(\~30분): 수정`types.ts`, 추가하다`ExecutionMode`、`CommandSource`、`CommandType`그리고`SlashCommand`새로운 분야
+→ 순수 유형 변경, TypeScript 컴파일 확인
 
-**Step 2**（~1h）：新建 `commandUtils.ts`，实现 `getEffectiveSupportedModes` 和 `filterCommandsForMode`，同步新建 `commandUtils.test.ts`
-→ 单元测试覆盖核心逻辑
+**2단계**(\~1시간): 신규`commandUtils.ts`,성취하다`getEffectiveSupportedModes`그리고`filterCommandsForMode`, 새로 동기화`commandUtils.test.ts`→ 단위 테스트는 핵심 로직을 다룹니다.
 
-**Step 3**（~1h）：重构 `nonInteractiveCliCommands.ts`，删除白名单，引入 `filterCommandsForMode`，更新函数签名
-→ 行为等价（Phase 1 保守策略：local 类命令显式写 `supportedModes: ['interactive']`）
+**3단계**(\~1시간): 리팩토링`nonInteractiveCliCommands.ts`, 화이트리스트 삭제, 소개`filterCommandsForMode`, 함수 서명 업데이트
+→ 행동 동등성(1단계 보수 전략: 로컬 클래스 명령을 명시적으로 작성)`supportedModes: ['interactive']`)
 
-**Step 4**（~30min）：更新 `CommandService.ts`，新增两个方法
+**4단계**(\~30분): 업데이트`CommandService.ts`, 두 가지 새로운 메소드 추가
 
-**Step 5**（~2h）：为所有 built-in 命令文件添加 `commandType` 声明
-→ 逐个确认分类正确性
+**5단계**(\~2h): 모든 내장 명령 파일에 추가`commandType`성명서
+→ 분류의 정확성을 하나씩 확인
 
-**Step 6**（~1.5h）：更新所有 Loader，注入 `source`、`sourceLabel`、`commandType`、`modelInvocable`
+**6단계**(\~1.5h): 모든 로더 업데이트, 삽입`source`、`sourceLabel`、`commandType`、`modelInvocable`
 
-**Step 7**（~30min）：更新 `Session.ts` 的调用签名
+**7단계**(\~30분): 업데이트`Session.ts`통화 서명
 
-**Step 8**（~1h）：运行所有测试，修复失败用例，更新快照
+**8단계**(\~1h): 모든 테스트 실행, 실패한 사례 수정, 스냅샷 업데이트
 
-**Step 9**（~30min）：CR 自查：确认白名单已完全移除，无遗漏调用
+**9단계**(\~30분): CR 자체 검사: 화이트리스트가 완전히 제거되었으며 누락된 전화가 없는지 확인합니다.
 
----
+***
 
-## 13. 验收 Checklist
+## 13. 승인 체크리스트
 
-- [ ] TypeScript 编译无错误（`npm run typecheck`）
-- [ ] `npm run lint` 无新增 lint 错误
-- [ ] 所有现有测试通过（`cd packages/cli && npx vitest run`）
-- [ ] `commandUtils.test.ts` 新增测试全部通过
-- [ ] `getEffectiveSupportedModes` 覆盖所有 7 种 case
-- [ ] `filterCommandsForMode` 覆盖 interactive / non_interactive / acp 三种模式
-- [ ] `ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE` 在整个代码库中无任何引用（`grep` 验证）
-- [ ] `filterCommandsForNonInteractive` 函数在整个代码库中无任何引用
-- [ ] 所有 built-in 命令有 `commandType` 字段
-- [ ] 所有 Loader 输出的命令有 `source` 和 `sourceLabel` 字段
-- [ ] `BundledSkillLoader` / `FileCommandLoader`（用户命令）/ `McpPromptLoader` 输出的命令 `modelInvocable: true`
-- [ ] `BuiltinCommandLoader` 输出的命令 `modelInvocable: false`
-- [ ] `CommandService.getCommandsForMode('non_interactive')` 返回与重构前等价的命令集
-- [ ] MCP prompt 命令在 non-interactive 模式下不再被错误拦截
+* [ ] TypeScript는 오류 없이 컴파일됩니다(`npm run typecheck`)
+* [ ] `npm run lint`새로운 린트 오류 없음
+* [ ] 기존의 모든 테스트를 통과했습니다(`cd packages/cli && npx vitest run`)
+* [ ] `commandUtils.test.ts`모든 새로운 테스트를 통과했습니다.
+* [ ] `getEffectiveSupportedModes`7가지 사건을 모두 다룬다
+* [ ] `filterCommandsForMode`대화형 / non\_interactive / acp 세 가지 모드 커버
+* [ ] `ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE`전체 코드 베이스에 참조가 없습니다(`grep`확인하다)
+* [ ] `filterCommandsForNonInteractive`이 함수는 전체 코드 베이스에 참조가 없습니다.
+* [ ] 모든 내장 명령에는`commandType`필드
+* [ ] Loader가 출력하는 모든 명령은 다음과 같습니다.`source`그리고`sourceLabel`필드
+* [ ] `BundledSkillLoader` / `FileCommandLoader`(사용자 명령)/`McpPromptLoader`출력 명령`modelInvocable: true`
+* [ ] `BuiltinCommandLoader`출력 명령`modelInvocable: false`
+* [ ] `CommandService.getCommandsForMode('non_interactive')`리팩토링 전 동등한 명령 세트를 반환합니다.
+* [ ] 비대화형 모드에서 MCP 프롬프트 명령이 더 이상 오류로 인해 차단되지 않습니다.

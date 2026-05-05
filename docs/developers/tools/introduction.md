@@ -1,62 +1,62 @@
-# Qwen Code tools
+# Qwen 코드 도구
 
-Qwen Code includes built-in tools that the model uses to interact with your local environment, access information, and perform actions. These tools enhance the CLI's capabilities, enabling it to go beyond text generation and assist with a wide range of tasks.
+Qwen Code에는 모델이 로컬 환경과 상호 작용하고, 정보에 액세스하고, 작업을 수행하는 데 사용하는 내장 도구가 포함되어 있습니다. 이러한 도구는 CLI의 기능을 향상시켜 CLI가 텍스트 생성을 넘어 광범위한 작업을 지원할 수 있도록 해줍니다.
 
-## Overview of Qwen Code tools
+## Qwen Code 도구 개요
 
-In the context of Qwen Code, tools are specific functions or modules that the model can request to be executed. For example, if you ask the model to "Summarize the contents of `my_document.txt`," it will likely identify the need to read that file and will request the execution of the `read_file` tool.
+Qwen Code의 맥락에서 도구는 모델이 실행을 요청할 수 있는 특정 기능 또는 모듈입니다. 예를 들어, 모델에게 "내용을 요약해달라"고 요청한다면`my_document.txt`," 해당 파일을 읽어야 할 필요성을 식별하고 해당 파일의 실행을 요청할 것입니다.`read_file`도구.
 
-The core component (`packages/core`) manages these tools, presents their definitions (schemas) to the model, executes them when requested, and returns the results to the model for further processing into a user-facing response.
+핵심 구성요소(`packages/core`)는 이러한 도구를 관리하고, 해당 정의(스키마)를 모델에 제공하고, 요청 시 이를 실행하고, 사용자 측 응답으로 추가 처리를 위해 결과를 모델에 반환합니다.
 
-These tools provide the following capabilities:
+이러한 도구는 다음 기능을 제공합니다.
 
-- **Access local information:** Tools allow the model to access your local file system, read file contents, list directories, etc.
-- **Execute commands:** With tools like `run_shell_command`, the model can run shell commands (with appropriate safety measures and user confirmation).
-- **Interact with the web:** Tools can fetch content from URLs.
-- **Take actions:** Tools can modify files, write new files, or perform other actions on your system (again, typically with safeguards).
-- **Ground responses:** By using tools to fetch real-time or specific local data, responses can be more accurate, relevant, and grounded in your actual context.
+* **지역 정보에 액세스:**&#xB3C4;구를 사용하면 모델이 로컬 파일 시스템에 액세스하고, 파일 내용을 읽고, 디렉터리를 나열하는 등의 작업을 수행할 수 있습니다.
+* **명령을 실행합니다:**&#xB2E4;음과 같은 도구를 사용하여`run_shell_command`, 모델은 (적절한 안전 조치 및 사용자 확인을 통해) 쉘 명령을 실행할 수 있습니다.
+* **웹과 상호작용:**&#xB3C4;구는 URL에서 콘텐츠를 가져올 수 있습니다.
+* **조치를 취하십시오:**&#xB3C4;구는 파일을 수정하거나, 새 파일을 쓰거나, 시스템에서 다른 작업을 수행할 수 있습니다(일반적으로 보호 장치를 사용하여).
+* **지상 반응:**&#xC2E4;시간 또는 특정 로컬 데이터를 가져오는 도구를 사용하면 응답이 더 정확하고 관련성이 높으며 실제 상황에 근거할 수 있습니다.
 
-## How to use Qwen Code tools
+## Qwen Code 도구를 사용하는 방법
 
-To use Qwen Code tools, provide a prompt to the CLI. The process works as follows:
+Qwen Code 도구를 사용하려면 CLI에 프롬프트를 제공하세요. 프로세스는 다음과 같이 작동합니다.
 
-1.  You provide a prompt to the CLI.
-2.  The CLI sends the prompt to the core.
-3.  The core, along with your prompt and conversation history, sends a list of available tools and their descriptions/schemas to the configured model API.
-4.  The model analyzes your request. If it determines that a tool is needed, its response will include a request to execute a specific tool with certain parameters.
-5.  The core receives this tool request, validates it, and (often after user confirmation for sensitive operations) executes the tool.
-6.  The output from the tool is sent back to the model.
-7.  The model uses the tool's output to formulate its final answer, which is then sent back through the core to the CLI and displayed to you.
+1. CLI에 프롬프트를 제공합니다.
+2. CLI는 프롬프트를 코어로 보냅니다.
+3. 코어는 프롬프트 및 대화 기록과 함께 사용 가능한 도구 목록과 해당 설명/스키마를 구성된 모델 API로 보냅니다.
+4. 모델이 귀하의 요청을 분석합니다. 도구가 필요하다고 판단되면 응답에는 특정 매개변수를 사용하여 특정 도구를 실행하라는 요청이 포함됩니다.
+5. 코어는 이 도구 요청을 수신하고 유효성을 검사한 다음 (종종 민감한 작업에 대해 사용자 확인 후) 도구를 실행합니다.
+6. 도구의 출력은 모델로 다시 전송됩니다.
+7. 모델은 도구의 출력을 사용하여 최종 답변을 공식화한 다음 코어를 통해 CLI로 다시 전송되어 사용자에게 표시됩니다.
 
-You will typically see messages in the CLI indicating when a tool is being called and whether it succeeded or failed.
+일반적으로 도구가 호출되는 시기와 도구의 성공 또는 실패 여부를 나타내는 메시지가 CLI에 표시됩니다.
 
-## Security and confirmation
+## 보안 및 확인
 
-Many tools, especially those that can modify your file system or execute commands (`write_file`, `edit`, `run_shell_command`), are designed with safety in mind. Qwen Code will typically:
+많은 도구, 특히 파일 시스템을 수정하거나 명령을 실행할 수 있는 도구(`write_file`,`edit`,`run_shell_command`)은 안전을 염두에 두고 설계되었습니다. Qwen 코드는 일반적으로 다음을 수행합니다.
 
-- **Require confirmation:** Prompt you before executing potentially sensitive operations, showing you what action is about to be taken.
-- **Utilize sandboxing:** All tools are subject to restrictions enforced by sandboxing (see [Sandboxing in Qwen Code](../sandbox.md)). This means that when operating in a sandbox, any tools (including MCP servers) you wish to use must be available _inside_ the sandbox environment. For example, to run an MCP server through `npx`, the `npx` executable must be installed within the sandbox's Docker image or be available in the `sandbox-exec` environment.
+* **확인 필요:**&#xC7A0;재적으로 민감한 작업을 실행하기 전에 어떤 조치가 취해질지 보여 주는 메시지를 표시합니다.
+* **샌드박스 활용:**&#xBAA8;든 도구에는 샌드박싱에 의해 시행되는 제한이 적용됩니다(참조[Qwen Code의 샌드박싱](../sandbox.md)). 이는 샌드박스에서 작업할 때 사용하려는 모든 도구(MCP 서버 포함)를 사용할 수 있어야 함을 의미합니다.*내부에*샌드박스 환경. 예를 들어 다음을 통해 MCP 서버를 실행하려면`npx`,`npx`실행 파일은 샌드박스의 Docker 이미지 내에 설치되거나 다음에서 사용 가능해야 합니다.`sandbox-exec`환경.
 
-It's important to always review confirmation prompts carefully before allowing a tool to proceed.
+도구를 계속 진행하기 전에 항상 확인 메시지를 주의 깊게 검토하는 것이 중요합니다.
 
-## Learn more about Qwen Code's tools
+## Qwen Code 도구에 대해 자세히 알아보기
 
-Qwen Code's built-in tools can be broadly categorized as follows:
+Qwen Code의 내장 도구는 다음과 같이 광범위하게 분류될 수 있습니다.
 
-- **[File System Tools](./file-system.md):** For interacting with files and directories (reading, writing, listing, searching, etc.).
-- **[Shell Tool](./shell.md) (`run_shell_command`):** For executing shell commands.
-- **[Web Fetch Tool](./web-fetch.md) (`web_fetch`):** For retrieving content from URLs.
-- **[Multi-File Read Tool](./multi-file.md) (`read_many_files`):** A specialized tool for reading content from multiple files or directories, often used by the `@` command.
-- **[Memory Tool](./memory.md) (`save_memory`):** For saving and recalling information across sessions.
-- **[Todo Write Tool](./todo-write.md) (`todo_write`):** For creating and managing structured task lists during coding sessions.
-- **[Task Tool](./task.md) (`task`):** For delegating complex tasks to specialized subagents.
-- **[Exit Plan Mode Tool](./exit-plan-mode.md) (`exit_plan_mode`):** For exiting plan mode and proceeding with implementation.
+* **[파일 시스템 도구](./file-system.md):**&#xD30C;일 및 디렉터리와 상호 작용합니다(읽기, 쓰기, 나열, 검색 등).
+* **[쉘 도구](./shell.md)(`run_shell_command`):**&#xC258; 명령을 실행합니다.
+* **[웹 가져오기 도구](./web-fetch.md)(`web_fetch`):**&#x55;RL에서 콘텐츠를 검색합니다.
+* **[다중 파일 읽기 도구](./multi-file.md)(`read_many_files`):**&#xC5EC;러 파일이나 디렉터리에서 콘텐츠를 읽기 위한 특수 도구로, 종종 사용됩니다.`@`명령.
+* **[메모리 도구](./memory.md)(`save_memory`):**&#xC138;션 전반에 걸쳐 정보를 저장하고 호출합니다.
+* **[Todo 쓰기 도구](./todo-write.md)(`todo_write`):**&#xCF54;딩 세션 중에 구조화된 작업 목록을 생성하고 관리합니다.
+* **[작업 도구](./task.md)(`task`):**&#xBCF5;잡한 작업을 전문 하위 에이전트에 위임합니다.
+* **[계획 모드 도구 종료](./exit-plan-mode.md)(`exit_plan_mode`):**&#xACC4;획 모드를 종료하고 구현을 진행합니다.
 
-Additionally, these tools incorporate:
+또한 이러한 도구에는 다음이 포함됩니다.
 
-- **[MCP servers](./mcp-server.md)**: MCP servers act as a bridge between the model and your local environment or other services like APIs.
-  - **[MCP Quick Start Guide](../mcp-quick-start.md)**: Get started with MCP in 5 minutes with practical examples
-  - **[MCP Example Configurations](../mcp-example-configs.md)**: Ready-to-use configurations for common scenarios
-  - **[Web Search via MCP](./web-search.md)**: Connect to web search services (Bailian, Tavily, GLM) through MCP
-  - **[MCP Testing & Validation](../mcp-testing-validation.md)**: Test and validate your MCP server setups
-- **[Sandboxing](../sandbox.md)**: Sandboxing isolates the model and its changes from your environment to reduce potential risk.
+* **[MCP 서버](./mcp-server.md)**: MCP 서버는 모델과 로컬 환경 또는 API와 같은 다른 서비스 간의 브리지 역할을 합니다.
+  * **[MCP 빠른 시작 가이드](../mcp-quick-start.md)**: 실제 사례를 통해 5분 만에 MCP 시작하기
+  * **[MCP 예제 구성](../mcp-example-configs.md)**: 일반적인 시나리오에 즉시 사용 가능한 구성
+  * **[MCP를 통한 웹 검색](./web-search.md)**: MCP를 통해 웹 검색 서비스(Bailian, Tavily, GLM)에 접속합니다.
+  * **[MCP 테스트 및 검증](../mcp-testing-validation.md)**: MCP 서버 설정을 테스트하고 검증합니다.
+* **[샌드박싱](../sandbox.md)**: 샌드박싱은 모델과 해당 변경 사항을 환경에서 격리하여 잠재적인 위험을 줄입니다.

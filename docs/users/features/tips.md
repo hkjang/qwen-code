@@ -1,45 +1,45 @@
-# Contextual Tips
+# 상황별 팁
 
-Qwen Code includes a contextual tips system that helps you discover features and stay aware of session state.
+Qwen Code에는 기능을 발견하고 세션 상태를 파악하는 데 도움이 되는 상황별 팁 시스템이 포함되어 있습니다.
 
-## Startup Tips
+## 시작 팁
 
-Each time you launch Qwen Code, a tip is shown in the header area. Tips are selected by priority first, then rotated across sessions using LRU (least-recently-used) scheduling among tips of the same priority, so you see a different tip each time.
+Qwen Code를 실행할 때마다 헤더 영역에 팁이 표시됩니다. 팁은 우선 순위에 따라 먼저 선택된 다음 동일한 우선 순위의 팁 중에서 LRU(최근에 가장 적게 사용됨) 예약을 사용하여 세션 전체에서 순환되므로 매번 다른 팁이 표시됩니다.
 
-New users see onboarding-focused tips during their first sessions:
+신규 사용자는 첫 번째 세션에서 온보딩에 초점을 맞춘 팁을 볼 수 있습니다.
 
-| Sessions | Example tips                                         |
-| -------- | ---------------------------------------------------- |
-| < 5      | Slash commands (`/`), Tab autocomplete               |
-| < 10     | `QWEN.md` project context, `--continue` / `--resume` |
-| < 15     | Shell commands with `!` prefix                       |
+| 세션   | 예시 팁                                         |
+| ---- | -------------------------------------------- |
+| < 5  | 슬래시 명령(`/`), 탭 자동완성                          |
+| < 10 | `QWEN.md`프로젝트 컨텍스트,`--continue` / `--resume` |
+| < 15 | 다음을 사용한 쉘 명령`!`접두사                           |
 
-After that, tips rotate through general features like `/compress`, `/approval-mode`, `/insight`, `/btw`, and more.
+그 후 팁은 다음과 같은 일반적인 기능을 통해 순환됩니다.`/compress`,`/approval-mode`,`/insight`,`/btw`, 그리고 더.
 
-## Post-Response Tips
+## 사후 응답 팁
 
-During a conversation, Qwen Code monitors your context window usage and shows tips when action may be needed:
+대화 중에 Qwen Code는 컨텍스트 창 사용을 ​​모니터링하고 조치가 필요할 때 팁을 표시합니다.
 
-| Context usage | Condition                      | Tip                                               |
-| ------------- | ------------------------------ | ------------------------------------------------- |
-| 50-80%        | After a few prompts in session | Suggests `/compress` to free up context           |
-| 80-95%        | —                              | Warns context is getting full                     |
-| >= 95%        | —                              | Urgent: run `/compress` now or `/new` to continue |
+| 컨텍스트 사용법 | 상태                   | 팁                                 |
+| -------- | -------------------- | --------------------------------- |
+| 50-80%   | 세션 중 몇 가지 메시지가 표시된 후 | 제안`/compress`맥락을 자유롭게 하기 위해       |
+| 80-95%   | —                    | 컨텍스트가 꽉 찼다고 경고합니다.                |
+| >= 95%   | —                    | 긴급: 실행`/compress`지금 아니면`/new`계속하다 |
 
-Post-response tips have per-tip cooldowns to avoid being repetitive.
+사후 응답 팁에는 반복되는 것을 방지하기 위해 팁당 쿨다운이 있습니다.
 
-## Tip History
+## 팁 내역
 
-Tip display history is persisted at `~/.qwen/tip_history.json`. This file tracks:
+팁 표시 기록은 다음 위치에 유지됩니다.`~/.qwen/tip_history.json`. 이 파일은 다음을 추적합니다.
 
-- Session count (used for new-user tip selection)
-- Which tips have been shown and when (used for LRU rotation and cooldown)
+* 세션 수(신규 사용자 팁 선택에 사용됨)
+* 어떤 팁이 언제 표시되었는지(LRU 회전 및 쿨다운에 사용됨)
 
-You can safely delete this file to reset tip history.
+이 파일을 안전하게 삭제하여 팁 기록을 재설정할 수 있습니다.
 
-## Disabling Tips
+## 팁 비활성화
 
-To hide all tips (both startup and post-response), set `ui.hideTips` to `true` in `~/.qwen/settings.json`:
+모든 팁(시작 및 사후 응답 모두)을 숨기려면 다음을 설정하십시오.`ui.hideTips`에게`true`\~에`~/.qwen/settings.json`:
 
 ```json
 {
@@ -49,6 +49,6 @@ To hide all tips (both startup and post-response), set `ui.hideTips` to `true` i
 }
 ```
 
-You can also toggle this in the settings dialog via the `/settings` command.
+또한 설정 대화 상자에서 이 기능을 전환할 수도 있습니다.`/settings`명령.
 
-Tips are also automatically hidden when screen reader mode is enabled.
+스크린 리더 모드가 활성화되면 팁도 자동으로 숨겨집니다.

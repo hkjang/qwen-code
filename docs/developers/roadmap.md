@@ -1,82 +1,82 @@
-# Qwen Code RoadMap
+# Qwen Code 로드맵
 
-> **Objective**: Catch up with Claude Code's product functionality, continuously refine details, and enhance user experience.
+> **목적**: 클로드코드의 제품 기능을 따라잡고, 지속적으로 디테일을 개선하며, 사용자 경험을 향상시킵니다.
 
-| Category                        | Phase 1                                                                                                                                                                            | Phase 2                                                                                                                                                                                 |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| User Experience                 | ✅ Terminal UI<br>✅ Support OpenAI Protocol<br>✅ Settings<br>✅ OAuth<br>✅ Cache Control<br>✅ Memory<br>✅ Compress<br>✅ Theme                                                | Better UI<br>OnBoarding<br>LogView<br>✅ Session<br>Permission<br>🔄 Cross-platform Compatibility<br>✅ Coding Plan<br>✅ Anthropic Provider<br>✅ Multimodal Input<br>✅ Unified WebUI |
-| Coding Workflow                 | ✅ Slash Commands<br>✅ MCP<br>✅ PlanMode<br>✅ TodoWrite<br>✅ SubAgent<br>✅ Multi Model<br>✅ Chat Management<br>✅ Tools (WebFetch, Bash, TextSearch, FileReadFile, EditFile) | 🔄 Hooks<br>✅ Skill<br>✅ Headless Mode<br>✅ Tools (WebSearch)<br>✅ LSP Support<br>✅ Concurrent Runner                                                                              |
-| Building Open Capabilities      | ✅ Custom Commands                                                                                                                                                                 | ✅ QwenCode SDK<br>✅ Extension System                                                                                                                                                  |
-| Integrating Community Ecosystem |                                                                                                                                                                                    | ✅ VSCode Plugin<br>✅ ACP/Zed<br>✅ GHA                                                                                                                                                |
-| Administrative Capabilities     | ✅ Stats<br>✅ Feedback                                                                                                                                                            | Costs<br>Dashboard<br>✅ User Feedback Dialog                                                                                                                                           |
+| 범주          | 1단계                                                                                                                                     | 2단계                                                                                                       |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 사용자 경험      | ✅ 터미널 UI<br>✅ OpenAI 프로토콜 지원<br>✅ 설정<br>✅ OAuth<br>✅ 캐시 제어<br>✅ 추억<br>✅ 압축<br>✅ 테마                                                      | 더 나은 UI<br>온보딩<br>로그뷰<br>✅ 세션<br>허가<br>🔄 크로스 플랫폼 호환성<br>✅ 코딩 계획<br>✅ 인류 공급자<br>✅ 다중 모드 입력<br>✅ 통합된 WebUI |
+| 코딩 작업 흐름    | ✅ 슬래시 명령<br>✅ MCP<br>✅ 플랜 모드<br>✅ Todo쓰기<br>✅ 하위 에이전트<br>✅ 멀티 모델<br>✅ 채팅 관리<br>✅ 도구(WebFetch, Bash, TextSearch, FileReadFile, EditFile) | 🔄 후크<br>✅ 스킬<br>✅ 헤드리스 모드<br>✅ 도구(웹 검색)<br>✅ LSP 지원<br>✅ 동시 실행자                                          |
+| 개방형 역량 구축   | ✅ 사용자 정의 명령                                                                                                                             | ✅ QwenCode SDK<br>✅ 확장 시스템                                                                                |
+| 커뮤니티 생태계 통합 |                                                                                                                                         | ✅ VSCode 플러그인<br>✅ ACP/제드<br>✅ GHA                                                                        |
+| 관리 기능       | ✅ 통계<br>✅ 피드백                                                                                                                           | 소송 비용<br>계기반<br>✅ 사용자 피드백 대화 상자                                                                           |
 
-> For more details, please see the list below.
+> 자세한 내용은 아래 목록을 참조하세요.
 
-## Features
+## 특징
 
-#### Completed Features
+#### 완성된 기능
 
-| Feature                 | Version   | Description                                             | Category                        | Phase |
-| ----------------------- | --------- | ------------------------------------------------------- | ------------------------------- | ----- |
-| **Coding Plan**         | `V0.10.0` | Alibaba Cloud Coding Plan authentication & models       | User Experience                 | 2     |
-| Unified WebUI           | `V0.9.0`  | Shared WebUI component library for VSCode/CLI           | User Experience                 | 2     |
-| Export Chat             | `V0.8.0`  | Export sessions to Markdown/HTML/JSON/JSONL             | User Experience                 | 2     |
-| Extension System        | `V0.8.0`  | Full extension management with slash commands           | Building Open Capabilities      | 2     |
-| LSP Support             | `V0.7.0`  | Experimental LSP service (`--experimental-lsp`)         | Coding Workflow                 | 2     |
-| Anthropic Provider      | `V0.7.0`  | Anthropic API provider support                          | User Experience                 | 2     |
-| User Feedback Dialog    | `V0.7.0`  | In-app feedback collection with fatigue mechanism       | Administrative Capabilities     | 2     |
-| Concurrent Runner       | `V0.6.0`  | Batch CLI execution with Git integration                | Coding Workflow                 | 2     |
-| Multimodal Input        | `V0.6.0`  | Image, PDF, audio, video input support                  | User Experience                 | 2     |
-| Skill                   | `V0.6.0`  | Extensible custom AI skills (experimental)              | Coding Workflow                 | 2     |
-| Github Actions          | `V0.5.0`  | qwen-code-action and automation                         | Integrating Community Ecosystem | 1     |
-| VSCode Plugin           | `V0.5.0`  | VSCode extension plugin                                 | Integrating Community Ecosystem | 1     |
-| QwenCode SDK            | `V0.4.0`  | Open SDK for third-party integration                    | Building Open Capabilities      | 1     |
-| Session                 | `V0.4.0`  | Enhanced session management                             | User Experience                 | 1     |
-| i18n                    | `V0.3.0`  | Internationalization and multilingual support           | User Experience                 | 1     |
-| Headless Mode           | `V0.3.0`  | Headless mode (non-interactive)                         | Coding Workflow                 | 1     |
-| ACP/Zed                 | `V0.2.0`  | ACP and Zed editor integration                          | Integrating Community Ecosystem | 1     |
-| Terminal UI             | `V0.1.0+` | Interactive terminal user interface                     | User Experience                 | 1     |
-| Settings                | `V0.1.0+` | Configuration management system                         | User Experience                 | 1     |
-| Theme                   | `V0.1.0+` | Multi-theme support                                     | User Experience                 | 1     |
-| Support OpenAI Protocol | `V0.1.0+` | Support for OpenAI API protocol                         | User Experience                 | 1     |
-| Chat Management         | `V0.1.0+` | Session management (save, restore, browse)              | Coding Workflow                 | 1     |
-| MCP                     | `V0.1.0+` | Model Context Protocol integration                      | Coding Workflow                 | 1     |
-| Multi Model             | `V0.1.0+` | Multi-model support and switching                       | Coding Workflow                 | 1     |
-| Slash Commands          | `V0.1.0+` | Slash command system                                    | Coding Workflow                 | 1     |
-| Tool: Bash              | `V0.1.0+` | Shell command execution tool (with is_background param) | Coding Workflow                 | 1     |
-| Tool: FileRead/EditFile | `V0.1.0+` | File read/write and edit tools                          | Coding Workflow                 | 1     |
-| Custom Commands         | `V0.1.0+` | Custom command loading                                  | Building Open Capabilities      | 1     |
-| Feedback                | `V0.1.0+` | Feedback mechanism (/bug command)                       | Administrative Capabilities     | 1     |
-| Stats                   | `V0.1.0+` | Usage statistics and quota display                      | Administrative Capabilities     | 1     |
-| Memory                  | `V0.0.9+` | Project-level and global memory management              | User Experience                 | 1     |
-| Cache Control           | `V0.0.9+` | Prompt caching control (Anthropic, DashScope)           | User Experience                 | 1     |
-| PlanMode                | `V0.0.14` | Task planning mode                                      | Coding Workflow                 | 1     |
-| Compress                | `V0.0.11` | Chat compression mechanism                              | User Experience                 | 1     |
-| SubAgent                | `V0.0.11` | Dedicated sub-agent system                              | Coding Workflow                 | 1     |
-| TodoWrite               | `V0.0.10` | Task management and progress tracking                   | Coding Workflow                 | 1     |
-| Tool: TextSearch        | `V0.0.8+` | Text search tool (grep, supports .qwenignore)           | Coding Workflow                 | 1     |
-| Tool: WebFetch          | `V0.0.7+` | Web content fetching tool                               | Coding Workflow                 | 1     |
-| Tool: WebSearch         | `V0.0.7+` | Web search tool (using Tavily API)                      | Coding Workflow                 | 1     |
-| OAuth                   | `V0.0.5+` | OAuth login authentication (Qwen OAuth)                 | User Experience                 | 1     |
+| 특징             | 버전        | 설명                                 | 범주          | 단계 |
+| -------------- | --------- | ---------------------------------- | ----------- | -- |
+| **코딩 계획**      | `V0.10.0` | Alibaba Cloud Coding Plan 인증 및 모델  | 사용자 경험      | 2  |
+| 통합된 WebUI      | `V0.9.0`  | VSCode/CLI용 공유 WebUI 구성 요소 라이브러리   | 사용자 경험      | 2  |
+| 채팅 내보내기        | `V0.8.0`  | Markdown/HTML/JSON/JSONL로 세션 내보내기  | 사용자 경험      | 2  |
+| 확장 시스템         | `V0.8.0`  | 슬래시 명령을 사용한 전체 확장 관리               | 개방형 역량 구축   | 2  |
+| LSP 지원         | `V0.7.0`  | 실험적인 LSP 서비스(`--experimental-lsp`) | 코딩 작업흐름     | 2  |
+| 인류 공급자         | `V0.7.0`  | Anthropic API 제공자 지원               | 사용자 경험      | 2  |
+| 사용자 피드백 대화 상자  | `V0.7.0`  | 피로 메커니즘을 이용한 인앱 피드백 수집             | 관리 기능       | 2  |
+| 동시 실행자         | `V0.6.0`  | Git 통합을 통한 일괄 CLI 실행               | 코딩 작업 흐름    | 2  |
+| 다중 모드 입력       | `V0.6.0`  | 이미지, PDF, 오디오, 비디오 입력 지원           | 사용자 경험      | 2  |
+| 기능             | `V0.6.0`  | 확장 가능한 맞춤형 AI 기술(실험적)              | 코딩 작업 흐름    | 2  |
+| Github 작업      | `V0.5.0`  | qwen-code-action 및 자동화             | 커뮤니티 생태계 통합 | 1  |
+| VSCode 플러그인    | `V0.5.0`  | VSCode 확장 플러그인                     | 커뮤니티 생태계 통합 | 1  |
+| QwenCode SDK   | `V0.4.0`  | 타사 통합을 위한 공개 SDK                   | 개방형 역량 구축   | 1  |
+| 세션             | `V0.4.0`  | 향상된 세션 관리                          | 사용자 경험      | 1  |
+| i18n           | `V0.3.0`  | 국제화 및 다국어 지원                       | 사용자 경험      | 1  |
+| Headless Mode  | `V0.3.0`  | 헤드리스 모드(비대화형)                      | 코딩 작업 흐름    | 1  |
+| ACP/제드         | `V0.2.0`  | ACP 및 Zed 편집기 통합                   | 커뮤니티 생태계 통합 | 1  |
+| 터미널 UI         | `V0.1.0+` | 대화형 터미널 사용자 인터페이스                  | 사용자 경험      | 1  |
+| 설정             | `V0.1.0+` | 구성 관리 시스템                          | 사용자 경험      | 1  |
+| 주제             | `V0.1.0+` | 다중 테마 지원                           | 사용자 경험      | 1  |
+| OpenAI 프로토콜 지원 | `V0.1.0+` | OpenAI API 프로토콜 지원                 | 사용자 경험      | 1  |
+| 채팅 관리          | `V0.1.0+` | 세션 관리(저장, 복원, 찾아보기)                | 코딩 작업 흐름    | 1  |
+| MCP            | `V0.1.0+` | 모델 컨텍스트 프로토콜 통합                    | 코딩 작업 흐름    | 1  |
+| 다중 모델          | `V0.1.0+` | 다중 모델 지원 및 전환                      | 코딩 작업 흐름    | 1  |
+| 슬래시 명령         | `V0.1.0+` | 슬래시 명령 시스템                         | 코딩 작업흐름     | 1  |
+| 도구: 배쉬         | `V0.1.0+` | 셸 명령 실행 도구(is\_Background 매개변수 포함) | 코딩 작업흐름     | 1  |
+| 도구: 파일읽기/편집파일  | `V0.1.0+` | File read/write and edit tools     | 코딩 작업 흐름    | 1  |
+| 사용자 정의 명령      | `V0.1.0+` | 사용자 정의 명령 로딩                       | 개방형 역량 구축   | 1  |
+| 피드백            | `V0.1.0+` | 피드백 메커니즘(/bug 명령)                  | 관리 기능       | 1  |
+| 통계             | `V0.1.0+` | 사용 통계 및 할당량 표시                     | 관리 기능       | 1  |
+| 메모리            | `V0.0.9+` | 프로젝트 수준 및 전역 메모리 관리                | 사용자 경험      | 1  |
+| 캐시 제어          | `V0.0.9+` | 신속한 캐싱 제어(Anthropic, DashScope)    | 사용자 경험      | 1  |
+| 계획 모드          | `V0.0.14` | 작업 계획 모드                           | 코딩 작업 흐름    | 1  |
+| 압박 붕대          | `V0.0.11` | 채팅 압축 메커니즘                         | 사용자 경험      | 1  |
+| 하위 에이전트        | `V0.0.11` | 전용 서브 에이전트 시스템                     | 코딩 작업 흐름    | 1  |
+| 할일쓰기           | `V0.0.10` | 작업 관리 및 진행 상황 추적                   | 코딩 작업흐름     | 1  |
+| 도구: 텍스트 검색     | `V0.0.8+` | 텍스트 검색 도구(grep, .qwenignore 지원)    | 코딩 작업 흐름    | 1  |
+| 도구: WebFetch   | `V0.0.7+` | 웹 콘텐츠 가져오기 도구                      | 코딩 작업 흐름    | 1  |
+| 도구: 웹 검색       | `V0.0.7+` | 웹 검색 도구(Tavily API 사용)             | 코딩 작업흐름     | 1  |
+| OAuth          | `V0.0.5+` | OAuth 로그인 인증(Qwen OAuth)           | 사용자 경험      | 1  |
 
-#### Features to Develop
+#### 개발할 기능
 
-| Feature                      | Priority | Status      | Description                       | Category                    |
-| ---------------------------- | -------- | ----------- | --------------------------------- | --------------------------- |
-| Better UI                    | P1       | Planned     | Optimized terminal UI interaction | User Experience             |
-| OnBoarding                   | P1       | Planned     | New user onboarding flow          | User Experience             |
-| Permission                   | P1       | Planned     | Permission system optimization    | User Experience             |
-| Cross-platform Compatibility | P1       | In Progress | Windows/Linux/macOS compatibility | User Experience             |
-| LogView                      | P2       | Planned     | Log viewing and debugging feature | User Experience             |
-| Hooks                        | P2       | In Progress | Extension hooks system            | Coding Workflow             |
-| Costs                        | P2       | Planned     | Cost tracking and analysis        | Administrative Capabilities |
-| Dashboard                    | P2       | Planned     | Management dashboard              | Administrative Capabilities |
+| 특징        | 우선 사항 | 상태   | 설명                | 범주      |
+| --------- | ----- | ---- | ----------------- | ------- |
+| 더 나은 UI   | P1    | 예정   | 최적화된 터미널 UI 상호작용  | 사용자 경험  |
+| 온보딩       | P1    | 예정   | 신규 사용자 온보딩 흐름     | 사용자 경험  |
+| 허가        | P1    | 예정   | 권한 시스템 최적화        | 사용자 경험  |
+| 플랫폼 간 호환성 | P1    | 진행 중 | 윈도우/리눅스/macOS 호환성 | 사용자 경험  |
+| 로그뷰       | P2    | 예정   | 로그 보기 및 디버깅 기능    | 사용자 경험  |
+| 후크        | P2    | 진행 중 | 연장 후크 시스템         | 코딩 작업흐름 |
+| 소송 비용     | P2    | 예정   | 비용 추적 및 분석        | 관리 기능   |
+| 계기반       | P2    | 예정   | 관리 대시보드           | 관리 기능   |
 
-#### Distinctive Features to Discuss
+#### 논의할 독특한 특징
 
-| Feature          | Status   | Description                                           |
-| ---------------- | -------- | ----------------------------------------------------- |
-| Home Spotlight   | Research | Project discovery and quick launch                    |
-| Competitive Mode | Research | Competitive mode                                      |
-| Pulse            | Research | User activity pulse analysis (OpenAI Pulse reference) |
-| Code Wiki        | Research | Project codebase wiki/documentation system            |
+| 특징       | 상태 | 설명                            |
+| -------- | -- | ----------------------------- |
+| 홈 스포트라이트 | 연구 | 프로젝트 검색 및 빠른 실행               |
+| 경쟁 모드    | 연구 | 경쟁 모드                         |
+| 맥박       | 연구 | 사용자 활동 펄스 분석(OpenAI Pulse 참조) |
+| 코드 위키    | 연구 | 프로젝트 코드베이스 위키/문서화 시스템         |

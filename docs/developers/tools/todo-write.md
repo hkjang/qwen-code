@@ -1,40 +1,40 @@
-# Todo Write Tool (`todo_write`)
+# Todo 쓰기 도구(`todo_write`)
 
-This document describes the `todo_write` tool for Qwen Code.
+이 문서에서는`todo_write`Qwen Code용 도구입니다.
 
-## Description
+## 설명
 
-Use `todo_write` to create and manage a structured task list for your current coding session. This tool helps the AI assistant track progress and organize complex tasks, providing you with visibility into what work is being performed.
+사용`todo_write`현재 코딩 세션에 대한 구조화된 작업 목록을 만들고 관리합니다. 이 도구는 AI 보조자가 진행 상황을 추적하고 복잡한 작업을 구성하는 데 도움을 주어 수행 중인 작업에 대한 가시성을 제공합니다.
 
-### Arguments
+### 인수
 
-`todo_write` takes one argument:
+`todo_write`하나의 인수를 사용합니다.
 
-- `todos` (array, required): An array of todo items, where each item contains:
-  - `content` (string, required): The description of the task.
-  - `status` (string, required): The current status (`pending`, `in_progress`, or `completed`).
-  - `activeForm` (string, required): The present continuous form describing what is being done (e.g., "Running tests", "Building the project").
+* `todos`(배열, 필수): 할 일 항목의 배열로, 각 항목에는 다음이 포함됩니다.
+  * `content`(문자열, 필수): 작업에 대한 설명입니다.
+  * `status`(문자열, 필수): 현재 상태(`pending`,`in_progress`, 또는`completed`).
+  * `activeForm`(문자열, 필수): 수행 중인 작업을 설명하는 현재 연속형입니다(예: "테스트 실행", "프로젝트 빌드").
 
-## How to use `todo_write` with Qwen Code
+## 사용방법`todo_write`퀀코드와 함께
 
-The AI assistant will automatically use this tool when working on complex, multi-step tasks. You don't need to explicitly request it, but you can ask the assistant to create a todo list if you want to see the planned approach for your request.
+AI 도우미는 복잡한 다단계 작업을 수행할 때 자동으로 이 도구를 사용합니다. 명시적으로 요청할 필요는 없지만 요청에 대해 계획된 접근 방식을 보려면 어시스턴트에게 할 일 목록을 생성하도록 요청할 수 있습니다.
 
-The tool stores todo lists in your home directory (`~/.qwen/todos/`) with session-specific files, so each coding session maintains its own task list.
+이 도구는 홈 디렉터리(`~/.qwen/todos/`)을 세션별 파일과 함께 사용하므로 각 코딩 세션은 자체 작업 목록을 유지합니다.
 
-## When the AI uses this tool
+## AI가 이 도구를 사용할 때
 
-The assistant uses `todo_write` for:
+어시스턴트가 사용하는`todo_write`을 위한:
 
-- Complex tasks requiring multiple steps
-- Feature implementations with several components
-- Refactoring operations across multiple files
-- Any work involving 3 or more distinct actions
+* 여러 단계가 필요한 복잡한 작업
+* 여러 구성요소를 사용한 기능 구현
+* 여러 파일에 걸친 리팩토링 작업
+* 3개 이상의 개별 작업이 포함된 모든 작업
 
-The assistant will not use this tool for simple, single-step tasks or purely informational requests.
+도우미는 간단한 단일 단계 작업이나 순수 정보 요청에는 이 도구를 사용하지 않습니다.
 
-### `todo_write` examples
+### `todo_write`예
 
-Creating a feature implementation plan:
+기능 구현 계획 수립:
 
 ```
 todo_write(todos=[
@@ -56,8 +56,8 @@ todo_write(todos=[
 ])
 ```
 
-## Important notes
+## 중요 사항
 
-- **Automatic usage:** The AI assistant manages todo lists automatically during complex tasks.
-- **Progress visibility:** You'll see todo lists updated in real-time as work progresses.
-- **Session isolation:** Each coding session has its own todo list that doesn't interfere with others.
+* **자동 사용법:**&#x41;I 도우미는 복잡한 작업 중에 할 일 목록을 자동으로 관리합니다.
+* **진행 상황 가시성:**&#xC791;업이 진행됨에 따라 실시간으로 업데이트된 할 일 목록을 확인할 수 있습니다.
+* **세션 격리:**&#xAC01; 코딩 세션에는 다른 세션을 방해하지 않는 자체 할 일 목록이 있습니다.

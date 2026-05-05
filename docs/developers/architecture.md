@@ -1,95 +1,95 @@
-# Qwen Code Architecture Overview
+# Qwen 코드 아키텍처 개요
 
-This document provides a high-level overview of Qwen Code's architecture.
+이 문서는 Qwen Code 아키텍처에 대한 높은 수준의 개요를 제공합니다.
 
-## Core Components
+## 핵심 구성 요소
 
-Qwen Code is primarily composed of two main packages, along with a suite of tools that can be used by the system in the course of handling command-line input:
+Qwen Code는 주로 명령줄 입력을 처리하는 과정에서 시스템에서 사용할 수 있는 도구 모음과 함께 두 가지 기본 패키지로 구성됩니다.
 
-### 1. CLI Package (`packages/cli`)
+### 1. CLI 패키지(`packages/cli`)
 
-**Purpose:** This contains the user-facing portion of Qwen Code, such as handling the initial user input, presenting the final output, and managing the overall user experience.
+**목적:**&#xC5EC;기에는 초기 사용자 입력 처리, 최종 출력 표시, 전체 사용자 경험 관리 등 Qwen 코드의 사용자 관련 부분이 포함됩니다.
 
-**Key Functions:**
+**주요 기능:**
 
-- **Input Processing:** Handles user input through various methods including direct text entry, slash commands (e.g., `/help`, `/clear`, `/model`), at commands (`@file` for including file content), and exclamation mark commands (`!command` for shell execution).
-- **History Management:** Maintains conversation history and enables features like session resumption.
-- **Display Rendering:** Formats and presents responses to the user in the terminal with syntax highlighting and proper formatting.
-- **Theme and UI Customization:** Supports customizable themes and UI elements for a personalized experience.
-- **Configuration Settings:** Manages various configuration options through JSON settings files, environment variables, and command-line arguments.
+* **입력 처리:**&#xC9C1;접 텍스트 입력, 슬래시 명령(예:`/help`,`/clear`,`/model`), 명령에서 (`@file`파일 내용 포함용) 및 느낌표 명령(`!command`쉘 실행용).
+* **이력관리:**&#xB300;화 기록을 유지하고 세션 재개와 같은 기능을 활성화합니다.
+* **디스플레이 렌더링:**&#xAD6C;문 강조 및 적절한 형식을 사용하여 터미널에서 사용자에게 응답을 형식화하고 표시합니다.
+* **테마 및 UI 사용자 정의:**&#xAC1C;인화된 경험을 위해 사용자 정의 가능한 테마와 UI 요소를 지원합니다.
+* **구성 설정:**&#x4A;SON 설정 파일, 환경 변수 및 명령줄 인수를 통해 다양한 구성 옵션을 관리합니다.
 
-### 2. Core Package (`packages/core`)
+### 2. 코어 패키지(`packages/core`)
 
-**Purpose:** This acts as the backend for Qwen Code. It receives requests sent from `packages/cli`, orchestrates interactions with the configured model API, and manages the execution of available tools.
+**목적:**&#xC774;는 Qwen Code의 백엔드 역할을 합니다. 다음에서 보낸 요청을 받습니다.`packages/cli`, 구성된 모델 API와의 상호 작용을 조정하고 사용 가능한 도구의 실행을 관리합니다.
 
-**Key Functions:**
+**주요 기능:**
 
-- **API Client:** Communicates with the Qwen model API to send prompts and receive responses.
-- **Prompt Construction:** Builds appropriate prompts for the model, incorporating conversation history and available tool definitions.
-- **Tool Registration and Execution:** Manages the registration of available tools and executes them based on model requests.
-- **State Management:** Maintains conversation and session state information.
-- **Server-side Configuration:** Handles server-side configuration and settings.
+* **API 클라이언트:**&#x51;wen 모델 API와 통신하여 프롬프트를 보내고 응답을 받습니다.
+* **신속한 건설:**&#xB300;화 기록과 사용 가능한 도구 정의를 통합하여 모델에 대한 적절한 프롬프트를 구축합니다.
+* **도구 등록 및 실행:**&#xC0AC;용 가능한 도구 등록을 관리하고 모델 요청에 따라 실행합니다.
+* **상태 관리:**&#xB300;화 및 세션 상태 정보를 유지합니다.
+* **서버측 구성:**&#xC11C;버측 구성 및 설정을 처리합니다.
 
-### 3. Tools (`packages/core/src/tools/`)
+### 3. 도구(`packages/core/src/tools/`)
 
-**Purpose:** These are individual modules that extend the capabilities of the Qwen model, allowing it to interact with the local environment (e.g., file system, shell commands, web fetching).
+**목적:**&#xC774;는 Qwen 모델의 기능을 확장하여 로컬 환경(예: 파일 시스템, 셸 명령, 웹 가져오기)과 상호 작용할 수 있도록 하는 개별 모듈입니다.
 
-**Interaction:** `packages/core` invokes these tools based on requests from the Qwen model.
+**상호 작용:** `packages/core`Qwen 모델의 요청을 기반으로 이러한 도구를 호출합니다.
 
-**Common Tools Include:**
+**일반적인 도구에는 다음이 포함됩니다.**
 
-- **File Operations:** Reading, writing, and editing files
-- **Shell Commands:** Executing system commands with user approval for potentially dangerous operations
-- **Search Tools:** Finding files and searching content within the project
-- **Web Tools:** Fetching content from the web
-- **MCP Integration:** Connecting to Model Context Protocol servers for extended capabilities
+* **파일 작업:**&#xD30C;일 읽기, 쓰기, 편집
+* **쉘 명령:**&#xC7A0;재적으로 위험한 작업에 대해 사용자 승인을 받아 시스템 명령 실행
+* **검색 도구:**&#xD504;로젝트 내에서 파일 찾기 및 콘텐츠 검색
+* **웹 도구:**&#xC6F9;에서 콘텐츠 가져오기
+* **MCP 통합:**&#xD655;장된 기능을 위해 모델 컨텍스트 프로토콜 서버에 연결
 
-## Interaction Flow
+## 상호작용 흐름
 
-A typical interaction with Qwen Code follows this flow:
+Qwen Code와의 일반적인 상호 작용은 다음 흐름을 따릅니다.
 
-1.  **User Input:** The user types a prompt or command into the terminal, which is managed by `packages/cli`.
-2.  **Request to Core:** `packages/cli` sends the user's input to `packages/core`.
-3.  **Request Processing:** The core package:
-    - Constructs an appropriate prompt for the configured model API, possibly including conversation history and available tool definitions.
-    - Sends the prompt to the model API.
-4.  **Model API Response:** The model API processes the prompt and returns a response. This response might be a direct answer or a request to use one of the available tools.
-5.  **Tool Execution (if applicable):**
-    - When the model API requests a tool, the core package prepares to execute it.
-    - If the requested tool can modify the file system or execute shell commands, the user is first given details of the tool and its arguments, and the user must approve the execution.
-    - Read-only operations, such as reading files, might not require explicit user confirmation to proceed.
-    - Once confirmed, or if confirmation is not required, the core package executes the relevant action within the relevant tool, and the result is sent back to the model API by the core package.
-    - The model API processes the tool result and generates a final response.
-6.  **Response to CLI:** The core package sends the final response back to the CLI package.
-7.  **Display to User:** The CLI package formats and displays the response to the user in the terminal.
+1. **사용자 입력:**&#xC0AC;용자는 터미널에 프롬프트나 명령을 입력합니다.`packages/cli`.
+2. **핵심에 대한 요청:** `packages/cli`사용자의 입력을 다음으로 보냅니다.`packages/core`.
+3. **요청 처리:**&#xD575;심 패키지:
+   * 대화 기록 및 사용 가능한 도구 정의를 포함하여 구성된 모델 API에 대한 적절한 프롬프트를 구성합니다.
+   * 모델 API에 프롬프트를 보냅니다.
+4. **모델 API 응답:**&#xBAA8;델 API는 프롬프트를 처리하고 응답을 반환합니다. 이 응답은 직접적인 답변이거나 사용 가능한 도구 중 하나를 사용하라는 요청일 수 있습니다.
+5. **도구 실행(해당하는 경우):**
+   * 모델 API가 도구를 요청하면 핵심 패키지는 도구 실행을 준비합니다.
+   * 요청된 도구가 파일 시스템을 수정하거나 셸 명령을 실행할 수 있는 경우 먼저 사용자에게 도구 및 해당 인수에 대한 세부 정보가 제공되며 사용자는 실행을 승인해야 합니다.
+   * 파일 읽기와 같은 읽기 전용 작업을 진행하려면 명시적인 사용자 확인이 필요하지 않을 수 있습니다.
+   * 확인이 완료되거나 확인이 필요하지 않은 경우 핵심 패키지는 관련 도구 내에서 관련 작업을 실행하고 그 결과는 핵심 패키지에 의해 모델 API로 다시 전송됩니다.
+   * 모델 API는 도구 결과를 처리하고 최종 응답을 생성합니다.
+6. **CLI에 대한 응답:**&#xD575;심 패키지는 최종 응답을 CLI 패키지로 다시 보냅니다.
+7. **사용자에게 표시:**&#x43;LI 패키지는 응답 형식을 지정하고 터미널에서 사용자에게 표시합니다.
 
-## Configuration Options
+## 구성 옵션
 
-Qwen Code offers multiple ways to configure its behavior:
+Qwen Code는 동작을 구성하는 여러 가지 방법을 제공합니다.
 
-### Configuration Layers (in order of precedence)
+### 구성 레이어(우선순위)
 
-1. Command-line arguments
-2. Environment variables
-3. Project settings file (`.qwen/settings.json`)
-4. User settings file (`~/.qwen/settings.json`)
-5. System settings files
-6. Default values
+1. 명령줄 인수
+2. 환경변수
+3. 프로젝트 설정 파일(`.qwen/settings.json`)
+4. 사용자 설정 파일(`~/.qwen/settings.json`)
+5. 시스템 설정 파일
+6. 기본값
 
-### Key Configuration Categories
+### 주요 구성 카테고리
 
-- **General Settings:** vim mode, preferred editor, auto-update preferences
-- **UI Settings:** Theme customization, banner visibility, footer display
-- **Model Settings:** Model selection, session turn limits, compression settings
-- **Context Settings:** Context file names, directory inclusion, file filtering
-- **Tool Settings:** Approval modes, sandboxing, tool restrictions
-- **Privacy Settings:** Usage statistics collection
-- **Advanced Settings:** Debug options, custom bug reporting commands
+* **일반 설정:**&#x76;im 모드, 기본 편집기, 자동 업데이트 환경 설정
+* **UI 설정:**&#xD14C;마 사용자 정의, 배너 가시성, 바닥글 표시
+* **모델 설정:**&#xBAA8;델 선택, 세션 회전 제한, 압축 설정
+* **컨텍스트 설정:**&#xCEE8;텍스트 파일 이름, 디렉터리 포함, 파일 필터링
+* **도구 설정:**&#xC2B9;인 모드, 샌드박스, 도구 제한
+* **개인정보 설정:**&#xC774;용통계 수집
+* **고급 설정:**&#xB514;버그 옵션, 사용자 정의 버그 보고 명령
 
-## Key Design Principles
+## 주요 설계 원칙
 
-- **Modularity:** Separating the CLI (frontend) from the Core (backend) allows for independent development and potential future extensions (e.g., different frontends for the same backend).
-- **Extensibility:** The tool system is designed to be extensible, allowing new capabilities to be added through custom tools or MCP server integration.
-- **User Experience:** The CLI focuses on providing a rich and interactive terminal experience with features like syntax highlighting, customizable themes, and intuitive command structures.
-- **Security:** Implements approval mechanisms for potentially dangerous operations and sandboxing options to protect the user's system.
-- **Flexibility:** Supports multiple configuration methods and can adapt to different workflows and environments.
+* **모듈성:**&#x43;LI(프런트엔드)를 코어(백엔드)에서 분리하면 독립적인 개발과 잠재적인 향후 확장(예: 동일한 백엔드에 대한 다른 프런트엔드)이 가능합니다.
+* **확장성:**&#xB3C4;구 시스템은 확장 가능하도록 설계되어 사용자 정의 도구 또는 MCP 서버 통합을 통해 새로운 기능을 추가할 수 있습니다.
+* **사용자 경험:**&#x43;LI는 구문 강조, 사용자 정의 가능한 테마, 직관적인 명령 구조와 같은 기능을 통해 풍부하고 대화형 터미널 경험을 제공하는 데 중점을 둡니다.
+* **보안:**&#xC0AC;용자 시스템을 보호하기 위해 잠재적으로 위험한 작업 및 샌드박싱 옵션에 대한 승인 메커니즘을 구현합니다.
+* **유연성:**&#xB2E4;양한 구성 방법을 지원하고 다양한 작업흐름과 환경에 적응할 수 있습니다.

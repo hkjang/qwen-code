@@ -1,12 +1,12 @@
-# Trusted Folders
+# 신뢰할 수 있는 폴더
 
-The Trusted Folders feature is a security setting that gives you control over which projects can use the full capabilities of the Qwen Code. It prevents potentially malicious code from running by asking you to approve a folder before the CLI loads any project-specific configurations from it.
+신뢰할 수 있는 폴더 기능은 Qwen Code의 전체 기능을 사용할 수 있는 프로젝트를 제어할 수 있는 보안 설정입니다. CLI가 폴더에서 프로젝트별 구성을 로드하기 전에 폴더 승인을 요청하여 잠재적인 악성 코드가 실행되는 것을 방지합니다.
 
-## Enabling the Feature
+## 기능 활성화
 
-The Trusted Folders feature is **disabled by default**. To use it, you must first enable it in your settings.
+신뢰할 수 있는 폴더 기능은 다음과 같습니다.**기본적으로 비활성화됨**. 이를 사용하려면 먼저 설정에서 활성화해야 합니다.
 
-Add the following to your user `settings.json` file:
+사용자에게 다음을 추가하세요`settings.json`파일:
 
 ```json
 {
@@ -18,44 +18,44 @@ Add the following to your user `settings.json` file:
 }
 ```
 
-## How It Works: The Trust Dialog
+## 작동 방식: 신뢰 대화 상자
 
-Once the feature is enabled, the first time you run the Qwen Code from a folder, a dialog will automatically appear, prompting you to make a choice:
+기능이 활성화되면 폴더에서 Qwen 코드를 처음 실행할 때 선택하라는 대화 상자가 자동으로 나타납니다.
 
-- **Trust folder**: Grants full trust to the current folder (e.g. `my-project`).
-- **Trust parent folder**: Grants trust to the parent directory (e.g. `safe-projects`), which automatically trusts all of its subdirectories as well. This is useful if you keep all your safe projects in one place.
-- **Don't trust**: Marks the folder as untrusted. The CLI will operate in a restricted "safe mode."
+* **신뢰 폴더**: 현재 폴더에 완전한 신뢰를 부여합니다(예:`my-project`).
+* **상위 폴더 신뢰**: 상위 디렉터리에 신뢰를 부여합니다(예:`safe-projects`), 모든 하위 디렉터리도 자동으로 신뢰합니다. 모든 안전한 프로젝트를 한 곳에 보관하는 경우 유용합니다.
+* **믿지 마세요**: 폴더를 신뢰할 수 없는 것으로 표시합니다. CLI는 제한된 "안전 모드"에서 작동합니다.
 
-Your choice is saved in a central file (`~/.qwen/trustedFolders.json`), so you will only be asked once per folder.
+선택 사항은 중앙 파일(`~/.qwen/trustedFolders.json`), 따라서 폴더당 한 번만 묻습니다.
 
-## Why Trust Matters: The Impact of an Untrusted Workspace
+## 신뢰가 중요한 이유: 신뢰할 수 없는 작업 공간이 미치는 영향
 
-When a folder is **untrusted**, the Qwen Code runs in a restricted "safe mode" to protect you. In this mode, the following features are disabled:
+폴더가 있을 때**신뢰할 수 없는**, Qwen 코드는 사용자를 보호하기 위해 제한된 "안전 모드"에서 실행됩니다. 이 모드에서는 다음 기능이 비활성화됩니다.
 
-1.  **Workspace Settings are Ignored**: The CLI will **not** load the `.qwen/settings.json` file from the project. This prevents the loading of custom tools and other potentially dangerous configurations.
+1. **작업공간 설정이 무시됩니다**: CLI&#xB294;**\~ 아니다**로드`.qwen/settings.json`프로젝트의 파일. 이렇게 하면 사용자 정의 도구 및 기타 잠재적으로 위험한 구성이 로드되는 것을 방지할 수 있습니다.
 
-2.  **Environment Variables are Ignored**: The CLI will **not** load any `.env` files from the project.
+2. **환경 변수가 무시됩니다**: CLI&#xB294;**\~ 아니다**무엇이든로드`.env`프로젝트의 파일.
 
-3.  **Extension Management is Restricted**: You **cannot install, update, or uninstall** extensions.
+3. **확장 관리가 제한됩니다**: 너**설치, 업데이트 또는 제거할 수 없습니다.**&#xD655;장.
 
-4.  **Tool Auto-Acceptance is Disabled**: You will always be prompted before any tool is run, even if you have auto-acceptance enabled globally.
+4. **도구 자동 수락이 비활성화되었습니다.**: 전역적으로 자동 수락을 활성화한 경우에도 도구가 실행되기 전에 항상 메시지가 표시됩니다.
 
-5.  **Automatic Memory Loading is Disabled**: The CLI will not automatically load files into context from directories specified in local settings.
+5. **자동 메모리 로딩이 비활성화되었습니다.**: CLI는 로컬 설정에 지정된 디렉터리에서 컨텍스트로 파일을 자동으로 로드하지 않습니다.
 
-Granting trust to a folder unlocks the full functionality of the Qwen Code for that workspace.
+폴더에 신뢰를 부여하면 해당 작업 공간에 대한 Qwen Code의 전체 기능이 잠금 해제됩니다.
 
-## Managing Your Trust Settings
+## 신뢰 설정 관리
 
-If you need to change a decision or see all your settings, you have a couple of options:
+결정을 변경해야 하거나 모든 설정을 확인해야 하는 경우 다음과 같은 몇 가지 옵션이 있습니다.
 
-- **Change the Current Folder's Trust**: Run the `/permissions` command from within the CLI. This will bring up the same interactive dialog, allowing you to change the trust level for the current folder.
+* **현재 폴더의 신뢰 변경**: 실행`/permissions`CLI 내에서 명령을 실행합니다. 그러면 동일한 대화형 대화 상자가 나타나 현재 폴더에 대한 신뢰 수준을 변경할 수 있습니다.
 
-- **View All Trust Rules**: To see a complete list of all your trusted and untrusted folder rules, you can inspect the contents of the `~/.qwen/trustedFolders.json` file in your home directory.
+* **모든 신뢰 규칙 보기**: 신뢰할 수 있는 폴더 규칙과 신뢰할 수 없는 폴더 규칙의 전체 목록을 보려면`~/.qwen/trustedFolders.json`홈 디렉토리에 파일을 넣으세요.
 
-## The Trust Check Process (Advanced)
+## 신뢰 확인 프로세스(고급)
 
-For advanced users, it's helpful to know the exact order of operations for how trust is determined:
+고급 사용자의 경우 신뢰가 결정되는 정확한 작업 순서를 아는 것이 도움이 됩니다.
 
-1.  **IDE Trust Signal**: If you are using the [IDE Integration](../ide-integration/ide-integration), the CLI first asks the IDE if the workspace is trusted. The IDE's response takes highest priority.
+1. **IDE 신뢰 신호**: 다음을 사용하는 경우[IDE 통합](../ide-integration/ide-integration), CLI는 먼저 작업 영역을 신뢰할 수 있는지 IDE에 묻습니다. IDE의 응답이 가장 높은 우선순위를 갖습니다.
 
-2.  **Local Trust File**: If the IDE is not connected, the CLI checks the central `~/.qwen/trustedFolders.json` file.
+2. **로컬 신뢰 파일**: IDE가 연결되지 않은 경우 CLI는 중앙에서`~/.qwen/trustedFolders.json`파일.

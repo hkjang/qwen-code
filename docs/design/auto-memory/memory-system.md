@@ -1,41 +1,41 @@
-# Memory 记忆管理系统
+# 메모리 메모리 관리 시스템
 
-> 本文介绍 Qwen Code 中 **Managed Auto-Memory**（托管自动记忆）的记忆管理机制、触发时机和实现细节。
+> 이 글에서는 Qwen Code를 소개합니다.**관리형 자동 메모리**(호스팅 자동 메모리) 메모리 관리 메커니즘, 트리거 타이밍 및 구현 세부 정보입니다.
 
----
+***
 
-## 目录
+## 목차
 
-1. [概述](#概述)
-2. [存储结构](#存储结构)
-3. [记忆类型](#记忆类型)
-4. [记忆条目格式](#记忆条目格式)
-5. [核心生命周期](#核心生命周期)
-6. [Extract — 提取](#extract--提取)
-7. [Dream — 整合](#dream--整合)
-8. [Recall — 召回](#recall--召回)
-9. [Forget — 遗忘](#forget--遗忘)
-10. [索引重建](#索引重建)
-11. [遥测埋点](#遥测埋点)
+1. [개요](#概述)
+2. [저장 구조](#存储结构)
+3. [메모리 유형](#记忆类型)
+4. [메모리 입력 형식](#记忆条目格式)
+5. [핵심 수명주기](#核心生命周期)
+6. [추출 - 추출](#extract--提取)
+7. [꿈 - 통합](#dream--整合)
+8. [리콜 - 리콜](#recall--召回)
+9. [잊다 - 잊어버리다](#forget--遗忘)
+10. [인덱스 재구축](#索引重建)
+11. [원격 측정 매장지점](#遥测埋点)
 
----
+***
 
-## 概述
+## 개요
 
-Managed Auto-Memory 是一套在 AI 会话过程中**自动**积累、整合和检索用户相关知识的持久化记忆系统。它通过四个核心操作维护记忆的生命周期：
+Managed Auto-Memory는 AI 세션 중에 사용할 수 있는 도구 세트입니다.**오토매틱**사용자 관련 지식을 축적, 통합, 검색하는 영구 메모리 시스템입니다. 이는 다음과 같은 네 가지 핵심 작업을 통해 메모리의 수명 주기를 유지합니다.
 
-| 操作 | 英文    | 触发方式                   | 作用                                   |
-| ---- | ------- | -------------------------- | -------------------------------------- |
-| 提取 | Extract | 自动（每轮对话后）         | 从对话记录中提炼新知识写入记忆文件     |
-| 整合 | Dream   | 自动（周期性后台任务）     | 对记忆文件去重、合并，保持整洁         |
-| 召回 | Recall  | 自动（每轮对话前）         | 检索与当前请求相关的记忆注入到系统提示 |
-| 遗忘 | Forget  | 手动（用户命令 `/forget`） | 精确删除指定的记忆条目                 |
+| 작동하다 | 영문   | 트리거 모드              | 효과                                    |
+| ---- | ---- | ------------------- | ------------------------------------- |
+| 발췌   | 발췌   | 자동으로 (각 대화 라운드 이후)  | 대화 기록에서 새로운 지식을 추출하여 메모리 파일에 기록       |
+| 통합   | 꿈    | 자동(주기적인 백그라운드 작업)   | 메모리 파일을 중복 제거하고 병합하여 깔끔하게 유지          |
+| 상기하다 | 상기하다 | 자동으로(각 대화 라운드 전)    | 현재 요청과 관련된 메모리를 검색하여 시스템 프롬프트에 삽입합니다. |
+| 잊다   | 잊다   | 수동(사용자 명령`/forget`) | 지정된 메모리 항목을 정확하게 삭제합니다.               |
 
----
+***
 
-## 存储结构
+## 저장 구조
 
-### 目录布局
+### 디렉토리 레이아웃
 
 ```
 ~/.qwen/                                      ← 全局基础目录（默认）
@@ -54,40 +54,40 @@ Managed Auto-Memory 是一套在 AI 会话过程中**自动**积累、整合和�
                 └── grafana.md                ← 外部资源记忆
 ```
 
-> **环境变量覆盖**：
+> **환경 변수 재정의**：
 >
-> - `QWEN_CODE_MEMORY_BASE_DIR`：替换全局基础目录
-> - `QWEN_CODE_MEMORY_LOCAL=1`：改用项目内路径 `.qwen/memory/`
+> * `QWEN_CODE_MEMORY_BASE_DIR`: 전역 기본 디렉터리 교체
+> * `QWEN_CODE_MEMORY_LOCAL=1`: 대신 프로젝트 내의 경로를 사용하십시오.`.qwen/memory/`
 
-### 关键文件说明
+### 주요 문서 설명
 
-| 文件                  | 说明                                                                   |
-| --------------------- | ---------------------------------------------------------------------- |
-| `meta.json`           | 记录最后一次 Extract / Dream 的时间、会话 ID、涉及的记忆类型、执行状态 |
-| `extract-cursor.json` | 记录当前会话已处理到对话历史的哪个偏移量，避免重复提取                 |
-| `consolidation.lock`  | Dream 运行时的文件锁，内容为持有者 PID，超过 1 小时自动失效            |
-| `MEMORY.md`           | 所有主题文件的索引，每次 Extract/Dream 后重建，格式为 Markdown 列表    |
+| 문서                    | 설명하다                                                      |
+| --------------------- | --------------------------------------------------------- |
+| `meta.json`           | 마지막 Extract/Dream 시간, 세션 ID, 관련된 메모리 유형, 실행 상태를 기록합니다.    |
+| `extract-cursor.json` | 반복 추출을 피하기 위해 현재 세션이 처리된 대화 기록에 오프셋을 기록합니다.               |
+| `consolidation.lock`  | Dream이 실행 중일 때 파일 잠금은 콘텐츠가 소유자의 PID이며 1시간 후에 자동으로 만료됩니다.  |
+| `MEMORY.md`           | 모든 테마 파일의 색인, 각 Extract/Dream 후에 다시 작성됨, 형식은 Markdown 목록임 |
 
----
+***
 
-## 记忆类型
+## 메모리 유형
 
-系统支持四种内置记忆类型，每种对应不同的信息维度：
+시스템은 각기 다른 정보 차원에 해당하는 4가지 내장 메모리 유형을 지원합니다.
 
-| 类型        | 存储内容                                              | 何时写入                                 | 何时读取                     |
-| ----------- | ----------------------------------------------------- | ---------------------------------------- | ---------------------------- |
-| `user`      | 用户的角色、技能背景、工作习惯                        | 了解到用户角色/偏好/知识背景时           | 回答需要根据用户背景定制时   |
-| `feedback`  | 用户对 AI 行为的指导：避免什么、继续什么              | 用户纠正 AI 或确认某种非显而易见的做法时 | 影响 AI 行为方式时           |
-| `project`   | 项目进展、目标、决策、截止日期、Bug 追踪              | 了解到谁在做什么、为什么、截止何时时     | 帮助 AI 理解工作背景和动机时 |
-| `reference` | 外部系统资源指针（Dashboard、工单系统、Slack 频道等） | 得知某种外部资源及其用途时               | 用户提及外部系统或相关信息时 |
+| 유형          | 콘텐츠 저장                                      | 언제 쓸까?                             | 언제 읽을까?                      |
+| ----------- | ------------------------------------------- | ---------------------------------- | ---------------------------- |
+| `user`      | 사용자의 역할, 기술 배경 및 작업 습관                      | 사용자 역할/선호도/지식 배경을 이해할 때            | 사용자의 배경에 따라 답변을 맞춤설정해야 하는 경우 |
+| `feedback`  | AI 행동에 대한 사용자 지침: 피해야 할 것과 계속해야 할 것         | 이용자가 AI를 수정하거나, 명백하지 않은 행위를 확인한 경우 | AI의 행동 방식에 영향을 미칠 때          |
+| `project`   | 프로젝트 진행 상황, 목표, 결정, 마감일, 버그 추적              | 누가 무엇을, 왜, 언제 수행하는지 이해             | AI가 업무 맥락과 동기를 이해하도록 도울 때    |
+| `reference` | 외부 시스템 리소스 포인터(대시보드, 작업 주문 시스템, Slack 채널 등) | 외부 리소스와 그 사용법에 대해 배울 때             | 이용자가 외부 시스템이나 관련 정보를 언급하는 경우 |
 
-**不应该存入记忆的内容**：代码模式/约定、Git 历史、调试方案、临时任务状态、已在 QWEN.md/AGENTS.md 中记录的内容。
+**메모리에 저장하면 안되는 것**: 코드 패턴/규칙, Git 기록, 디버깅 시나리오, 임시 작업 상태, QWEN.md/AGENTS.md에 기록된 콘텐츠.
 
----
+***
 
-## 记忆条目格式
+## 메모리 입력 형식
 
-每个主题文件使用 **YAML frontmatter + Markdown body** 格式：
+각 테마 파일은**YAML 머리말 + 마크다운 본문**체재:
 
 ```markdown
 ---
@@ -102,11 +102,11 @@ Why: 背后原因（让 AI 能理解边界情况而不是盲目遵守规则）
 How to apply: 适用场景和使用方式
 ```
 
-对于 `feedback` 和 `project` 类型，强烈建议填写 `Why` 和 `How to apply`，使记忆在边界情况下仍能正确应用。
+\~을 위한`feedback`그리고`project`입력하세요. 반드시 입력하는 것이 좋습니다.`Why`그리고`How to apply`, 경계 상황에서도 메모리가 여전히 올바르게 적용될 수 있도록 합니다.
 
----
+***
 
-## 核心生命周期
+## 핵심 수명주기
 
 ```mermaid
 flowchart TD
@@ -174,15 +174,15 @@ flowchart TD
     end
 ```
 
----
+***
 
-## Extract — 提取
+## 추출 - 추출
 
-### 触发时机
+### 트리거 시간
 
-每次 AI 完成一轮响应后，由 `scheduleAutoMemoryExtract` 自动触发（后台非阻塞）。
+AI가 한 라운드의 응답을 완료할 때마다`scheduleAutoMemoryExtract`자동으로 실행됩니다(백그라운드에서 차단되지 않음).
 
-### 调度逻辑（`extractScheduler.ts`）
+### 스케줄링 로직(`extractScheduler.ts`)
 
 ```mermaid
 flowchart TD
@@ -202,15 +202,15 @@ flowchart TD
     C --> N[返回 skipped: memory_tool]
 ```
 
-**跳过原因说明**：
+**건너뛰기 이유**：
 
-| 原因              | 含义                                            |
-| ----------------- | ----------------------------------------------- |
-| `memory_tool`     | 本轮主 Agent 已直接写了记忆文件，跳过以避免冲突 |
-| `already_running` | 提取正在进行且无法入队                          |
-| `queued`          | 已有提取在运行，本次请求已入队                  |
+| 이유                | 의미                                                     |
+| ----------------- | ------------------------------------------------------ |
+| `memory_tool`     | 이번 라운드의 주체는 충돌을 피하기 위해 메모리 파일을 건너뛰고 직접 메모리 파일을 작성했습니다. |
+| `already_running` | 추출이 진행 중이므로 대기열에 추가할 수 없습니다.                           |
+| `queued`          | 추출이 이미 실행 중이며 이 요청이 대기열에 추가되었습니다.                      |
 
-### 核心提取流程（`extract.ts`）
+### 코어 추출 과정(`extract.ts`)
 
 ```mermaid
 flowchart TD
@@ -230,29 +230,29 @@ flowchart TD
     M --> N[返回 AutoMemoryExtractResult]
 ```
 
-**提取游标（Cursor）**：
+**커서 추출(Cursor)**：
 
-- 字段：`{ sessionId, processedOffset, updatedAt }`
-- 每次提取后更新 `processedOffset` 为当前历史长度
-- 下次提取时，只处理 `offset >= processedOffset` 的消息
-- 跨会话时（`sessionId` 变化）从偏移量 0 重新开始
+* 전지:`{ sessionId, processedOffset, updatedAt }`
+* 각 추출 후 업데이트`processedOffset`현재의 역사적 길이입니다
+* 다음에 추출할 때는 처리만 하세요.`offset >= processedOffset`소식
+* 전체 세션(`sessionId`변경) 오프셋 0에서 다시 시작
 
-**Patch 过滤规则**：
+**패치 필터 규칙**：
 
-- 摘要长度 < 12 字符 → 丢弃
-- 摘要以 `?` 结尾 → 丢弃（疑问句）
-- 包含临时性关键词（today/now/currently/temporary 等）→ 丢弃
-- 相同 `topic:summary` 组合 → 去重
+* 다이제스트 길이 < 12자 → 삭제
+* 추상적인`?`종료 → 폐기 (질문)
+* 임시 키워드 포함(오늘/지금/현재/임시 등) → 삭제
+* 같은`topic:summary`결합 → 중복 제거
 
----
+***
 
-## Dream — 整合
+## 꿈 - 통합
 
-### 触发时机
+### 트리거 시간
 
-每次 AI 完成一轮响应后，由 `scheduleManagedAutoMemoryDream` 自动触发（后台非阻塞）。但受多个门控条件保护，大多数情况下会被跳过。
+AI가 한 라운드의 응답을 완료할 때마다`scheduleManagedAutoMemoryDream`자동으로 실행됩니다(백그라운드에서 차단되지 않음). 그러나 이는 다중 게이팅 조건으로 보호되며 대부분의 경우 건너뜁니다.
 
-### 调度门控（`dreamScheduler.ts`）
+### 스케줄링 게이팅(`dreamScheduler.ts`)
 
 ```mermaid
 flowchart TD
@@ -278,22 +278,22 @@ flowchart TD
     T --> U[更新 meta.json\n释放锁]
 ```
 
-**门控参数**：
+**게이팅 매개변수**：
 
-| 参数                       | 默认值   | 说明                          |
-| -------------------------- | -------- | ----------------------------- |
-| `minHoursBetweenDreams`    | 24 小时  | 两次 Dream 之间的最小时间间隔 |
-| `minSessionsBetweenDreams` | 5 个会话 | 触发 Dream 所需的最小新会话数 |
-| `SESSION_SCAN_INTERVAL_MS` | 10 分钟  | 会话文件扫描的节流间隔        |
-| `DREAM_LOCK_STALE_MS`      | 1 小时   | lock 文件被视为过期的时间阈值 |
+| 매개변수                       | 기본값  | 설명하다                        |
+| -------------------------- | ---- | --------------------------- |
+| `minHoursBetweenDreams`    | 24시간 | 두 꿈 사이의 최소 시간 간격            |
+| `minSessionsBetweenDreams` | 5회   | Dream을 실행하는 데 필요한 최소 새 세션 수 |
+| `SESSION_SCAN_INTERVAL_MS` | 10분  | 세션 파일 검사를 위한 조절 간격          |
+| `DREAM_LOCK_STALE_MS`      | 1시간  | 잠금 파일이 만료된 것으로 간주되는 시간 임계값  |
 
-**锁机制**：
+**잠금 장치**：
 
-- lock 文件位于 `<project-state-dir>/consolidation.lock`
-- 内容为持有进程的 PID
-- 检查时：若 PID 进程已不存在（`kill(pid, 0)` 失败）或 lock 超过 1 小时 → 视为过期，自动清除
+* 잠금 파일은 다음 위치에 있습니다.`<project-state-dir>/consolidation.lock`
+* 내용은 보유 프로세스의 PID입니다.
+* 확인 시: PID 프로세스가 더 이상 존재하지 않는 경우(`kill(pid, 0)`실패) 또는 잠금이 1시간을 초과한 경우 → 만료된 것으로 간주되어 자동으로 해제됩니다.
 
-### 整合执行流程（`dream.ts`）
+### 통합 실행 프로세스(`dream.ts`)
 
 ```mermaid
 flowchart TD
@@ -326,21 +326,21 @@ flowchart TD
     T -- 否 --> V
 ```
 
-**机械去重逻辑**：
+**기계적 중복 제거 논리**：
 
-1. 对每个主题文件内部：按 `summary.toLowerCase()` 去重，合并 `why`/`howToApply` 字段
-2. 按 summary 字母顺序重新排序
-3. 跨文件：相同 `type:summary` 的条目合并到最先发现的文件，删除重复文件
+1. 각 테마 파일 내부: 누르기`summary.toLowerCase()`중복 제거, 병합`why`/`howToApply`필드
+2. 요약을 알파벳순으로 재정렬
+3. 파일 전체: 동일`type:summary`항목을 첫 번째 발견된 파일에 병합하고 중복 파일을 제거합니다.
 
----
+***
 
-## Recall — 召回
+## 리콜 - 리콜
 
-### 触发时机
+### 트리거 시간
 
-每轮 AI 处理用户请求之前，由 `resolveRelevantAutoMemoryPromptForQuery` 自动触发，将相关记忆注入系统提示词。
+각 라운드마다 AI가 사용자 요청을 처리하기 전에`resolveRelevantAutoMemoryPromptForQuery`시스템 프롬프트 단어에 관련 메모리를 자동으로 트리거하고 주입합니다.
 
-### 召回流程（`recall.ts`）
+### 리콜 과정(`recall.ts`)
 
 ```mermaid
 flowchart TD
@@ -366,37 +366,37 @@ flowchart TD
     Q --> R[返回注入主系统提示的 prompt 片段]
 ```
 
-**评分规则（启发式）**：
+**채점 규칙(휴리스틱)**：
 
-| 条件                             | 加分             |
-| -------------------------------- | ---------------- |
-| query token 出现在文档内容中     | +2（每个 token） |
-| query token 是该类型的特征关键词 | +1（每个 token） |
-| 文档 body 非空                   | +1               |
+| 상태                        | 추가 포인트   |
+| ------------------------- | -------- |
+| 쿼리 토큰이 문서 콘텐츠에 나타납니다.     | +2 (토큰당) |
+| 쿼리 토큰은 이 유형의 특징적인 키워드입니다. | +1(토큰당)  |
+| 문서 본문이 비어 있지 않습니다.        | +1       |
 
-**每种类型的特征关键词**：
+**유형별 특징 키워드**：
 
-- `user`：user, preference, background, role, terse
-- `feedback`：feedback, rule, avoid, style, summary
-- `project`：project, goal, incident, deadline, release
-- `reference`：reference, dashboard, ticket, docs, link
+* `user`：사용자, 선호도, 배경, 역할, 간결함
+* `feedback`：피드백, 규칙, 회피, 스타일, 요약
+* `project`：프로젝트, 목표, 사건, 마감일, 출시
+* `reference`：참조, 대시보드, 티켓, 문서, 링크
 
-**Prompt 构建规则**：
+**프롬프트 빌드 규칙**：
 
-- 最多注入 5 篇文档（`MAX_RELEVANT_DOCS`）
-- 每篇文档 body 截断至 1200 字符（`MAX_DOC_BODY_CHARS`）
-- 超出截断时追加提示："NOTE: Relevant memory truncated for prompt budget."
-- 包含文档的新鲜度信息（基于文件 mtime）
+* 최대 5개의 문서 삽입(`MAX_RELEVANT_DOCS`)
+* 각 문서 본문은 1,200자(`MAX_DOC_BODY_CHARS`)
+* 잘림이 초과되면 프롬프트 추가: "참고: 프롬프트 예산 때문에 관련 메모리가 잘렸습니다."
+* 문서 최신 정보 포함(파일 mtime 기준)
 
----
+***
 
-## Forget — 遗忘
+## 잊다 - 잊어버리다
 
-### 触发时机
+### 트리거 시간
 
-由用户手动执行 `/forget <query>` 命令触发。
+사용자가 수동으로 실행`/forget <query>`명령이 트리거됩니다.
 
-### 遗忘流程（`forget.ts`）
+### 망각과정(`forget.ts`)
 
 ```mermaid
 flowchart TD
@@ -423,17 +423,17 @@ flowchart TD
     Q --> R
 ```
 
-**Entry ID 设计**：
+**출입 ID 디자인**：
 
-- 单条目文件（常见情况）：`relativePath`（如 `feedback/no-summary.md`）
-- 多条目文件：`relativePath:index`（如 `feedback/style.md:2`）
-- 使用稳定 ID 使模型可以精确定位条目而不影响同文件的其他条目
+* 단일 항목 파일(일반적인 경우):`relativePath`(좋다`feedback/no-summary.md`)
+* 다중 항목 파일:`relativePath:index`(좋다`feedback/style.md:2`)
+* 안정적인 ID를 사용하면 모델이 동일한 파일의 다른 항목에 영향을 주지 않고 항목을 정확히 찾아낼 수 있습니다.
 
----
+***
 
-## 索引重建
+## 인덱스 재구축
 
-`MEMORY.md` 是所有主题文件的导航索引，每次 Extract 或 Dream 后调用 `rebuildManagedAutoMemoryIndex` 重建：
+`MEMORY.md`각 Extract 또는 Dream 이후에 호출되는 모든 테마 파일의 탐색 색인입니다.`rebuildManagedAutoMemoryIndex`재건:
 
 ```
 - [用户偏好](user/preferences.md) — 用户是资深 Go 工程师，第一次接触 React
@@ -441,69 +441,69 @@ flowchart TD
 - [项目里程碑](project/milestone.md) — 移动端发布切分支前的合并冻结窗口
 ```
 
-**索引限制**：
+**지수 한도**：
 
-- 每行最多 150 字符（超出用 `…` 截断）
-- 最多 200 行
-- 总大小不超过 25,000 字节
+* 한 줄에 최대 150자(한도 초과)`…`잘림)
+* 최대 200줄
+* 총 크기는 25,000바이트를 초과하지 않습니다.
 
----
+***
 
-## 遥测埋点
+## 원격 측정 매장지점
 
-系统内置三类遥测事件，用于监控记忆操作的性能和效果：
+시스템에는 메모리 작업의 성능과 효과를 모니터링하기 위해 세 가지 유형의 원격 측정 이벤트가 내장되어 있습니다.
 
-### Extract 遥测
+### 원격 측정 추출
 
-| 字段             | 类型                        | 说明                    |
-| ---------------- | --------------------------- | ----------------------- |
-| `trigger`        | `'auto'`                    | 触发方式（当前仅自动）  |
-| `status`         | `'completed'` \| `'failed'` | 执行结果                |
-| `patches_count`  | number                      | 提取到的有效 patch 数量 |
-| `touched_topics` | string[]                    | 被写入的记忆类型列表    |
-| `duration_ms`    | number                      | 总耗时（毫秒）          |
+| 필드               | 유형                        | 설명하다            |
+| ---------------- | ------------------------- | --------------- |
+| `trigger`        | `'auto'`                  | 트리거 모드(현재는 자동만) |
+| `status`         | `'completed'`\|`'failed'` | 실행 결과           |
+| `patches_count`  | 숫자                        | 추출된 유효한 패치 수    |
+| `touched_topics` | 끈\[]                      | 기록할 메모리 유형 목록   |
+| `duration_ms`    | 숫자                        | 총 소요 시간(밀리초)    |
 
-### Dream 遥测
+### 꿈의 원격 측정
 
-| 字段              | 类型                                  | 说明                   |
-| ----------------- | ------------------------------------- | ---------------------- |
-| `trigger`         | `'auto'`                              | 触发方式               |
-| `status`          | `'updated'` \| `'noop'` \| `'failed'` | 执行结果               |
-| `deduped_entries` | number                                | 机械路径去重的条目数量 |
-| `touched_topics`  | string[]                              | 被修改的记忆类型列表   |
-| `duration_ms`     | number                                | 总耗时（毫秒）         |
+| 필드                | 유형                                | 설명하다                  |
+| ----------------- | --------------------------------- | --------------------- |
+| `trigger`         | `'auto'`                          | 트리거 모드                |
+| `status`          | `'updated'`\|`'noop'`\|`'failed'` | 실행 결과                 |
+| `deduped_entries` | 숫자                                | 기계적 경로 중복 제거를 위한 항목 수 |
+| `touched_topics`  | 끈\[]                              | 수정된 메모리 유형 목록         |
+| `duration_ms`     | 숫자                                | 총 소요 시간(밀리초)          |
 
-### Recall 遥测
+### 원격 측정 리콜
 
-| 字段            | 类型                                   | 说明             |
-| --------------- | -------------------------------------- | ---------------- |
-| `query_length`  | number                                 | 查询字符串长度   |
-| `docs_scanned`  | number                                 | 扫描的文档总数   |
-| `docs_selected` | number                                 | 最终注入的文档数 |
-| `strategy`      | `'none'` \| `'heuristic'` \| `'model'` | 选择策略         |
-| `duration_ms`   | number                                 | 总耗时（毫秒）   |
+| 필드              | 유형                                 | 설명하다         |
+| --------------- | ---------------------------------- | ------------ |
+| `query_length`  | 숫자                                 | 쿼리 문자열 길이    |
+| `docs_scanned`  | 숫자                                 | 스캔된 총 문서 수   |
+| `docs_selected` | 숫자                                 | 주입된 최종 문서 수  |
+| `strategy`      | `'none'`\|`'heuristic'`\|`'model'` | 전략을 선택하세요    |
+| `duration_ms`   | 숫자                                 | 총 소요 시간(밀리초) |
 
----
+***
 
-## 相关源文件索引
+## 관련 소스 파일 인덱스
 
-| 文件                                                 | 职责                                                                          |
-| ---------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `packages/core/src/memory/types.ts`                  | 类型定义：`AutoMemoryType`、`AutoMemoryMetadata`、`AutoMemoryExtractCursor`   |
-| `packages/core/src/memory/paths.ts`                  | 路径计算：`getAutoMemoryRoot`、`isAutoMemPath`、各类文件路径 helpers          |
-| `packages/core/src/memory/store.ts`                  | 脚手架初始化：`ensureAutoMemoryScaffold`，索引/元数据读写                     |
-| `packages/core/src/memory/scan.ts`                   | 扫描主题文件：`scanAutoMemoryTopicDocuments`，解析 frontmatter                |
-| `packages/core/src/memory/entries.ts`                | 条目解析和渲染：`parseAutoMemoryEntries`、`renderAutoMemoryBody`              |
-| `packages/core/src/memory/extract.ts`                | 提取核心逻辑：`runAutoMemoryExtract`，游标管理，patch 去重                    |
-| `packages/core/src/memory/extractScheduler.ts`       | 提取调度器：`ManagedAutoMemoryExtractRuntime`，队列/运行状态机                |
-| `packages/core/src/memory/extractionAgentPlanner.ts` | 提取 Agent：`runAutoMemoryExtractionByAgent`                                  |
-| `packages/core/src/memory/dream.ts`                  | 整合核心逻辑：`runManagedAutoMemoryDream`，Agent 路径 + 机械去重              |
-| `packages/core/src/memory/dreamScheduler.ts`         | 整合调度器：`ManagedAutoMemoryDreamRuntime`，门控检查，锁管理                 |
-| `packages/core/src/memory/dreamAgentPlanner.ts`      | 整合 Agent：`planManagedAutoMemoryDreamByAgent`                               |
-| `packages/core/src/memory/recall.ts`                 | 召回逻辑：`resolveRelevantAutoMemoryPromptForQuery`，启发式+模型双路径        |
-| `packages/core/src/memory/forget.ts`                 | 遗忘逻辑：`forgetManagedAutoMemoryEntries`，候选生成+精确删除                 |
-| `packages/core/src/memory/indexer.ts`                | 索引重建：`rebuildManagedAutoMemoryIndex`，`buildManagedAutoMemoryIndex`      |
-| `packages/core/src/memory/prompt.ts`                 | 系统提示模板：记忆类型说明、格式示例、使用规范                                |
-| `packages/core/src/memory/governance.ts`             | 治理建议类型：`AutoMemoryGovernanceSuggestionType`                            |
-| `packages/core/src/memory/state.ts`                  | 提取运行状态：`isExtractRunning`、`markExtractRunning`、`clearExtractRunning` |
-| `packages/core/src/memory/memoryAge.ts`              | 新鲜度描述：`memoryAge`、`memoryFreshnessText`                                |
+| 문서                                                   | 책임                                                                     |
+| ---------------------------------------------------- | ---------------------------------------------------------------------- |
+| `packages/core/src/memory/types.ts`                  | 유형 정의:`AutoMemoryType`、`AutoMemoryMetadata`、`AutoMemoryExtractCursor`  |
+| `packages/core/src/memory/paths.ts`                  | 경로 계산:`getAutoMemoryRoot`、`isAutoMemPath`, 다양한 파일 경로 도우미               |
+| `packages/core/src/memory/store.ts`                  | 비계 초기화:`ensureAutoMemoryScaffold`, 인덱스/메타데이터 읽기 및 쓰기                   |
+| `packages/core/src/memory/scan.ts`                   | 테마 파일 스캔:`scanAutoMemoryTopicDocuments`, 머리말 구문 분석                     |
+| `packages/core/src/memory/entries.ts`                | 항목 구문 분석 및 렌더링:`parseAutoMemoryEntries`、`renderAutoMemoryBody`         |
+| `packages/core/src/memory/extract.ts`                | 핵심 로직 추출:`runAutoMemoryExtract`, 커서 관리, 패치 중복 제거                       |
+| `packages/core/src/memory/extractScheduler.ts`       | 추출 스케줄러:`ManagedAutoMemoryExtractRuntime`, 큐/실행 상태 머신                  |
+| `packages/core/src/memory/extractionAgentPlanner.ts` | 추출제:`runAutoMemoryExtractionByAgent`                                   |
+| `packages/core/src/memory/dream.ts`                  | 핵심 로직 통합:`runManagedAutoMemoryDream`, 에이전트 경로 + 기계적 중복 제거              |
+| `packages/core/src/memory/dreamScheduler.ts`         | 통합 스케줄러:`ManagedAutoMemoryDreamRuntime`, 출입문 제어 점검, 잠금 관리              |
+| `packages/core/src/memory/dreamAgentPlanner.ts`      | 에이전트 통합:`planManagedAutoMemoryDreamByAgent`                            |
+| `packages/core/src/memory/recall.ts`                 | 리콜 논리:`resolveRelevantAutoMemoryPromptForQuery`, 경험적 + 모델 이중 경로        |
+| `packages/core/src/memory/forget.ts`                 | 논리는 잊어라:`forgetManagedAutoMemoryEntries`, 후보생성 + 정밀삭제                  |
+| `packages/core/src/memory/indexer.ts`                | 인덱스 재구축:`rebuildManagedAutoMemoryIndex`,`buildManagedAutoMemoryIndex`  |
+| `packages/core/src/memory/prompt.ts`                 | 시스템 프롬프트 템플릿: 메모리 유형 설명, 형식 예, 사용 사양                                   |
+| `packages/core/src/memory/governance.ts`             | 거버넌스 제안 유형:`AutoMemoryGovernanceSuggestionType`                        |
+| `packages/core/src/memory/state.ts`                  | 실행 상태 추출:`isExtractRunning`、`markExtractRunning`、`clearExtractRunning` |
+| `packages/core/src/memory/memoryAge.ts`              | 신선도 설명:`memoryAge`、`memoryFreshnessText`                               |

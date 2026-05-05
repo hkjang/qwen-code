@@ -1,105 +1,105 @@
-# Web Fetch Tool (`web_fetch`)
+# 웹 가져오기 도구(`web_fetch`)
 
-This document describes the `web_fetch` tool for Qwen Code.
+이 문서에서는`web_fetch`Qwen Code용 도구입니다.
 
-## Description
+## 설명
 
-Use `web_fetch` to fetch content from a specified URL and process it using an AI model. The tool takes a URL and a prompt as input, fetches the URL content, and processes the content with the prompt using a small, fast model.
+사용`web_fetch`지정된 URL에서 콘텐츠를 가져와 AI 모델을 사용하여 처리합니다. 이 도구는 URL과 프롬프트를 입력으로 사용하여 URL 콘텐츠를 가져온 다음 작고 빠른 모델을 사용하여 프롬프트가 포함된 콘텐츠를 처리합니다.
 
-### Arguments
+### 인수
 
-`web_fetch` takes three arguments:
+`web_fetch`세 가지 인수를 사용합니다.
 
-- `url` (string, required): The URL to fetch content from. Must be a fully-formed valid URL starting with `http://` or `https://`.
-- `prompt` (string, required): The prompt describing what information you want to extract from the page content.
-- `format` (string, optional): Controls only the `Accept` header sent to the server, indicating your content preference. **All fetched content is normalized to plain text for LLM processing**, regardless of the format specified. Defaults to `"auto"` if not specified.
-  - `"auto"` (default): Prefers markdown via content negotiation (`Accept: text/markdown, text/html`), accepts HTML as fallback. **Recommended for most use cases** as it can reduce token usage by up to 80% for servers that support markdown.
-  - `"markdown"`: Sends `Accept: text/markdown`. Use when you explicitly need markdown content.
-  - `"html"`: Sends `Accept: text/html`. Use when the server requires HTML in the Accept header. Content is still converted to plain text for LLM processing.
-  - `"text"`: Sends `Accept: text/plain`. Use when you specifically need plain text content.
+* `url`(문자열, 필수): 콘텐츠를 가져올 URL입니다. 다음으로 시작하는 완전한 형식의 유효한 URL이어야 합니다.`http://`또는`https://`.
+* `prompt`(문자열, 필수): 페이지 콘텐츠에서 추출하려는 정보를 설명하는 프롬프트입니다.
+* `format`(문자열, 선택사항):`Accept`귀하의 콘텐츠 선호도를 나타내는 헤더가 서버로 전송됩니다.**가져온 모든 콘텐츠는 LLM 처리를 위해 일반 텍스트로 정규화됩니다.**, 지정된 형식에 관계없이. 기본값은`"auto"`지정되지 않은 경우.
+  * `"auto"`(기본값): 콘텐츠 협상을 통한 마크다운을 선호합니다(`Accept: text/markdown, text/html`), HTML을 대체 항목으로 허용합니다.**대부분의 사용 사례에 권장됨**마크다운을 지원하는 서버의 경우 토큰 사용량을 최대 80%까지 줄일 수 있기 때문입니다.
+  * `"markdown"`: 보낸다`Accept: text/markdown`. 마크다운 콘텐츠가 명시적으로 필요할 때 사용하세요.
+  * `"html"`: 보낸다`Accept: text/html`. 서버가 Accept 헤더에 HTML을 요구할 때 사용합니다. 콘텐츠는 LLM 처리를 위해 계속 일반 텍스트로 변환됩니다.
+  * `"text"`: 보낸다`Accept: text/plain`. 특별히 일반 텍스트 콘텐츠가 필요할 때 사용하세요.
 
-## How to use `web_fetch` with Qwen Code
+## 사용방법`web_fetch`퀀코드와 함께
 
-To use `web_fetch` with Qwen Code, provide a URL and a prompt describing what you want to extract from that URL. The tool will ask for confirmation before fetching the URL. Once confirmed, the tool will fetch the content directly and process it using an AI model.
+사용하려면`web_fetch`Qwen Code를 사용하여 URL과 해당 URL에서 추출하려는 내용을 설명하는 프롬프트를 제공하세요. 도구는 URL을 가져오기 전에 확인을 요청합니다. 확인되면 도구는 콘텐츠를 직접 가져와 AI 모델을 사용하여 처리합니다.
 
-The tool automatically:
+도구가 자동으로 다음을 수행합니다.
 
-- Converts HTML to text when necessary
-- Handles GitHub blob URLs (converting them to raw URLs)
-- Upgrades HTTP URLs to HTTPS for security
-- Supports content negotiation for markdown (reduces token usage significantly)
+* 필요한 경우 HTML을 텍스트로 변환합니다.
+* GitHub Blob URL을 처리합니다(원시 URL로 변환).
+* 보안을 위해 HTTP URL을 HTTPS로 업그레이드합니다.
+* 마크다운을 위한 콘텐츠 협상 지원(토큰 사용량 대폭 감소)
 
-Usage:
+용법:
 
 ```
 web_fetch(url="https://example.com", prompt="Summarize the main points of this article")
 ```
 
-With format specification:
+형식 사양:
 
 ```
 web_fetch(url="https://example.com", prompt="Get the raw content", format="markdown")
 ```
 
-## `web_fetch` examples
+## `web_fetch`예
 
-Summarize a single article:
+단일 기사를 요약하면 다음과 같습니다.
 
 ```
 web_fetch(url="https://example.com/news/latest", prompt="Can you summarize the main points of this article?")
 ```
 
-Extract specific information:
+특정 정보 추출:
 
 ```
 web_fetch(url="https://arxiv.org/abs/2401.0001", prompt="What are the key findings and methodology described in this paper?")
 ```
 
-Analyze GitHub documentation:
+GitHub 문서 분석:
 
 ```
 web_fetch(url="https://github.com/QwenLM/Qwen/blob/main/README.md", prompt="What are the installation steps and main features?")
 ```
 
-Get markdown content (for servers supporting Markdown for Agents):
+마크다운 콘텐츠 가져오기(에이전트용 마크다운을 지원하는 서버의 경우):
 
 ```
 web_fetch(url="https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/", prompt="Extract the key information", format="markdown")
 ```
 
-## Important notes
+## 중요 사항
 
-- **Single URL processing:** `web_fetch` processes one URL at a time. To analyze multiple URLs, make separate calls to the tool.
-- **URL format:** The tool automatically upgrades HTTP URLs to HTTPS and converts GitHub blob URLs to raw format for better content access.
-- **Content negotiation:** The tool supports "Markdown for Agents" content negotiation. When using `format="auto"` (default), it sends `Accept: text/markdown, text/html` headers, allowing servers that support markdown to return it directly instead of HTML. This can reduce token usage by up to 80%.
-- **Content processing:** The tool fetches content directly and processes it using an AI model. When the server returns HTML, it converts it to readable text format. When the server returns markdown or plain text, it uses the content as-is.
-- **Output quality:** The quality of the output will depend on the clarity of the instructions in the prompt.
-- **MCP tools:** If an MCP-provided web fetch tool is available (starting with "mcp\_\_"), prefer using that tool as it may have fewer restrictions.
+* **단일 URL 처리:** `web_fetch`한 번에 하나의 URL을 처리합니다. 여러 URL을 분석하려면 도구를 별도로 호출하세요.
+* **URL 형식:**&#xC774; 도구는 자동으로 HTTP URL을 HTTPS로 업그레이드하고 GitHub Blob URL을 원시 형식으로 변환하여 더 나은 콘텐츠 액세스를 제공합니다.
+* **콘텐츠 협상:**&#xC774; 도구는 "에이전트에 대한 마크다운" 콘텐츠 협상을 지원합니다. 사용시`format="auto"`(기본값), 보냅니다`Accept: text/markdown, text/html`헤더를 사용하면 마크다운을 지원하는 서버가 HTML 대신 헤더를 직접 반환할 수 있습니다. 이를 통해 토큰 사용량을 최대 80%까지 줄일 수 있습니다.
+* **콘텐츠 처리:**&#xC774; 도구는 콘텐츠를 직접 가져와 AI 모델을 사용하여 처리합니다. 서버가 HTML을 반환하면 이를 읽을 수 있는 텍스트 형식으로 변환합니다. 서버가 마크다운이나 일반 텍스트를 반환하면 콘텐츠를 있는 그대로 사용합니다.
+* **출력 품질:**&#xCD9C;력 품질은 프롬프트 지침의 명확성에 따라 달라집니다.
+* **MCP 도구:**&#x4D;CP 제공 웹 가져오기 도구를 사용할 수 있는 경우("mcp\_\_"로 시작) 제한 사항이 더 적을 수 있으므로 해당 도구를 사용하는 것이 좋습니다.
 
-## Markdown for Agents Support
+## 에이전트 지원을 위한 마크다운
 
-Qwen Code's `web_fetch` tool implements support for [Cloudflare's Markdown for Agents](https://blog.cloudflare.com/markdown-for-agents/) specification. This feature allows websites to serve markdown content directly to AI agents, significantly reducing token usage compared to parsing HTML.
+퀀 코드의`web_fetch`도구는 다음에 대한 지원을 구현합니다.[에이전트를 위한 Cloudflare의 마크다운](https://blog.cloudflare.com/markdown-for-agents/)사양. 이 기능을 사용하면 웹사이트에서 마크다운 콘텐츠를 AI 에이전트에 직접 제공할 수 있어 HTML 구문 분석에 비해 토큰 사용량이 크게 줄어듭니다.
 
-### How it works
+### 작동 원리
 
-1. The `format` parameter controls **only** the `Accept` header sent to the server (it does not affect the output format):
-   - `format="auto"`: sends `Accept: text/markdown, text/html`
-   - `format="markdown"`: sends `Accept: text/markdown`
-   - `format="html"`: sends `Accept: text/html`
-   - `format="text"`: sends `Accept: text/plain`
-2. If the server supports markdown, it returns `Content-Type: text/markdown`
-3. The tool uses markdown or plain text content directly without conversion
-4. If the server returns HTML, it converts to readable text format for LLM processing
-5. All content is normalized to text before being processed by the AI model
+1. 그만큼`format`매개변수 컨트롤**오직**그만큼`Accept`서버로 전송되는 헤더(출력 형식에는 영향을 주지 않음):
+   * `format="auto"`: 보낸다`Accept: text/markdown, text/html`
+   * `format="markdown"`: 보낸다`Accept: text/markdown`
+   * `format="html"`: 보낸다`Accept: text/html`
+   * `format="text"`: 보낸다`Accept: text/plain`
+2. 서버가 마크다운을 지원하는 경우 반환됩니다.`Content-Type: text/markdown`
+3. 이 도구는 변환 없이 마크다운 또는 일반 텍스트 콘텐츠를 직접 사용합니다.
+4. 서버가 HTML을 반환하면 LLM 처리를 위해 읽을 수 있는 텍스트 형식으로 변환됩니다.
+5. 모든 콘텐츠는 AI 모델에서 처리되기 전에 텍스트로 정규화됩니다.
 
-### Benefits
+### 이익
 
-- **Token efficiency:** Markdown content typically uses 80% fewer tokens than equivalent HTML
-- **Better structure:** Markdown preserves semantic structure (headings, lists, etc.)
-- **Backward compatible:** Works with all websites, enhanced experience for supporting servers
+* **토큰 효율성:**&#xB9C8;크다운 콘텐츠는 일반적으로 동등한 HTML보다 80% 더 적은 토큰을 사용합니다.
+* **더 나은 구조:**&#xB9C8;크다운은 의미 구조(제목, 목록 등)를 보존합니다.
+* **이전 버전과 호환:**&#xBAA8;든 웹사이트에서 작동하며 서버 지원을 위한 향상된 경험
 
-### Example servers supporting markdown
+### 마크다운을 지원하는 예시 서버
 
-- Cloudflare Developer Documentation
-- Cloudflare Blog
-- Any website using Cloudflare's "Markdown for Agents" feature
+* Cloudflare 개발자 문서
+* Cloudflare 블로그
+* Cloudflare의 "에이전트용 마크다운" 기능을 사용하는 모든 웹사이트

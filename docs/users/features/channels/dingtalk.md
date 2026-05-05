@@ -1,27 +1,27 @@
-# DingTalk (Dingtalk)
+# 딩톡(딩톡)
 
-This guide covers setting up a Qwen Code channel on DingTalk (钉钉).
+이 가이드에서는 DingTalk(钉钉)에서 Qwen Code 채널을 설정하는 방법을 다룹니다.
 
-## Prerequisites
+## 전제조건
 
-- A DingTalk organization account
-- A DingTalk bot application with AppKey and AppSecret (see below)
+* DingTalk 조직 계정
+* AppKey 및 AppSecret이 포함된 DingTalk 봇 애플리케이션(아래 참조)
 
-## Creating a Bot
+## 봇 만들기
 
-1. Go to the [DingTalk Developer Portal](https://open-dev.dingtalk.com)
-2. Create a new application (or use an existing one)
-3. Under the application, enable the **Robot** capability
-4. In Robot settings, enable **Stream Mode** (机器人协议 → Stream 模式)
-5. Note the **AppKey** (Client ID) and **AppSecret** (Client Secret) from the application credentials page
+1. 로 이동[DingTalk 개발자 포털](https://open-dev.dingtalk.com)
+2. 새 애플리케이션 만들기(또는 기존 애플리케이션 사용)
+3. 응용 프로그램에서 다음을 활성화하십시오.**기계 인간**능력
+4. 로봇 설정에서 활성화**스트림 모드**(로봇 프로토콜 → 스트림 모드)
+5. 참고하세요**앱키**(클라이언트 ID) 및**앱비밀**(클라이언트 비밀번호) 애플리케이션 자격 증명 페이지에서
 
-### Stream Mode
+### 스트림 모드
 
-DingTalk Stream mode uses an outbound WebSocket connection — no public URL or server is needed. The bot connects to DingTalk's servers, which push messages through the WebSocket. This is the simplest deployment model.
+DingTalk 스트림 모드는 아웃바운드 WebSocket 연결을 사용하므로 공개 URL이나 서버가 필요하지 않습니다. 봇은 WebSocket을 통해 메시지를 푸시하는 DingTalk 서버에 연결됩니다. 이는 가장 간단한 배포 모델입니다.
 
-## Configuration
+## 구성
 
-Add the channel to `~/.qwen/settings.json`:
+채널을 추가하세요.`~/.qwen/settings.json`:
 
 ```json
 {
@@ -43,14 +43,14 @@ Add the channel to `~/.qwen/settings.json`:
 }
 ```
 
-Set the credentials as environment variables:
+자격 증명을 환경 변수로 설정합니다.
 
 ```bash
 export DINGTALK_CLIENT_ID=<your-app-key>
 export DINGTALK_CLIENT_SECRET=<your-app-secret>
 ```
 
-Or define them in the `env` section of `settings.json`:
+또는`env`섹션`settings.json`:
 
 ```json
 {
@@ -61,7 +61,7 @@ Or define them in the `env` section of `settings.json`:
 }
 ```
 
-## Running
+## 달리기
 
 ```bash
 # Start only the DingTalk channel
@@ -71,64 +71,64 @@ qwen channel start my-dingtalk
 qwen channel start
 ```
 
-Open DingTalk and send a message to the bot. You should see a 👀 emoji reaction appear while the agent processes, followed by the response.
+DingTalk를 열고 봇에 메시지를 보냅니다. 에이전트가 처리하는 동안 🙌 이모티콘 반응이 나타난 후 응답이 표시됩니다.
 
-## Group Chats
+## 그룹 채팅
 
-DingTalk bots work in both DM and group conversations. To enable group support:
+DingTalk 봇은 DM 및 그룹 대화 모두에서 작동합니다. 그룹 지원을 활성화하려면:
 
-1. Set `groupPolicy` to `"allowlist"` or `"open"` in your channel config
-2. Add the bot to a DingTalk group
-3. @mention the bot in the group to trigger a response
+1. 세트`groupPolicy`에게`"allowlist"`또는`"open"`채널 구성에서
+2. DingTalk 그룹에 봇 추가
+3. 응답을 트리거하려면 그룹의 봇을 @멘션하세요.
 
-By default, the bot requires an @mention in group chats (`requireMention: true`). Set `"requireMention": false` for a specific group to make it respond to all messages. See [Group Chats](./overview#group-chats) for full details.
+기본적으로 봇은 그룹 채팅에서 @mention을 요구합니다(`requireMention: true`). 세트`"requireMention": false`특정 그룹이 모든 메시지에 응답하도록 합니다. 보다[그룹 채팅](./overview#group-chats)자세한 내용은
 
-### Finding a Group's Conversation ID
+### 그룹의 대화 ID 찾기
 
-DingTalk uses `conversationId` to identify groups. You can find it in the channel service logs when someone sends a message in the group — look for the `conversationId` field in the log output.
+딩톡은`conversationId`그룹을 식별합니다. 누군가가 그룹에 메시지를 보낼 때 채널 서비스 로그에서 찾을 수 있습니다.`conversationId`로그 출력의 필드입니다.
 
-## Images and Files
+## 이미지 및 파일
 
-You can send photos and documents to the bot, not just text.
+텍스트뿐만 아니라 사진과 문서를 봇에 보낼 수 있습니다.
 
-**Photos:** Send an image (screenshot, diagram, etc.) and the agent will analyze it using its vision capabilities. This requires a multimodal model — add `"model": "qwen3.5-plus"` (or another vision-capable model) to your channel config. DingTalk supports sending images directly or as part of rich text messages (mixed text + images).
+**사진:**&#xC774;미지(스크린샷, 다이어그램 등)를 보내면 에이전트가 비전 기능을 사용하여 이를 분석합니다. 이를 위해서는 다중 모드 모델이 필요합니다. — 추가`"model": "qwen3.5-plus"`(또는 다른 비전 지원 모델)을 채널 구성에 추가하세요. DingTalk는 이미지를 직접 전송하거나 서식 있는 텍스트 메시지(텍스트 + 이미지 혼합)의 일부로 전송하는 것을 지원합니다.
 
-**Files:** Send a PDF, code file, or any document. The bot downloads it from DingTalk's servers and saves it locally so the agent can read it with its file tools. Audio and video files are also supported. This works with any model.
+**파일:**&#x50;DF, 코드 파일 또는 모든 문서를 보냅니다. 봇은 DingTalk 서버에서 이를 다운로드하고 에이전트가 파일 도구를 사용하여 읽을 수 있도록 로컬에 저장합니다. 오디오 및 비디오 파일도 지원됩니다. 이는 모든 모델에서 작동합니다.
 
-## Key Differences from Telegram
+## 텔레그램과의 주요 차이점
 
-- **Authentication:** AppKey + AppSecret instead of a static bot token. The SDK manages access token refresh automatically.
-- **Connection:** WebSocket stream instead of polling — no public IP or webhook URL needed.
-- **Formatting:** Responses use DingTalk's markdown dialect (a limited subset). Tables are automatically converted to plain text since DingTalk doesn't render them. Long messages are split into chunks at ~3800 characters.
-- **Working indicator:** A 👀 emoji reaction is added to the user's message while processing, then removed when the response is sent.
-- **Media download:** Two-step process — a `downloadCode` from the message is exchanged for a temporary download URL via DingTalk's API.
-- **Groups:** DingTalk uses `isInAtList` for @mention detection instead of parsing message entities.
+* **입증:**&#xC815;적 봇 토큰 대신 AppKey + AppSecret. SDK는 액세스 토큰 새로 고침을 자동으로 관리합니다.
+* **연결:**&#xD3F4;링 대신 WebSocket 스트림 - 공용 IP 또는 웹훅 URL이 필요하지 않습니다.
+* **서식:**&#xC751;답은 DingTalk의 마크다운 방언(제한된 하위 집합)을 사용합니다. DingTalk는 테이블을 렌더링하지 않으므로 테이블은 자동으로 일반 텍스트로 변환됩니다. 긴 메시지는 최대 3,800자의 청크로 분할됩니다.
+* **작동 표시기:**&#x41; 🙌 이모티콘 반응은 처리하는 동안 사용자의 메시지에 추가되었다가 응답이 전송되면 제거됩니다.
+* **미디어 다운로드:**&#x32;단계 프로세스 —`downloadCode`메시지의 내용은 DingTalk API를 통해 임시 다운로드 URL로 교환됩니다.
+* **여러 떼:**&#xB529;톡은`isInAtList`메시지 엔터티를 구문 분석하는 대신 @mention 감지를 위해.
 
-## Tips
+## 팁
 
-- **Use DingTalk markdown-aware instructions** — DingTalk supports a limited markdown subset (headers, bold, links, code blocks, but not tables). Adding instructions like "Use DingTalk markdown. Avoid tables." helps the agent format responses correctly.
-- **Restrict access** — In an organization context, `senderPolicy: "open"` may be acceptable. For tighter control, use `"allowlist"` or `"pairing"`. See [DM Pairing](./overview#dm-pairing) for details.
-- **Referenced messages** — Quoting (replying to) a user message includes the quoted text as context for the agent. Quoting bot responses is not yet supported.
+* **DingTalk 마크다운 인식 지침 사용**— DingTalk는 제한된 마크다운 하위 집합(헤더, 굵게, 링크, 코드 블록, 표는 제외)을 지원합니다. "DingTalk 마크다운을 사용하세요. 테이블은 피하세요."와 같은 지침을 추가합니다. 상담사가 응답 형식을 올바르게 지정하는 데 도움이 됩니다.
+* **접근 제한**— 조직의 맥락에서,`senderPolicy: "open"`받아들일 수 있습니다. 더 엄격하게 제어하려면 다음을 사용하세요.`"allowlist"`또는`"pairing"`. 보다[DM 페어링](./overview#dm-pairing)자세한 내용은.
+* **참조된 메시지**— 사용자 메시지를 인용(답장)하면 인용된 텍스트가 에이전트에 대한 컨텍스트로 포함됩니다. 봇 응답 인용은 아직 지원되지 않습니다.
 
-## Troubleshooting
+## 문제 해결
 
-### Bot doesn't connect
+### 봇이 연결되지 않음
 
-- Verify your AppKey and AppSecret are correct
-- Check that the environment variables are set before running `qwen channel start`
-- Make sure **Stream Mode** is enabled in the bot's settings on the DingTalk Developer Portal
-- Check the terminal output for connection errors
+* AppKey와 AppSecret이 올바른지 확인하세요.
+* 실행하기 전에 환경 변수가 설정되어 있는지 확인하십시오.`qwen channel start`
+* 확실하게 하다**스트림 모드**DingTalk 개발자 포털의 봇 설정에서 활성화되어 있습니다.
+* 연결 오류가 있는지 터미널 출력을 확인하세요.
 
-### Bot doesn't respond in groups
+### 봇이 그룹으로 응답하지 않습니다.
 
-- Check that `groupPolicy` is set to `"allowlist"` or `"open"` (default is `"disabled"`)
-- Make sure you @mention the bot in the group message
-- Verify the bot has been added to the group
+* 확인해보세요`groupPolicy`로 설정되어 있습니다`"allowlist"`또는`"open"`(기본값은`"disabled"`)
+* 그룹 메시지에서 봇을 @멘션했는지 확인하세요.
+* 봇이 그룹에 추가되었는지 확인
 
-### "No sessionWebhook in message"
+### "메시지에 세션 웹훅이 없습니다."
 
-This means DingTalk didn't include a reply endpoint in the message callback. This can happen if the bot's permissions are misconfigured. Check the bot's settings in the Developer Portal.
+이는 DingTalk가 메시지 콜백에 응답 엔드포인트를 포함하지 않았음을 의미합니다. 봇의 권한이 잘못 구성된 경우 이런 일이 발생할 수 있습니다. 개발자 포털에서 봇의 설정을 확인하세요.
 
-### "Sorry, something went wrong processing your message"
+### "죄송합니다. 메시지를 처리하는 중에 문제가 발생했습니다."
 
-This usually means the agent encountered an error. Check the terminal output for details.
+이는 일반적으로 에이전트에 오류가 발생했음을 의미합니다. 자세한 내용은 터미널 출력을 확인하세요.

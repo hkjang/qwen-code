@@ -1,89 +1,87 @@
-# OpenRouter Auth and Model Management Design
+# OpenRouter 인증 및 모델 관리 설계
 
-This document captures the design intent behind the OpenRouter auth flow and the
-model management changes introduced with it. It intentionally focuses on the
-product and architectural choices, not implementation history.
+이 문서는 OpenRouter 인증 흐름과&#x20;
+모델 관리 변경 사항이 도입되었습니다. 의도적으로 초점을 맞춘다.&#x20;
+구현 기록이 아닌 제품 및 아키텍처 선택.
 
-## Goals
+## 목표
 
-- Let users authenticate with OpenRouter from both CLI and `/auth`.
-- Reuse the existing OpenAI-compatible provider path instead of adding a new auth
-  type for OpenRouter.
-- Make the first-run experience usable without asking users to manage hundreds of
-  models immediately.
-- Keep a clear path toward richer model management via `/manage-models`.
+* 사용자가 CLI와 OpenRouter를 통해 인증하도록 허용`/auth`.
+* 새 인증을 추가하는 대신 기존 OpenAI 호환 공급자 경로를 재사용합니다.&#x20;
+  OpenRouter의 유형입니다.
+* 사용자에게 수백 개의 관리 작업을 요청하지 않고도 첫 실행 경험을 사용할 수 있게 만듭니다.&#x20;
+  즉시 모델.
+* 다음을 통해 더욱 풍부한 모델 관리를 향한 명확한 경로를 유지하세요.`/manage-models`.
 
-## OpenRouter Auth
+## 오픈라우터 인증
 
-OpenRouter is integrated as an OpenAI-compatible provider:
+OpenRouter는 OpenAI 호환 공급자로 통합됩니다.
 
-- auth type: `AuthType.USE_OPENAI`
-- provider settings: `modelProviders.openai`
-- API key env var: `OPENROUTER_API_KEY`
-- base URL: `https://openrouter.ai/api/v1`
+* 인증 유형:`AuthType.USE_OPENAI`
+* 공급자 설정:`modelProviders.openai`
+* API key env var: `OPENROUTER_API_KEY`
+* 기본 URL:`https://openrouter.ai/api/v1`
 
-This avoids introducing an OpenRouter-specific `AuthType` when the runtime model
-provider path is already OpenAI-compatible. It keeps auth status, model
-resolution, provider selection, and settings schema aligned with the existing
-provider abstraction.
+이렇게 하면 OpenRouter 관련 기능을 도입하지 않아도 됩니다.`AuthType`런타임 모델&#x20;
+공급자 경로는 이미 OpenAI와 호환됩니다. 인증 상태, 모델을 유지합니다.&#x20;
+기존 솔루션과 일치하는 해상도, 공급자 선택 및 설정 스키마&#x20;
+공급자 추상화.
 
-The user-facing flows are:
+사용자 측 흐름은 다음과 같습니다.
 
-- `qwen auth openrouter --key <key>` for automation or direct API-key setup.
-- `qwen auth openrouter` for browser-based OAuth.
-- `/auth` → API Key → OpenRouter for the TUI flow.
+* `qwen auth openrouter --key <key>`자동화 또는 직접 API 키 설정을 위해.
+* `qwen auth openrouter`브라우저 기반 OAuth용.
+* `/auth`→ API 키 → TUI 흐름을 위한 OpenRouter.
 
-Browser OAuth uses OpenRouter's PKCE flow and writes the exchanged API key into
-settings before refreshing auth as `AuthType.USE_OPENAI`.
+브라우저 OAuth는 OpenRouter의 PKCE 흐름을 사용하고 교환된 API 키를&#x20;
+인증을 새로 고치기 전 설정`AuthType.USE_OPENAI`.
 
-## Model Management
+## 모델 관리
 
-OpenRouter exposes a large dynamic model catalog. Writing every discovered model
-into `modelProviders.openai` would make `/model` noisy and would turn a long-term
-settings field into a cache of a remote catalog.
+OpenRouter는 대규모 동적 모델 카탈로그를 공개합니다. 발견된 모든 모델 작성&#x20;
+으로`modelProviders.openai`만들 것이다`/model`시끄럽고 장기적으로 변할 것입니다.&#x20;
+설정 필드를 원격 카탈로그의 캐시에 추가합니다.
 
-The key design split is:
+주요 디자인 분할은 다음과 같습니다.
 
-- **Catalog**: the full set of models discovered from a source such as
-  OpenRouter.
-- **Enabled set**: the smaller set of models that should appear in `/model` and
-  be persisted in user settings.
+* **목록**: 다음과 같은 소스에서 발견된 전체 모델 세트&#x20;
+  오픈라우터.
+* **활성화된 세트**: 다음에 나타나야 하는 더 작은 모델 세트입니다.`/model`그리고&#x20;
+  사용자 설정에 유지됩니다.
 
-For the initial OpenRouter flow, auth should finish with a useful default enabled
-set instead of interrupting the user with a large picker. The recommended set
-should be small, stable, and biased toward models that let users try the product
-successfully, including free models when available.
+초기 OpenRouter 흐름의 경우 인증은 유용한 기본값이 활성화된 상태로 완료되어야 합니다.&#x20;
+큰 선택기로 사용자를 방해하는 대신 설정하세요. 추천 세트&#x20;
+작고 안정적이어야 하며 사용자가 제품을 시험해 볼 수 있는 모델에 편향되어야 합니다.&#x20;
+가능한 경우 무료 모델을 포함하여 성공적으로 수행되었습니다.
 
-`/model` remains a fast model switcher. It should not become the place where
-users browse and curate a full provider catalog.
+`/model`빠른 모델 전환기로 남아 있습니다. 그런 곳이 되어서는 안 된다.&#x20;
+사용자는 전체 공급자 카탈로그를 탐색하고 선별합니다.
 
 ## `/manage-models`
 
-Richer model management belongs in a separate `/manage-models` entry point. That
-flow should let users:
+더욱 풍부한 모델 관리는 별도의 영역에 속합니다.`/manage-models`진입점. 그&#x20;
+흐름을 통해 사용자는 다음을 수행할 수 있어야 합니다.
 
-- browse discovered models;
-- search by id, display name, provider prefix, and derived tags such as `free` or
-  `vision`;
-- see which models are currently enabled;
-- enable or disable models in batches.
+* 발견된 모델을 찾아보세요.
+* ID, 표시 이름, 공급자 접두사 및 파생 태그(예:`free`또는`vision`;
+* 현재 어떤 모델이 활성화되어 있는지 확인하세요.
+* 모델을 일괄적으로 활성화하거나 비활성화합니다.
 
-The source dimension must remain part of this design. OpenRouter is only the
-first dynamic catalog source; future sources such as ModelScope and ModelStudio
-should fit the same shape. UI complexity can be reduced, but the underlying
-source abstraction should stay available as the extension point.
+소스 차원은 이 디자인의 일부로 유지되어야 합니다. OpenRouter는 유일한&#x20;
+첫 번째 동적 카탈로그 소스; ModelScope 및 ModelStudio와 같은 미래 소스&#x20;
+같은 모양이 맞아야합니다. UI 복잡성은 줄어들 수 있지만 기본&#x20;
+소스 추상화는 확장 지점으로 계속 사용 가능해야 합니다.
 
-## Current Boundary
+## 현재 경계
 
 This change should do the minimum needed to make OpenRouter auth and model setup
 pleasant:
 
-- OAuth or key-based auth configures OpenRouter through the existing
-  OpenAI-compatible provider path.
-- The initial enabled model set is curated instead of dumping the full catalog
-  into settings.
-- Full catalog storage, browsing, filtering, and batch management are deferred to
-  `/manage-models`.
+* OAuth 또는 키 기반 인증은 기존 인증을 통해 OpenRouter를 구성합니다.&#x20;
+  OpenAI 호환 공급자 경로.
+* 전체 카탈로그를 덤프하는 대신 초기 활성화된 모델 세트가 선별됩니다.&#x20;
+  설정으로.
+* 전체 카탈로그 저장, 찾아보기, 필터링 및 배치 관리는 다음으로 연기됩니다.`/manage-models`.
 
-The design principle is simple: authentication should get users to a working
-state quickly, while model curation should live in a dedicated management flow.
+디자인 원칙은 간단합니다. 인증을 통해 사용자는 작업을 수행할 수 있어야 합니다.&#x20;
+상태는 신속하게 유지되어야 하며, 모델 큐레이션은 전용 관리 흐름에 따라 진행되어야 합니다.

@@ -1,67 +1,67 @@
-# MCP servers with Qwen Code
+# Qwen 코드가 포함된 MCP 서버
 
-This document provides a guide to configuring and using Model Context Protocol (MCP) servers with Qwen Code.
+이 문서에서는 Qwen Code를 사용하여 MCP(Model Context Protocol) 서버를 구성하고 사용하는 방법에 대한 지침을 제공합니다.
 
-## What is an MCP server?
+## MCP 서버란 무엇입니까?
 
-An MCP server is an application that exposes tools and resources to the CLI through the Model Context Protocol, allowing it to interact with external systems and data sources. MCP servers act as a bridge between the model and your local environment or other services like APIs.
+MCP 서버는 모델 컨텍스트 프로토콜을 통해 CLI에 도구와 리소스를 노출하여 외부 시스템 및 데이터 소스와 상호 작용할 수 있도록 하는 애플리케이션입니다. MCP 서버는 모델과 로컬 환경 또는 API와 같은 기타 서비스 간의 브리지 역할을 합니다.
 
-An MCP server enables the CLI to:
+MCP 서버는 CLI를 통해 다음을 수행합니다.
 
-- **Discover tools:** List available tools, their descriptions, and parameters through standardized schema definitions.
-- **Execute tools:** Call specific tools with defined arguments and receive structured responses.
-- **Access resources:** Read data from specific resources (though the CLI primarily focuses on tool execution).
+* **도구 검색:**&#xD45C;준화된 스키마 정의를 통해 사용 가능한 도구, 설명 및 매개변수를 나열합니다.
+* **도구 실행:**&#xC815;의된 인수로 특정 도구를 호출하고 구조화된 응답을 받습니다.
+* **리소스에 액세스:**&#xD2B9;정 리소스에서 데이터를 읽습니다(CLI는 주로 도구 실행에 중점을 둡니다).
 
-With an MCP server, you can extend the CLI's capabilities to perform actions beyond its built-in features, such as interacting with databases, APIs, custom scripts, or specialized workflows.
+MCP 서버를 사용하면 CLI 기능을 확장하여 데이터베이스, API, 사용자 정의 스크립트 또는 특수 워크플로우와의 상호 작용과 같은 기본 제공 기능 이상의 작업을 수행할 수 있습니다.
 
-## Core Integration Architecture
+## 핵심 통합 아키텍처
 
-Qwen Code integrates with MCP servers through a sophisticated discovery and execution system built into the core package (`packages/core/src/tools/`):
+Qwen Code는 핵심 패키지에 내장된 정교한 검색 및 실행 시스템을 통해 MCP 서버와 통합됩니다(`packages/core/src/tools/`):
 
-### Discovery Layer (`mcp-client.ts`)
+### 검색 계층(`mcp-client.ts`)
 
-The discovery process is orchestrated by `discoverMcpTools()`, which:
+검색 프로세스는 다음에 의해 조정됩니다.`discoverMcpTools()`, 어느:
 
-1. **Iterates through configured servers** from your `settings.json` `mcpServers` configuration
-2. **Establishes connections** using appropriate transport mechanisms (Stdio, SSE, or Streamable HTTP)
-3. **Fetches tool definitions** from each server using the MCP protocol
-4. **Sanitizes and validates** tool schemas for compatibility with the Qwen API
-5. **Registers tools** in the global tool registry with conflict resolution
+1. **구성된 서버를 반복합니다.**&#xB2F9;신의`settings.json` `mcpServers`구성
+2. **연결을 설정합니다.**&#xC801;절한 전송 메커니즘(Stdio, SSE 또는 Streamable HTTP) 사용
+3. **도구 정의를 가져옵니다.**&#x4D;CP 프로토콜을 사용하는 각 서버에서
+4. **정리 및 유효성 검사**Qwen API와의 호환성을 위한 도구 스키마
+5. **도구 등록**충돌 해결 기능이 있는 전역 도구 레지스트리
 
-### Execution Layer (`mcp-tool.ts`)
+### 실행 계층(`mcp-tool.ts`)
 
-Each discovered MCP tool is wrapped in a `DiscoveredMCPTool` instance that:
+발견된 각 MCP 도구는`DiscoveredMCPTool`다음과 같은 경우:
 
-- **Handles confirmation logic** based on server trust settings and user preferences
-- **Manages tool execution** by calling the MCP server with proper parameters
-- **Processes responses** for both the LLM context and user display
-- **Maintains connection state** and handles timeouts
+* **확인 논리를 처리합니다.**&#xC11C;버 신뢰 설정 및 사용자 기본 설정에 따라
+* **도구 실행을 관리합니다.**&#xC801;절한 매개변수를 사용하여 MCP 서버를 호출하여
+* **응답 처리**LLM 컨텍스트와 사용자 디스플레이 모두에 대해
+* **연결 상태를 유지합니다**시간 초과를 처리합니다.
 
-### Transport Mechanisms
+### 운송 메커니즘
 
-The CLI supports three MCP transport types:
+CLI는 세 가지 MCP 전송 유형을 지원합니다.
 
-- **Stdio Transport:** Spawns a subprocess and communicates via stdin/stdout
-- **SSE Transport:** Connects to Server-Sent Events endpoints
-- **Streamable HTTP Transport:** Uses HTTP streaming for communication
+* **스튜디오 전송:**&#xD558;위 프로세스를 생성하고 stdin/stdout을 통해 통신합니다.
+* **SSE 전송:**&#xC11C;버에서 보낸 이벤트 엔드포인트에 연결
+* **스트리밍 가능한 HTTP 전송:**&#xD1B5;신에 HTTP 스트리밍을 사용합니다.
 
-## How to set up your MCP server
+## MCP 서버를 설정하는 방법
 
-Qwen Code uses the `mcpServers` configuration in your `settings.json` file to locate and connect to MCP servers. This configuration supports multiple servers with different transport mechanisms.
+Qwen 코드는`mcpServers`당신의 구성`settings.json`파일을 사용하여 MCP 서버를 찾고 연결합니다. 이 구성은 다양한 전송 메커니즘을 사용하는 여러 서버를 지원합니다.
 
-### Configure the MCP server in settings.json
+### settings.json에서 MCP 서버 구성
 
-You can configure MCP servers in your `settings.json` file in two main ways: through the top-level `mcpServers` object for specific server definitions, and through the `mcp` object for global settings that control server discovery and execution.
+MCP 서버를 구성할 수 있습니다.`settings.json`두 가지 주요 방법으로 파일을 제출합니다. 최상위 수준을 통해`mcpServers`특정 서버 정의에 대한 개체 및`mcp`서버 검색 및 실행을 제어하는 ​​전역 설정에 대한 개체입니다.
 
-#### Global MCP Settings (`mcp`)
+#### 전역 MCP 설정(`mcp`)
 
-The `mcp` object in your `settings.json` allows you to define global rules for all MCP servers.
+그만큼`mcp`당신의 반대`settings.json`모든 MCP 서버에 대한 전역 규칙을 정의할 수 있습니다.
 
-- **`mcp.serverCommand`** (string): A global command to start an MCP server.
-- **`mcp.allowed`** (array of strings): A list of MCP server names to allow. If this is set, only servers from this list (matching the keys in the `mcpServers` object) will be connected to.
-- **`mcp.excluded`** (array of strings): A list of MCP server names to exclude. Servers in this list will not be connected to.
+* **`mcp.serverCommand`**(문자열): MCP 서버를 시작하는 전역 명령입니다.
+* **`mcp.allowed`**(문자열 배열): 허용할 MCP 서버 이름 목록입니다. 이것이 설정되면 이 목록의 서버만(`mcpServers`개체)에 연결됩니다.
+* **`mcp.excluded`**(문자열 배열): 제외할 MCP 서버 이름 목록입니다. 이 목록의 서버는 연결되지 않습니다.
 
-**Example:**
+**예:**
 
 ```json
 {
@@ -72,13 +72,13 @@ The `mcp` object in your `settings.json` allows you to define global rules for a
 }
 ```
 
-#### Server-Specific Configuration (`mcpServers`)
+#### 서버별 구성(`mcpServers`)
 
-The `mcpServers` object is where you define each individual MCP server you want the CLI to connect to.
+그만큼`mcpServers`개체는 CLI를 연결하려는 개별 MCP 서버를 정의하는 곳입니다.
 
-### Configuration Structure
+### 구성 구조
 
-Add an `mcpServers` object to your `settings.json` file:
+추가`mcpServers`당신의 반대`settings.json`파일:
 
 ```json
 { ...file contains other config objects
@@ -97,36 +97,36 @@ Add an `mcpServers` object to your `settings.json` file:
 }
 ```
 
-### Configuration Properties
+### 구성 속성
 
-Each server configuration supports the following properties:
+각 서버 구성은 다음 속성을 지원합니다.
 
-#### Required (one of the following)
+#### 필수(다음 중 하나)
 
-- **`command`** (string): Path to the executable for Stdio transport
-- **`url`** (string): SSE endpoint URL (e.g., `"http://localhost:8080/sse"`)
-- **`httpUrl`** (string): HTTP streaming endpoint URL
+* **`command`**(문자열): Stdio 전송을 위한 실행 파일 경로
+* **`url`**(문자열): SSE 엔드포인트 URL(예:`"http://localhost:8080/sse"`)
+* **`httpUrl`**(문자열): HTTP 스트리밍 엔드포인트 URL
 
-#### Optional
+#### 선택 과목
 
-- **`args`** (string[]): Command-line arguments for Stdio transport
-- **`headers`** (object): Custom HTTP headers when using `url` or `httpUrl`
-- **`env`** (object): Environment variables for the server process. Values can reference environment variables using `$VAR_NAME` or `${VAR_NAME}` syntax
-- **`cwd`** (string): Working directory for Stdio transport
-- **`timeout`** (number): Request timeout in milliseconds (default: 600,000ms = 10 minutes)
-- **`trust`** (boolean): When `true`, bypasses all tool call confirmations for this server (default: `false`)
-- **`includeTools`** (string[]): List of tool names to include from this MCP server. When specified, only the tools listed here will be available from this server (allowlist behavior). If not specified, all tools from the server are enabled by default.
-- **`excludeTools`** (string[]): List of tool names to exclude from this MCP server. Tools listed here will not be available to the model, even if they are exposed by the server. **Note:** `excludeTools` takes precedence over `includeTools` - if a tool is in both lists, it will be excluded.
-- **`targetAudience`** (string): The OAuth Client ID allowlisted on the IAP-protected application you are trying to access. Used with `authProviderType: 'service_account_impersonation'`.
-- **`targetServiceAccount`** (string): The email address of the Google Cloud Service Account to impersonate. Used with `authProviderType: 'service_account_impersonation'`.
+* **`args`**(string\[]): Stdio 전송을 위한 명령줄 인수
+* **`headers`**(객체): 사용 시 사용자 정의 HTTP 헤더`url`또는`httpUrl`
+* **`env`**(객체): 서버 프로세스에 대한 환경 변수입니다. 값은 다음을 사용하여 환경 변수를 참조할 수 있습니다.`$VAR_NAME`또는`${VAR_NAME}`통사론
+* **`cwd`**(문자열): Stdio 전송을 위한 작업 디렉터리
+* **`timeout`**(숫자): 요청 제한 시간(밀리초)(기본값: 600,000ms = 10분)
+* **`trust`**(부울): 언제`true`, 이 서버에 대한 모든 도구 호출 확인을 우회합니다(기본값:`false`)
+* **`includeTools`**(string\[]): 이 MCP 서버에서 포함할 도구 이름 목록입니다. 지정하면 여기에 나열된 도구만 ​​이 서버에서 사용할 수 있습니다(허용 목록 동작). 지정하지 않으면 서버의 모든 도구가 기본적으로 활성화됩니다.
+* **`excludeTools`**(string\[]): 이 MCP 서버에서 제외할 도구 이름 목록입니다. 여기에 나열된 도구는 서버에서 노출되더라도 모델에서 사용할 수 없습니다.**메모:** `excludeTools`우선한다`includeTools`- 도구가 두 목록에 모두 있으면 제외됩니다.
+* **`targetAudience`**(문자열): 액세스하려는 IAP 보호 애플리케이션에 허용된 OAuth 클라이언트 ID입니다. 함께 사용`authProviderType: 'service_account_impersonation'`.
+* **`targetServiceAccount`**(문자열): 가장할 Google 클라우드 서비스 계정의 이메일 주소입니다. 함께 사용`authProviderType: 'service_account_impersonation'`.
 
-### OAuth Support for Remote MCP Servers
+### 원격 MCP 서버에 대한 OAuth 지원
 
-Qwen Code supports OAuth 2.0 authentication for remote MCP servers using SSE or HTTP transports. This enables secure access to MCP servers that require authentication.
+Qwen Code는 SSE 또는 HTTP 전송을 사용하여 원격 MCP 서버에 대한 OAuth 2.0 인증을 지원합니다. 이를 통해 인증이 필요한 MCP 서버에 안전하게 액세스할 수 있습니다.
 
-#### Automatic OAuth Discovery
+#### 자동 OAuth 검색
 
-For servers that support OAuth discovery, you can omit the OAuth configuration and let the CLI discover it automatically:
+OAuth 검색을 지원하는 서버의 경우 OAuth 구성을 생략하고 CLI가 자동으로 검색하도록 할 수 있습니다.
 
 ```json
 {
@@ -138,52 +138,52 @@ For servers that support OAuth discovery, you can omit the OAuth configuration a
 }
 ```
 
-The CLI will automatically:
+CLI는 자동으로 다음을 수행합니다.
 
-- Detect when a server requires OAuth authentication (401 responses)
-- Discover OAuth endpoints from server metadata
-- Perform dynamic client registration if supported
-- Handle the OAuth flow and token management
+* 서버에 OAuth 인증이 필요한 시기 감지(401 응답)
+* 서버 메타데이터에서 OAuth 엔드포인트 검색
+* 지원되는 경우 동적 클라이언트 등록 수행
+* OAuth 흐름 및 토큰 관리 처리
 
-#### Authentication Flow
+#### 인증 흐름
 
-When connecting to an OAuth-enabled server:
+OAuth 지원 서버에 연결하는 경우:
 
-1. **Initial connection attempt** fails with 401 Unauthorized
-2. **OAuth discovery** finds authorization and token endpoints
-3. **Browser opens** for user authentication (requires local browser access)
-4. **Authorization code** is exchanged for access tokens
-5. **Tokens are stored** securely for future use
-6. **Connection retry** succeeds with valid tokens
+1. **초기 연결 시도**401 Unauthorized로 실패
+2. **OAuth 검색**인증 및 토큰 엔드포인트를 찾습니다.
+3. **브라우저가 열립니다**사용자 인증을 위해 (로컬 브라우저 접속 필요)
+4. **인증 코드**액세스 토큰으로 교환됩니다.
+5. **토큰이 저장됩니다**향후 사용을 위해 안전하게
+6. **연결 재시도**유효한 토큰으로 성공
 
-#### Browser Redirect Requirements
+#### 브라우저 리디렉션 요구 사항
 
-**Important:** OAuth authentication requires that the redirect URI is accessible:
+**중요한:**&#x4F;Auth 인증을 위해서는 리디렉션 URI에 액세스할 수 있어야 합니다.
 
-- **Default behavior**: Redirects to `http://localhost:7777/oauth/callback` (works for local setups)
-- **Custom redirect URI**: Use `--oauth-redirect-uri` or configure `redirectUri` in settings.json to specify a different URL
+* **기본 동작**: 다음으로 리디렉션됩니다.`http://localhost:7777/oauth/callback`(로컬 설정에서 작동)
+* **사용자 정의 리디렉션 URI**: 사용`--oauth-redirect-uri`또는 구성`redirectUri`settings.json에서 다른 URL을 지정
 
-For **remote/cloud server deployments** (e.g., web terminals, SSH sessions, cloud IDEs):
+을 위한**원격/클라우드 서버 배포**(예: 웹 터미널, SSH 세션, 클라우드 IDE):
 
-- The default `localhost` redirect will NOT work
-- You MUST configure a custom `redirectUri` pointing to a publicly accessible URL
-- The user's browser must be able to reach this URL and redirect back to the server
+* 기본값`localhost`리디렉션이 작동하지 않습니다
+* 사용자 정의를 구성해야 합니다.`redirectUri`공개적으로 접근 가능한 URL을 가리키는 것
+* 사용자의 브라우저는 이 URL에 접속하여 서버로 다시 리디렉션할 수 있어야 합니다.
 
-Example for remote servers:
+원격 서버의 예:
 
 ```bash
 qwen mcp add --transport sse remote-server https://api.example.com/sse/ \
   --oauth-redirect-uri https://your-remote-server.example.com/oauth/callback
 ```
 
-OAuth will not work in:
+OAuth는 다음에서 작동하지 않습니다.
 
-- Headless environments without browser access
-- Environments where the configured `redirectUri` is unreachable from the user's browser
+* 브라우저 액세스가 없는 헤드리스 환경
+* 구성된 환경`redirectUri`사용자의 브라우저에서 접근할 수 없습니다
 
-#### Managing OAuth Authentication
+#### OAuth 인증 관리
 
-Use the `/mcp auth` command to manage OAuth authentication:
+사용`/mcp auth`OAuth 인증을 관리하는 명령:
 
 ```bash
 # List servers requiring authentication
@@ -196,37 +196,37 @@ Use the `/mcp auth` command to manage OAuth authentication:
 /mcp auth serverName
 ```
 
-#### OAuth Configuration Properties
+#### OAuth 구성 속성
 
-- **`enabled`** (boolean): Enable OAuth for this server
-- **`clientId`** (string): OAuth client identifier (optional with dynamic registration)
-- **`clientSecret`** (string): OAuth client secret (optional for public clients)
-- **`authorizationUrl`** (string): OAuth authorization endpoint (auto-discovered if omitted)
-- **`tokenUrl`** (string): OAuth token endpoint (auto-discovered if omitted)
-- **`scopes`** (string[]): Required OAuth scopes
-- **`redirectUri`** (string): Custom redirect URI. **Critical for remote deployments**: Defaults to `http://localhost:7777/oauth/callback`. When running Qwen Code on remote/cloud servers, set this to a publicly accessible URL (e.g., `https://your-server.com/oauth/callback`). Can be configured via `qwen mcp add --oauth-redirect-uri` or directly in settings.json.
-- **`tokenParamName`** (string): Query parameter name for tokens in SSE URLs
-- **`audiences`** (string[]): Audiences the token is valid for
+* **`enabled`**(부울): 이 서버에 대해 OAuth를 활성화합니다.
+* **`clientId`**(문자열): OAuth 클라이언트 식별자(동적 등록의 경우 선택 사항)
+* **`clientSecret`**(문자열): OAuth 클라이언트 비밀번호(퍼블릭 클라이언트의 경우 선택 사항)
+* **`authorizationUrl`**(문자열): OAuth 인증 엔드포인트(생략 시 자동 검색)
+* **`tokenUrl`**(문자열): OAuth 토큰 엔드포인트(생략 시 자동 검색)
+* **`scopes`**(string\[]): 필수 OAuth 범위
+* **`redirectUri`**(문자열): 사용자 정의 리디렉션 URI.**원격 배포에 중요**: 기본값은`http://localhost:7777/oauth/callback`. 원격/클라우드 서버에서 Qwen Code를 실행할 때 이를 공개적으로 액세스할 수 있는 URL로 설정합니다(예:`https://your-server.com/oauth/callback`). 다음을 통해 구성할 수 있습니다.`qwen mcp add --oauth-redirect-uri`또는 settings.json에서 직접.
+* **`tokenParamName`**(문자열): SSE URL의 토큰에 대한 쿼리 매개변수 이름
+* **`audiences`**(string\[]): 토큰이 유효한 대상
 
-#### Token Management
+#### 토큰 관리
 
-OAuth tokens are automatically:
+OAuth 토큰은 자동으로 다음과 같습니다.
 
-- **Stored securely** in `~/.qwen/mcp-oauth-tokens.json`
-- **Refreshed** when expired (if refresh tokens are available)
-- **Validated** before each connection attempt
-- **Cleaned up** when invalid or expired
+* **안전하게 보관됨**\~에`~/.qwen/mcp-oauth-tokens.json`
+* **새로 고침**만료된 경우(새로 고침 토큰을 사용할 수 있는 경우)
+* **검증됨**각 연결 시도 전
+* **정리됨**유효하지 않거나 만료된 경우
 
-#### Authentication Provider Type
+#### 인증 공급자 유형
 
-You can specify the authentication provider type using the `authProviderType` property:
+다음을 사용하여 인증 공급자 유형을 지정할 수 있습니다.`authProviderType`재산:
 
-- **`authProviderType`** (string): Specifies the authentication provider. Can be one of the following:
-  - **`dynamic_discovery`** (default): The CLI will automatically discover the OAuth configuration from the server.
-  - **`google_credentials`**: The CLI will use the Google Application Default Credentials (ADC) to authenticate with the server. When using this provider, you must specify the required scopes.
-  - **`service_account_impersonation`**: The CLI will impersonate a Google Cloud Service Account to authenticate with the server. This is useful for accessing IAP-protected services (this was specifically designed for Cloud Run services).
+* **`authProviderType`**(문자열): 인증 공급자를 지정합니다. 다음 중 하나일 수 있습니다.
+  * **`dynamic_discovery`**(기본값): CLI가 서버에서 OAuth 구성을 자동으로 검색합니다.
+  * **`google_credentials`**: CLI는 Google 애플리케이션 기본 자격 증명(ADC)을 사용하여 서버를 인증합니다. 이 공급자를 사용할 때는 필수 범위를 지정해야 합니다.
+  * **`service_account_impersonation`**: CLI는 서버 인증을 위해 Google 클라우드 서비스 계정을 가장합니다. 이는 IAP로 보호되는 서비스에 액세스하는 데 유용합니다(Cloud Run 서비스용으로 특별히 설계됨).
 
-#### Google Credentials
+#### Google 자격 증명
 
 ```json
 {
@@ -242,27 +242,27 @@ You can specify the authentication provider type using the `authProviderType` pr
 }
 ```
 
-#### Service Account Impersonation
+#### 서비스 계정 가장
 
-To authenticate with a server using Service Account Impersonation, you must set the `authProviderType` to `service_account_impersonation` and provide the following properties:
+서비스 계정 가장을 사용하여 서버에 인증하려면 다음을 설정해야 합니다.`authProviderType`에게`service_account_impersonation`다음 속성을 제공합니다.
 
-- **`targetAudience`** (string): The OAuth Client ID allowslisted on the IAP-protected application you are trying to access.
-- **`targetServiceAccount`** (string): The email address of the Google Cloud Service Account to impersonate.
+* **`targetAudience`**(문자열): 액세스하려는 IAP 보호 애플리케이션에 허용 목록에 있는 OAuth 클라이언트 ID입니다.
+* **`targetServiceAccount`**(문자열): 가장할 Google 클라우드 서비스 계정의 이메일 주소입니다.
 
-The CLI will use your local Application Default Credentials (ADC) to generate an OIDC ID token for the specified service account and audience. This token will then be used to authenticate with the MCP server.
+CLI는 로컬 ADC(애플리케이션 기본 자격 증명)를 사용하여 지정된 서비스 계정 및 대상에 대한 OIDC ID 토큰을 생성합니다. 그런 다음 이 토큰은 MCP 서버를 인증하는 데 사용됩니다.
 
-#### Setup Instructions
+#### 설정 지침
 
-1. **[Create](https://cloud.google.com/iap/docs/oauth-client-creation) or use an existing OAuth 2.0 client ID.** To use an existing OAuth 2.0 client ID, follow the steps in [How to share OAuth Clients](https://cloud.google.com/iap/docs/sharing-oauth-clients).
-2. **Add the OAuth ID to the allowlist for [programmatic access](https://cloud.google.com/iap/docs/sharing-oauth-clients#programmatic_access) for the application.** Since Cloud Run is not yet a supported resource type in gcloud iap, you must allowlist the Client ID on the project.
-3. **Create a service account.** [Documentation](https://cloud.google.com/iam/docs/service-accounts-create#creating), [Cloud Console Link](https://console.cloud.google.com/iam-admin/serviceaccounts)
-4. **Add both the service account and users to the IAP Policy** in the "Security" tab of the Cloud Run service itself or via gcloud.
-5. **Grant all users and groups** who will access the MCP Server the necessary permissions to [impersonate the service account](https://cloud.google.com/docs/authentication/use-service-account-impersonation) (i.e., `roles/iam.serviceAccountTokenCreator`).
-6. **[Enable](https://console.cloud.google.com/apis/library/iamcredentials.googleapis.com) the IAM Credentials API** for your project.
+1. **[만들다](https://cloud.google.com/iap/docs/oauth-client-creation)또는 기존 OAuth 2.0 클라이언트 ID를 사용하세요.**&#xAE30;존 OAuth 2.0 클라이언트 ID를 사용하려면 다음 단계를 따르세요.[OAuth 클라이언트를 공유하는 방법](https://cloud.google.com/iap/docs/sharing-oauth-clients).
+2. **다음의 허용 목록에 OAuth ID를 추가하세요.[프로그래밍 방식의 액세스](https://cloud.google.com/iap/docs/sharing-oauth-clients#programmatic_access)신청을 위해.**&#x43;loud Run은 아직 gcloud iap에서 지원되는 리소스 유형이 아니므로 프로젝트에서 클라이언트 ID를 허용 목록에 추가해야 합니다.
+3. **서비스 계정을 만듭니다.** [선적 서류 비치](https://cloud.google.com/iam/docs/service-accounts-create#creating),[Cloud 콘솔 링크](https://console.cloud.google.com/iam-admin/serviceaccounts)
+4. **IAP 정책에 서비스 계정과 사용자를 모두 추가합니다.**&#x43;loud Run 서비스 자체의 '보안' 탭에서 또는 gcloud를 통해
+5. **모든 사용자 및 그룹에 부여**MCP 서버에 액세스하는 데 필요한 권한은 누구에게 있습니까?[서비스 계정을 가장](https://cloud.google.com/docs/authentication/use-service-account-impersonation)(즉.,`roles/iam.serviceAccountTokenCreator`).
+6. **[할 수 있게 하다](https://console.cloud.google.com/apis/library/iamcredentials.googleapis.com)IAM 자격 증명 API**당신의 프로젝트를 위해.
 
-### Example Configurations
+### 구성 예
 
-#### Python MCP Server (Stdio)
+#### Python MCP 서버(Stdio)
 
 ```json
 {
@@ -281,7 +281,7 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-#### Node.js MCP Server (Stdio)
+#### Node.js MCP 서버(Stdio)
 
 ```json
 {
@@ -296,7 +296,7 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-#### Docker-based MCP Server
+#### Docker 기반 MCP 서버
 
 ```json
 {
@@ -321,7 +321,7 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-#### HTTP-based MCP Server
+#### HTTP 기반 MCP 서버
 
 ```json
 {
@@ -334,7 +334,7 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-#### HTTP-based MCP Server with Custom Headers
+#### 사용자 정의 헤더가 있는 HTTP 기반 MCP 서버
 
 ```json
 {
@@ -352,7 +352,7 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-#### MCP Server with Tool Filtering
+#### 도구 필터링 기능이 있는 MCP 서버
 
 ```json
 {
@@ -368,7 +368,7 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-### SSE MCP Server with SA Impersonation
+### SA 가장을 사용하는 SSE MCP 서버
 
 ```json
 {
@@ -383,74 +383,74 @@ The CLI will use your local Application Default Credentials (ADC) to generate an
 }
 ```
 
-## Discovery Process Deep Dive
+## 발견 프로세스 심층 분석
 
-When Qwen Code starts, it performs MCP server discovery through the following detailed process:
+Qwen Code가 시작되면 다음과 같은 세부 프로세스를 통해 MCP 서버 검색을 수행합니다.
 
-### 1. Server Iteration and Connection
+### 1. 서버 반복 및 연결
 
-For each configured server in `mcpServers`:
+구성된 각 서버에 대해`mcpServers`:
 
-1. **Status tracking begins:** Server status is set to `CONNECTING`
-2. **Transport selection:** Based on configuration properties:
-   - `httpUrl` → `StreamableHTTPClientTransport`
-   - `url` → `SSEClientTransport`
-   - `command` → `StdioClientTransport`
-3. **Connection establishment:** The MCP client attempts to connect with the configured timeout
-4. **Error handling:** Connection failures are logged and the server status is set to `DISCONNECTED`
+1. **상태 추적이 시작됩니다.**&#xC11C;버 상태가 다음으로 설정되었습니다.`CONNECTING`
+2. **운송 선택:**&#xAD6C;성 속성을 기반으로 합니다.
+   * `httpUrl`→`StreamableHTTPClientTransport`
+   * `url`→`SSEClientTransport`
+   * `command`→`StdioClientTransport`
+3. **연결 설정:**&#x4D;CP 클라이언트는 구성된 시간 초과로 연결을 시도합니다.
+4. **오류 처리:**&#xC5F0;결 실패가 기록되고 서버 상태가 다음으로 설정됩니다.`DISCONNECTED`
 
-### 2. Tool Discovery
+### 2. 도구 발견
 
-Upon successful connection:
+성공적으로 연결되면:
 
-1. **Tool listing:** The client calls the MCP server's tool listing endpoint
-2. **Schema validation:** Each tool's function declaration is validated
-3. **Tool filtering:** Tools are filtered based on `includeTools` and `excludeTools` configuration
-4. **Name sanitization:** Tool names are cleaned to meet Qwen API requirements:
-   - Invalid characters (non-alphanumeric, underscore, dot, hyphen) are replaced with underscores
-   - Names longer than 63 characters are truncated with middle replacement (`___`)
+1. **도구 목록:**&#xD074;라이언트는 MCP 서버의 도구 목록 끝점을 호출합니다.
+2. **스키마 유효성 검사:**&#xAC01; 도구의 기능 선언이 검증되었습니다.
+3. **도구 필터링:**&#xB3C4;구는 다음을 기준으로 필터링됩니다.`includeTools`그리고`excludeTools`구성
+4. **이름 삭제:**&#x51;wen API 요구 사항을 충족하도록 도구 이름이 정리되었습니다.
+   * 잘못된 문자(영숫자가 아닌 문자, 밑줄, 점, 하이픈)는 밑줄로 대체됩니다.
+   * 63자를 초과하는 이름은 중간 대체(`___`)
 
-### 3. Conflict Resolution
+### 3. 갈등 해결
 
-When multiple servers expose tools with the same name:
+여러 서버가 동일한 이름의 도구를 노출하는 경우:
 
-1. **First registration wins:** The first server to register a tool name gets the unprefixed name
-2. **Automatic prefixing:** Subsequent servers get prefixed names: `serverName__toolName`
-3. **Registry tracking:** The tool registry maintains mappings between server names and their tools
+1. **첫 번째 등록 승리:**&#xB3C4;구 이름을 등록하는 첫 번째 서버는 접두사가 없는 이름을 얻습니다.
+2. **자동 접두어 지정:**&#xD6C4;속 서버에는 접두사가 붙은 이름이 붙습니다.`serverName__toolName`
+3. **레지스트리 추적:**&#xB3C4;구 레지스트리는 서버 이름과 해당 도구 간의 매핑을 유지합니다.
 
-### 4. Schema Processing
+### 4. 스키마 처리
 
-Tool parameter schemas undergo sanitization for API compatibility:
+도구 매개변수 스키마는 API 호환성을 위해 정리됩니다.
 
-- **`$schema` properties** are removed
-- **`additionalProperties`** are stripped
-- **`anyOf` with `default`** have their default values removed (Vertex AI compatibility)
-- **Recursive processing** applies to nested schemas
+* **`$schema`속성**제거되었습니다
+* **`additionalProperties`**&#xBC97;겨졌다
+* **`anyOf`\~와 함께`default`**&#xAE30;본값이 제거되었습니다(Vertex AI 호환성).
+* **재귀적 처리**중첩된 스키마에 적용
 
-### 5. Connection Management
+### 5. 연결 관리
 
-After discovery:
+발견 후:
 
-- **Persistent connections:** Servers that successfully register tools maintain their connections
-- **Cleanup:** Servers that provide no usable tools have their connections closed
-- **Status updates:** Final server statuses are set to `CONNECTED` or `DISCONNECTED`
+* **지속적인 연결:**&#xB3C4;구를 성공적으로 등록한 서버는 연결을 유지합니다.
+* **대청소:**&#xC0AC;용 가능한 도구를 제공하지 않는 서버는 연결이 닫혀 있습니다.
+* **상태 업데이트:**&#xCD5C;종 서버 상태는 다음과 같이 설정됩니다.`CONNECTED`또는`DISCONNECTED`
 
-## Tool Execution Flow
+## 도구 실행 흐름
 
-When the model decides to use an MCP tool, the following execution flow occurs:
+모델이 MCP 도구를 사용하기로 결정하면 다음과 같은 실행 흐름이 발생합니다.
 
-### 1. Tool Invocation
+### 1. 도구 호출
 
-The model generates a `FunctionCall` with:
+모델은`FunctionCall`와 함께:
 
-- **Tool name:** The registered name (potentially prefixed)
-- **Arguments:** JSON object matching the tool's parameter schema
+* **도구 이름:**&#xB4F1;록된 이름(접두사가 붙을 수 있음)
+* **인수:**&#xB3C4;구의 매개변수 스키마와 일치하는 JSON 객체
 
-### 2. Confirmation Process
+### 2. 확인절차
 
-Each `DiscoveredMCPTool` implements sophisticated confirmation logic:
+각`DiscoveredMCPTool`정교한 확인 논리를 구현합니다.
 
-#### Trust-based Bypass
+#### 신뢰 기반 우회
 
 ```typescript
 if (this.trust) {
@@ -458,28 +458,29 @@ if (this.trust) {
 }
 ```
 
-#### Dynamic Allow-listing
+#### 동적 허용 목록
 
-The system maintains internal allow-lists for:
+시스템은 다음에 대한 내부 허용 목록을 유지합니다.
 
-- **Server-level:** `serverName` → All tools from this server are trusted
-- **Tool-level:** `serverName.toolName` → This specific tool is trusted
+* **서버 수준:** `serverName`→ 이 서버의 모든 도구는 신뢰할 수 있습니다
+* **도구 수준:** `serverName.toolName`→ 이 특정 도구는 신뢰할 수 있습니다
 
-#### User Choice Handling
+#### 사용자 선택 처리
 
-When confirmation is required, users can choose:
+확인이 필요한 경우 사용자는 다음을 선택할 수 있습니다.
 
-- **Proceed once:** Execute this time only
-- **Always allow this tool:** Add to tool-level allow-list
-- **Always allow this server:** Add to server-level allow-list
-- **Cancel:** Abort execution
+* **한 번만 진행하세요.**&#xC774;번만 실행
+* **이 도구를 항상 허용합니다.**&#xB3C4;구 수준 허용 목록에 추가
+* **항상 이 서버를 허용합니다.**&#xC11C;버 수준 허용 목록에 추가
+* **취소:**&#xC2E4;행 중단
 
-### 3. Execution
+### 3. 실행
 
-Upon confirmation (or trust bypass):
+확인 시(또는 신뢰 우회):
 
-1. **Parameter preparation:** Arguments are validated against the tool's schema
-2. **MCP call:** The underlying `CallableTool` invokes the server with:
+1. **매개변수 준비:**&#xC778;수는 도구의 스키마에 대해 검증됩니다.
+
+2. **MCP 호출:**&#xAE30;본`CallableTool`다음을 사용하여 서버를 호출합니다.
 
    ```typescript
    const functionCalls = [
@@ -490,34 +491,34 @@ Upon confirmation (or trust bypass):
    ];
    ```
 
-3. **Response processing:** Results are formatted for both LLM context and user display
+3. **응답 처리:**&#xACB0;과는 LLM 컨텍스트와 사용자 디스플레이 모두에 맞게 형식화됩니다.
 
-### 4. Response Handling
+### 4. 응답 처리
 
-The execution result contains:
+실행 결과에는 다음이 포함됩니다.
 
-- **`llmContent`:** Raw response parts for the language model's context
-- **`returnDisplay`:** Formatted output for user display (often JSON in markdown code blocks)
+* **`llmContent`:**&#xC5B8;어 모델의 컨텍스트에 대한 원시 응답 부분
+* **`returnDisplay`:**&#xC0AC;용자 표시를 위한 형식화된 출력(종종 마크다운 코드 블록의 JSON)
 
-## How to interact with your MCP server
+## MCP 서버와 상호 작용하는 방법
 
-### Using the `/mcp` Command
+### 사용하여`/mcp`명령
 
-The `/mcp` command provides comprehensive information about your MCP server setup:
+그만큼`/mcp`명령은 MCP 서버 설정에 대한 포괄적인 정보를 제공합니다.
 
 ```bash
 /mcp
 ```
 
-This displays:
+다음이 표시됩니다.
 
-- **Server list:** All configured MCP servers
-- **Connection status:** `CONNECTED`, `CONNECTING`, or `DISCONNECTED`
-- **Server details:** Configuration summary (excluding sensitive data)
-- **Available tools:** List of tools from each server with descriptions
-- **Discovery state:** Overall discovery process status
+* **서버 목록:**&#xAD6C;성된 모든 MCP 서버
+* **연결 상태:** `CONNECTED`,`CONNECTING`, 또는`DISCONNECTED`
+* **서버 세부정보:**&#xAD6C;성 요약(민감한 데이터 제외)
+* **사용 가능한 도구:**&#xC124;명이 포함된 각 서버의 도구 목록
+* **검색 상태:**&#xC804;반적인 검색 프로세스 상태
 
-### Example `/mcp` Output
+### 예`/mcp`산출
 
 ```
 MCP Servers Status:
@@ -539,138 +540,138 @@ MCP Servers Status:
 Discovery State: COMPLETED
 ```
 
-### Tool Usage
+### 도구 사용법
 
-Once discovered, MCP tools are available to the Qwen model like built-in tools. The model will automatically:
+일단 발견되면 MCP 도구는 내장 도구처럼 Qwen 모델에서 사용할 수 있습니다. 모델은 자동으로 다음을 수행합니다.
 
-1. **Select appropriate tools** based on your requests
-2. **Present confirmation dialogs** (unless the server is trusted)
-3. **Execute tools** with proper parameters
-4. **Display results** in a user-friendly format
+1. **적절한 도구 선택**귀하의 요청에 따라
+2. **확인 대화상자 표시**(서버를 신뢰할 수 없는 경우)
+3. **도구 실행**적절한 매개변수를 사용하여
+4. **결과 표시**사용자 친화적인 형식으로
 
-## Status Monitoring and Troubleshooting
+## 상태 모니터링 및 문제 해결
 
-### Connection States
+### 연결 상태
 
-The MCP integration tracks several states:
+MCP 통합은 다음과 같은 여러 상태를 추적합니다.
 
-#### Server Status (`MCPServerStatus`)
+#### 서버상태(`MCPServerStatus`)
 
-- **`DISCONNECTED`:** Server is not connected or has errors
-- **`CONNECTING`:** Connection attempt in progress
-- **`CONNECTED`:** Server is connected and ready
+* **`DISCONNECTED`:**&#xC11C;버가 연결되지 않았거나 오류가 있습니다
+* **`CONNECTING`:**&#xC5F0;결 시도 진행 중
+* **`CONNECTED`:**&#xC11C;버가 연결되어 준비되었습니다.
 
-#### Discovery State (`MCPDiscoveryState`)
+#### 검색 상태(`MCPDiscoveryState`)
 
-- **`NOT_STARTED`:** Discovery hasn't begun
-- **`IN_PROGRESS`:** Currently discovering servers
-- **`COMPLETED`:** Discovery finished (with or without errors)
+* **`NOT_STARTED`:**&#xAC80;색이 시작되지 않았습니다.
+* **`IN_PROGRESS`:**&#xD604;재 서버를 검색하는 중입니다.
+* **`COMPLETED`:**&#xAC80;색 완료(오류 유무)
 
-### Common Issues and Solutions
+### 일반적인 문제 및 해결 방법
 
-#### Server Won't Connect
+#### 서버가 연결되지 않음
 
-**Symptoms:** Server shows `DISCONNECTED` status
+**증상:**&#xC11C;버 쇼`DISCONNECTED`상태
 
-**Troubleshooting:**
+**문제 해결:**
 
-1. **Check configuration:** Verify `command`, `args`, and `cwd` are correct
-2. **Test manually:** Run the server command directly to ensure it works
-3. **Check dependencies:** Ensure all required packages are installed
-4. **Review logs:** Look for error messages in the CLI output
-5. **Verify permissions:** Ensure the CLI can execute the server command
+1. **구성을 확인하세요.**&#xD655;인하다`command`,`args`, 그리고`cwd`맞다
+2. **수동으로 테스트:**&#xC11C;버 명령을 직접 실행하여 작동하는지 확인하세요.
+3. **종속성을 확인합니다.**&#xD544;요한 모든 패키지가 설치되어 있는지 확인하십시오.
+4. **로그 검토:**&#x43;LI 출력에서 ​​오류 메시지를 찾습니다.
+5. **권한 확인:**&#x43;LI가 서버 명령을 실행할 수 있는지 확인
 
-#### No Tools Discovered
+#### 발견된 도구 없음
 
-**Symptoms:** Server connects but no tools are available
+**증상:**&#xC11C;버가 연결되었지만 사용할 수 있는 도구가 없습니다.
 
-**Troubleshooting:**
+**문제 해결:**
 
-1. **Verify tool registration:** Ensure your server actually registers tools
-2. **Check MCP protocol:** Confirm your server implements the MCP tool listing correctly
-3. **Review server logs:** Check stderr output for server-side errors
-4. **Test tool listing:** Manually test your server's tool discovery endpoint
+1. **도구 등록 확인:**&#xC11C;버가 실제로 도구를 등록하는지 확인하세요.
+2. **MCP 프로토콜을 확인하십시오.**&#xC11C;버가 MCP 도구 목록을 올바르게 구현하는지 확인하세요.
+3. **서버 로그 검토:**&#xC11C;버 측 오류에 대한 stderr 출력을 확인하십시오.
+4. **테스트 도구 목록:**&#xC11C;버의 도구 검색 엔드포인트를 수동으로 테스트하세요.
 
-#### Tools Not Executing
+#### 도구가 실행되지 않음
 
-**Symptoms:** Tools are discovered but fail during execution
+**증상:**&#xB3C4;구가 발견되었지만 실행 중에 실패함
 
-**Troubleshooting:**
+**문제 해결:**
 
-1. **Parameter validation:** Ensure your tool accepts the expected parameters
-2. **Schema compatibility:** Verify your input schemas are valid JSON Schema
-3. **Error handling:** Check if your tool is throwing unhandled exceptions
-4. **Timeout issues:** Consider increasing the `timeout` setting
+1. **매개변수 검증:**&#xB3C4;구가 예상 매개변수를 수용하는지 확인하세요.
+2. **스키마 호환성:**&#xC785;력 스키마가 유효한 JSON 스키마인지 확인하세요.
+3. **오류 처리:**&#xB3C4;구에서 처리되지 않은 예외가 발생하는지 확인하세요.
+4. **시간 초과 문제:**&#xC99D;가하는 것을 고려하십시오.`timeout`환경
 
-#### Sandbox Compatibility
+#### 샌드박스 호환성
 
-**Symptoms:** MCP servers fail when sandboxing is enabled
+**증상:**&#xC0CC;드박싱이 활성화되면 MCP 서버가 실패합니다.
 
-**Solutions:**
+**솔루션:**
 
-1. **Docker-based servers:** Use Docker containers that include all dependencies
-2. **Path accessibility:** Ensure server executables are available in the sandbox
-3. **Network access:** Configure sandbox to allow necessary network connections
-4. **Environment variables:** Verify required environment variables are passed through
+1. **Docker 기반 서버:**&#xBAA8;든 종속성을 포함하는 Docker 컨테이너 사용
+2. **경로 접근성:**&#xC0CC;드박스에서 서버 실행 파일을 사용할 수 있는지 확인하세요.
+3. **네트워크 액세스:**&#xD544;요한 네트워크 연결을 허용하도록 샌드박스 구성
+4. **환경 변수:**&#xD544;수 환경 변수가 전달되는지 확인
 
-### Debugging Tips
+### 디버깅 팁
 
-1. **Enable debug mode:** Run the CLI with `--debug` for verbose output
-2. **Check stderr:** MCP server stderr is captured and logged (INFO messages filtered)
-3. **Test isolation:** Test your MCP server independently before integrating
-4. **Incremental setup:** Start with simple tools before adding complex functionality
-5. **Use `/mcp` frequently:** Monitor server status during development
+1. **디버그 모드 활성화:**&#xB2E4;음으로 CLI를 실행하세요.`--debug`자세한 출력을 위해
+2. **표준 오류를 확인하십시오.**&#x4D;CP 서버 stderr이 캡처되고 기록됩니다(INFO 메시지가 필터링됨).
+3. **테스트 격리:**&#xD1B5;합하기 전에 MCP 서버를 독립적으로 테스트하십시오.
+4. **증분 설정:**&#xBCF5;잡한 기능을 추가하기 전에 간단한 도구로 시작하세요
+5. **사용`/mcp`자주:**&#xAC1C;발 중 서버 상태 모니터링
 
-## Important Notes
+## 중요 사항
 
-### Security Considerations
+### 보안 고려 사항
 
-- **Trust settings:** The `trust` option bypasses all confirmation dialogs. Use cautiously and only for servers you completely control
-- **Access tokens:** Be security-aware when configuring environment variables containing API keys or tokens
-- **Sandbox compatibility:** When using sandboxing, ensure MCP servers are available within the sandbox environment
-- **Private data:** Using broadly scoped personal access tokens can lead to information leakage between repositories
+* **신뢰 설정:**&#xADF8;만큼`trust`옵션은 모든 확인 대화 상자를 무시합니다. 주의 깊게 사용하고 완전히 제어하는 ​​서버에만 사용하세요.
+* **액세스 토큰:**&#x41;PI 키 또는 토큰이 포함된 환경 변수를 구성할 때 보안에 유의하세요.
+* **샌드박스 호환성:**&#xC0CC;드박싱을 사용할 때 샌드박스 환경 내에서 MCP 서버를 사용할 수 있는지 확인하십시오.
+* **개인 데이터:**&#xAD11;범위한 개인 액세스 토큰을 사용하면 저장소 간 정보 유출이 발생할 수 있습니다.
 
-### Performance and Resource Management
+### 성능 및 자원 관리
 
-- **Connection persistence:** The CLI maintains persistent connections to servers that successfully register tools
-- **Automatic cleanup:** Connections to servers providing no tools are automatically closed
-- **Timeout management:** Configure appropriate timeouts based on your server's response characteristics
-- **Resource monitoring:** MCP servers run as separate processes and consume system resources
+* **연결 지속성:**&#x43;LI는 도구를 성공적으로 등록하는 서버에 대한 지속적인 연결을 유지합니다.
+* **자동 정리:**&#xB3C4;구를 제공하지 않는 서버에 대한 연결은 자동으로 닫힙니다.
+* **시간 초과 관리:**&#xC11C;버의 응답 특성에 따라 적절한 시간 제한을 구성하세요.
+* **리소스 모니터링:**&#x4D;CP 서버는 별도의 프로세스로 실행되고 시스템 리소스를 소비합니다.
 
-### Schema Compatibility
+### 스키마 호환성
 
-- **Schema compliance mode:** By default (`schemaCompliance: "auto"`), tool schemas are passed through as-is. Set `"model": { "generationConfig": { "schemaCompliance": "openapi_30" } }` in your `settings.json` to convert models to Strict OpenAPI 3.0 format.
-- **OpenAPI 3.0 transformations:** When `openapi_30` mode is enabled, the system handles:
-  - Nullable types: `["string", "null"]` -> `type: "string", nullable: true`
-  - Const values: `const: "foo"` -> `enum: ["foo"]`
-  - Exclusive limits: numeric `exclusiveMinimum` -> boolean form with `minimum`
-  - Keyword removal: `$schema`, `$id`, `dependencies`, `patternProperties`
-- **Name sanitization:** Tool names are automatically sanitized to meet API requirements
-- **Conflict resolution:** Tool name conflicts between servers are resolved through automatic prefixing
+* **스키마 준수 모드:**&#xAE30;본적으로 (`schemaCompliance: "auto"`), 도구 스키마는 있는 그대로 전달됩니다. 세트`"model": { "generationConfig": { "schemaCompliance": "openapi_30" } }`당신의`settings.json`모델을 Strict OpenAPI 3.0 형식으로 변환합니다.
+* **OpenAPI 3.0 변환:**&#xC5B8;제`openapi_30`모드가 활성화되면 시스템은 다음을 처리합니다.
+  * Null 허용 유형:`["string", "null"]`->`type: "string", nullable: true`
+  * 상수 값:`const: "foo"`->`enum: ["foo"]`
+  * 배타적 제한: 숫자`exclusiveMinimum`-> 부울 형식`minimum`
+  * 키워드 제거:`$schema`,`$id`,`dependencies`,`patternProperties`
+* **이름 삭제:**&#xB3C4;구 이름은 API 요구 사항을 충족하기 위해 자동으로 삭제됩니다.
+* **충돌 해결:**&#xC11C;버 간의 도구 이름 충돌은 자동 접두사 지정을 통해 해결됩니다.
 
-This comprehensive integration makes MCP servers a powerful way to extend the CLI's capabilities while maintaining security, reliability, and ease of use.
+이러한 포괄적인 통합을 통해 MCP 서버는 보안, 안정성 및 사용 편의성을 유지하면서 CLI의 기능을 확장할 수 있는 강력한 방법이 됩니다.
 
-## Returning Rich Content from Tools
+## 도구에서 리치 콘텐츠 반환
 
-MCP tools are not limited to returning simple text. You can return rich, multi-part content, including text, images, audio, and other binary data in a single tool response. This allows you to build powerful tools that can provide diverse information to the model in a single turn.
+MCP 도구는 단순 텍스트 반환에만 국한되지 않습니다. 단일 도구 응답으로 텍스트, 이미지, 오디오 및 기타 이진 데이터를 포함한 풍부한 다중 부분 콘텐츠를 반환할 수 있습니다. 이를 통해 한 번에 모델에 다양한 정보를 제공할 수 있는 강력한 도구를 구축할 수 있습니다.
 
-All data returned from the tool is processed and sent to the model as context for its next generation, enabling it to reason about or summarize the provided information.
+도구에서 반환된 모든 데이터는 처리되어 차세대를 위한 컨텍스트로 모델에 전송되어 제공된 정보에 대해 추론하거나 요약할 수 있습니다.
 
-### How It Works
+### 작동 방식
 
-To return rich content, your tool's response must adhere to the MCP specification for a [`CallToolResult`](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result). The `content` field of the result should be an array of `ContentBlock` objects. The CLI will correctly process this array, separating text from binary data and packaging it for the model.
+풍부한 콘텐츠를 반환하려면 도구의 응답이 MCP 사양을 준수해야 합니다.[`CallToolResult`](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result). 그만큼`content`결과 필드는 다음의 배열이어야 합니다.`ContentBlock`사물. CLI는 이 배열을 올바르게 처리하여 이진 데이터에서 텍스트를 분리하고 모델에 맞게 패키징합니다.
 
-You can mix and match different content block types in the `content` array. The supported block types include:
+다양한 콘텐츠 블록 유형을 혼합하고 일치시킬 수 있습니다.`content`정렬. 지원되는 블록 유형은 다음과 같습니다.
 
-- `text`
-- `image`
-- `audio`
-- `resource` (embedded content)
-- `resource_link`
+* `text`
+* `image`
+* `audio`
+* `resource`(내장된 콘텐츠)
+* `resource_link`
 
-### Example: Returning Text and an Image
+### 예: 텍스트 및 이미지 반환
 
-Here is an example of a valid JSON response from an MCP tool that returns both a text description and an image:
+다음은 텍스트 설명과 이미지를 모두 반환하는 MCP 도구의 유효한 JSON 응답 예입니다.
 
 ```json
 {
@@ -692,21 +693,21 @@ Here is an example of a valid JSON response from an MCP tool that returns both a
 }
 ```
 
-When Qwen Code receives this response, it will:
+Qwen Code가 이 응답을 받으면 다음을 수행합니다.
 
-1.  Extract all the text and combine it into a single `functionResponse` part for the model.
-2.  Present the image data as a separate `inlineData` part.
-3.  Provide a clean, user-friendly summary in the CLI, indicating that both text and an image were received.
+1. 모든 텍스트를 추출하여 하나의 텍스트로 결합합니다.`functionResponse`모델에 대한 부분입니다.
+2. 이미지 데이터를 별도로 표시`inlineData`부분.
+3. CLI에서 텍스트와 이미지가 모두 수신되었음을 나타내는 깔끔하고 사용자 친화적인 요약을 제공합니다.
 
-This enables you to build sophisticated tools that can provide rich, multi-modal context to the Qwen model.
+이를 통해 Qwen 모델에 풍부한 다중 모드 컨텍스트를 제공할 수 있는 정교한 도구를 구축할 수 있습니다.
 
-## MCP Prompts as Slash Commands
+## 슬래시 명령으로 MCP 프롬프트
 
-In addition to tools, MCP servers can expose predefined prompts that can be executed as slash commands within Qwen Code. This allows you to create shortcuts for common or complex queries that can be easily invoked by name.
+도구 외에도 MCP 서버는 Qwen Code 내에서 슬래시 명령으로 실행할 수 있는 사전 정의된 프롬프트를 노출할 수 있습니다. 이를 통해 이름으로 쉽게 호출할 수 있는 일반 쿼리 또는 복잡한 쿼리에 대한 바로 가기를 만들 수 있습니다.
 
-### Defining Prompts on the Server
+### 서버에서 프롬프트 정의
 
-Here's a small example of a stdio MCP server that defines prompts:
+다음은 프롬프트를 정의하는 stdio MCP 서버의 작은 예입니다.
 
 ```ts
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -742,7 +743,7 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 ```
 
-This can be included in `settings.json` under `mcpServers` with:
+이는 다음 항목에 포함될 수 있습니다.`settings.json`아래에`mcpServers`와 함께:
 
 ```json
 {
@@ -755,61 +756,61 @@ This can be included in `settings.json` under `mcpServers` with:
 }
 ```
 
-### Invoking Prompts
+### 프롬프트 호출
 
-Once a prompt is discovered, you can invoke it using its name as a slash command. The CLI will automatically handle parsing arguments.
+프롬프트가 발견되면 해당 이름을 슬래시 명령으로 사용하여 호출할 수 있습니다. CLI는 구문 분석 인수를 자동으로 처리합니다.
 
 ```bash
 /poem-writer --title="Qwen Code" --mood="reverent"
 ```
 
-or, using positional arguments:
+또는 위치 인수를 사용하여:
 
 ```bash
 /poem-writer "Qwen Code" reverent
 ```
 
-When you run this command, the CLI executes the `prompts/get` method on the MCP server with the provided arguments. The server is responsible for substituting the arguments into the prompt template and returning the final prompt text. The CLI then sends this prompt to the model for execution. This provides a convenient way to automate and share common workflows.
+이 명령을 실행하면 CLI가 다음을 실행합니다.`prompts/get`제공된 인수를 사용하여 MCP 서버의 메서드입니다. 서버는 인수를 프롬프트 템플릿으로 대체하고 최종 프롬프트 텍스트를 반환하는 일을 담당합니다. 그런 다음 CLI는 실행을 위해 이 프롬프트를 모델에 보냅니다. 이는 일반적인 작업 흐름을 자동화하고 공유하는 편리한 방법을 제공합니다.
 
-## Managing MCP Servers with `qwen mcp`
+## MCP 서버 관리`qwen mcp`
 
-While you can always configure MCP servers by manually editing your `settings.json` file, the CLI provides a convenient set of commands to manage your server configurations programmatically. These commands streamline the process of adding, listing, and removing MCP servers without needing to directly edit JSON files.
+수동으로 편집하여 언제든지 MCP 서버를 구성할 수 있습니다.`settings.json`파일에서 CLI는 프로그래밍 방식으로 서버 구성을 관리할 수 있는 편리한 명령 세트를 제공합니다. 이러한 명령은 JSON 파일을 직접 편집할 필요 없이 MCP 서버를 추가, 나열 및 제거하는 프로세스를 간소화합니다.
 
-### Adding a Server (`qwen mcp add`)
+### 서버 추가(`qwen mcp add`)
 
-The `add` command configures a new MCP server in your `settings.json`. Based on the scope (`-s, --scope`), it will be added to either the user config `~/.qwen/settings.json` or the project config `.qwen/settings.json` file.
+그만큼`add`명령은 새 MCP 서버를 구성합니다.`settings.json`. 범위(`-s, --scope`), 사용자 구성에 추가됩니다.`~/.qwen/settings.json`또는 프로젝트 구성`.qwen/settings.json`파일.
 
-**Command:**
+**명령:**
 
 ```bash
 qwen mcp add [options] <name> <commandOrUrl> [args...]
 ```
 
-- `<name>`: A unique name for the server.
-- `<commandOrUrl>`: The command to execute (for `stdio`) or the URL (for `http`/`sse`).
-- `[args...]`: Optional arguments for a `stdio` command.
+* `<name>`: 서버의 고유 이름입니다.
+* `<commandOrUrl>`: 실행할 명령(`stdio`) 또는 URL(`http`/`sse`).
+* `[args...]`: a에 대한 선택적 인수`stdio`명령.
 
-**Options (Flags):**
+**옵션(플래그):**
 
-- `-s, --scope`: Configuration scope (user or project). [default: "project"]
-- `-t, --transport`: Transport type (stdio, sse, http). [default: "stdio"]
-- `-e, --env`: Set environment variables (e.g. -e KEY=value).
-- `-H, --header`: Set HTTP headers for SSE and HTTP transports (e.g. -H "X-Api-Key: abc123" -H "Authorization: Bearer abc123").
-- `--timeout`: Set connection timeout in milliseconds.
-- `--trust`: Trust the server (bypass all tool call confirmation prompts).
-- `--description`: Set the description for the server.
-- `--include-tools`: A comma-separated list of tools to include.
-- `--exclude-tools`: A comma-separated list of tools to exclude.
-- `--oauth-client-id`: OAuth client ID for MCP server authentication.
-- `--oauth-client-secret`: OAuth client secret for MCP server authentication.
-- `--oauth-redirect-uri`: OAuth redirect URI (e.g., `https://your-server.com/oauth/callback`). Defaults to `http://localhost:7777/oauth/callback` for local setups. **Important for remote deployments**: When running Qwen Code on remote/cloud servers, set this to a publicly accessible URL.
-- `--oauth-authorization-url`: OAuth authorization URL.
-- `--oauth-token-url`: OAuth token URL.
-- `--oauth-scopes`: OAuth scopes (comma-separated).
+* `-s, --scope`: 구성 범위(사용자 또는 프로젝트). \[기본값: "프로젝트"]
+* `-t, --transport`: 전송 유형(stdio, sse, http). \[기본값: "stdio"]
+* `-e, --env`: 환경 변수를 설정합니다(예: -e KEY=value).
+* `-H, --header`: SSE 및 HTTP 전송을 위한 HTTP 헤더를 설정합니다(예: -H "X-Api-Key: abc123" -H "Authorization: Bearer abc123").
+* `--timeout`: 연결 시간 초과를 밀리초 단위로 설정합니다.
+* `--trust`: 서버를 신뢰합니다(모든 도구 호출 확인 메시지를 무시합니다).
+* `--description`: 서버에 대한 설명을 설정합니다.
+* `--include-tools`: 포함할 도구의 쉼표로 구분된 목록입니다.
+* `--exclude-tools`: 제외할 도구의 쉼표로 구분된 목록입니다.
+* `--oauth-client-id`: MCP 서버 인증을 위한 OAuth 클라이언트 ID입니다.
+* `--oauth-client-secret`: MCP 서버 인증을 위한 OAuth 클라이언트 비밀번호입니다.
+* `--oauth-redirect-uri`: OAuth 리디렉션 URI(예:`https://your-server.com/oauth/callback`). 기본값은`http://localhost:7777/oauth/callback`로컬 설정용.**원격 배포에 중요**: 원격/클라우드 서버에서 Qwen Code를 실행하는 경우 공개적으로 액세스할 수 있는 URL로 설정합니다.
+* `--oauth-authorization-url`: OAuth 인증 URL입니다.
+* `--oauth-token-url`: OAuth 토큰 URL.
+* `--oauth-scopes`: OAuth 범위(쉼표로 구분).
 
-#### Adding an stdio server
+#### stdio 서버 추가
 
-This is the default transport for running local servers.
+이는 로컬 서버를 실행하기 위한 기본 전송입니다.
 
 ```bash
 # Basic syntax
@@ -822,9 +823,9 @@ qwen mcp add my-stdio-server -e API_KEY=123 /path/to/server arg1 arg2 arg3
 qwen mcp add python-server python server.py --port 8080
 ```
 
-#### Adding an HTTP server
+#### HTTP 서버 추가
 
-This transport is for servers that use the streamable HTTP transport.
+이 전송은 스트리밍 가능한 HTTP 전송을 사용하는 서버용입니다.
 
 ```bash
 # Basic syntax
@@ -837,9 +838,9 @@ qwen mcp add --transport http http-server https://api.example.com/mcp/
 qwen mcp add --transport http secure-http https://api.example.com/mcp/ --header "Authorization: Bearer abc123"
 ```
 
-#### Adding an SSE server
+#### SSE 서버 추가
 
-This transport is for servers that use Server-Sent Events (SSE).
+이 전송은 SSE(Server-Sent Events)를 사용하는 서버용입니다.
 
 ```bash
 # Basic syntax
@@ -859,17 +860,17 @@ qwen mcp add --transport sse oauth-server https://api.example.com/sse/ \
   --oauth-token-url https://provider.example.com/token
 ```
 
-### Managing Servers (`qwen mcp`)
+### 서버 관리(`qwen mcp`)
 
-To view and manage all MCP servers currently configured, use the `manage` command or simply `qwen mcp`. This opens an interactive TUI dialog where you can:
+현재 구성된 모든 MCP 서버를 보고 관리하려면`manage`명령을 내리거나 간단히`qwen mcp`. 그러면 다음을 수행할 수 있는 대화형 TUI 대화 상자가 열립니다.
 
-- View all MCP servers with their connection status
-- Enable/disable servers
-- Reconnect to disconnected servers
-- View tools and prompts provided by each server
-- View server logs
+* 연결 상태와 함께 모든 MCP 서버 보기
+* 서버 활성화/비활성화
+* 연결이 끊긴 서버에 다시 연결
+* 각 서버에서 제공하는 도구 및 프롬프트 보기
+* 서버 로그 보기
 
-**Command:**
+**명령:**
 
 ```bash
 qwen mcp
@@ -877,22 +878,22 @@ qwen mcp
 qwen mcp manage
 ```
 
-The management dialog provides a visual interface showing each server's name, configuration details, connection status, and available tools/prompts.
+관리 대화 상자는 각 서버의 이름, 구성 세부 정보, 연결 상태 및 사용 가능한 도구/프롬프트를 보여주는 시각적 인터페이스를 제공합니다.
 
-### Removing a Server (`qwen mcp remove`)
+### 서버 제거(`qwen mcp remove`)
 
-To delete a server from your configuration, use the `remove` command with the server's name.
+구성에서 서버를 삭제하려면`remove`서버 이름으로 명령을 실행하세요.
 
-**Command:**
+**명령:**
 
 ```bash
 qwen mcp remove <name>
 ```
 
-**Example:**
+**예:**
 
 ```bash
 qwen mcp remove my-server
 ```
 
-This will find and delete the "my-server" entry from the `mcpServers` object in the appropriate `settings.json` file based on the scope (`-s, --scope`).
+그러면 "my-server" 항목이 검색되어 삭제됩니다.`mcpServers`적절한 개체`settings.json`범위에 따른 파일(`-s, --scope`).

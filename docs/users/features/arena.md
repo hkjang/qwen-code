@@ -1,110 +1,109 @@
-# Agent Arena
+# 에이전트 아레나
 
-> Dispatch multiple AI models simultaneously to execute the same task, compare their solutions side-by-side, and select the best result to apply to your workspace.
+> 여러 AI 모델을 동시에 파견하여 동일한 작업을 실행하고, 솔루션을 나란히 비교하고, 작업 공간에 적용할 최상의 결과를 선택하세요.
 
-> [!warning]
-> Agent Arena is experimental. It has [known limitations](#limitations) around display modes and session management.
+> \[!경고]&#x20;
+> 에이전트 아레나는 실험적입니다. 그것은 가지고있다[알려진 제한 사항](#limitations)디스플레이 모드 및 세션 관리에 관한 것입니다.
 
-Agent Arena lets you pit multiple AI models against each other on the same task. Each model runs as a fully independent agent in its own isolated Git worktree, so file operations never interfere. When all agents finish, you compare results and select a winner to merge back into your main workspace.
+Agent Arena를 사용하면 동일한 작업에서 여러 AI 모델을 서로 대결할 수 있습니다. 각 모델은 격리된 자체 Git 작업 트리에서 완전히 독립적인 에이전트로 실행되므로 파일 작업이 방해받지 않습니다. 모든 에이전트가 완료되면 결과를 비교하고 승자를 선택하여 기본 작업 공간에 다시 병합합니다.
 
-Unlike [subagents](/users/features/sub-agents), which delegate focused subtasks within a single session, Arena agents are complete, top-level agent instances — each with its own model, context window, and full tool access.
+같지 않은[하위 에이전트](/users/features/sub-agents)단일 세션 내에서 집중적인 하위 작업을 위임하는 Arena 에이전트는 각각 자체 모델, 컨텍스트 창 및 전체 도구 액세스 권한을 갖춘 완전한 최상위 에이전트 인스턴스입니다.
 
-This page covers:
+이 페이지에서는 다음 내용을 다룹니다.
 
-- [When to use Agent Arena](#when-to-use-agent-arena)
-- [Starting an arena session](#start-an-arena-session)
-- [Interacting with agents](#interact-with-agents), including display modes and navigation
-- [Comparing results and selecting a winner](#compare-results-and-select-a-winner)
-- [Best practices](#best-practices)
+* [에이전트 아레나를 사용하는 경우](#when-to-use-agent-arena)
+* [아레나 세션 시작하기](#start-an-arena-session)
+* [상담원과의 상호작용](#interact-with-agents), 디스플레이 모드 및 탐색 포함
+* [결과 비교 및 ​​승자 선정](#compare-results-and-select-a-winner)
+* [모범 사례](#best-practices)
 
-## When to use Agent Arena
+## 에이전트 아레나를 사용하는 경우
 
-Agent Arena is most effective when you want to **evaluate or compare** how different models tackle the same problem. The strongest use cases are:
+Agent Arena는 다음을 원할 때 가장 효과적입니다.**평가하거나 비교하다**서로 다른 모델이 동일한 문제를 어떻게 해결하는지. 가장 강력한 사용 사례는 다음과 같습니다.
 
-- **Model benchmarking**: Evaluate different models' capabilities on real tasks in your actual codebase, not synthetic benchmarks
-- **Best-of-N selection**: Get multiple independent solutions and pick the best implementation
-- **Exploring approaches**: See how different models reason about and solve the same problem — useful for learning and insight
-- **Risk reduction**: For critical changes, validate that multiple models converge on a similar approach before committing
+* **모델 벤치마킹**: 합성 벤치마크가 아닌 실제 코드베이스의 실제 작업에 대한 다양한 모델의 기능을 평가합니다.
+* **N 베스트 선택**: 여러 개의 독립적인 솔루션을 확보하고 최상의 구현 선택
+* **접근법 탐색**: 동일한 문제에 대해 다양한 모델이 어떻게 추론하고 해결하는지 확인하세요. 학습과 통찰력에 유용합니다.
+* **위험 감소**: 중요한 변경 사항의 경우 커밋하기 전에 여러 모델이 비슷한 접근 방식으로 수렴되는지 확인하세요.
 
-Agent Arena uses significantly more tokens than a single session (each agent has its own context window and model calls). It works best when the value of comparison justifies the cost. For routine tasks where you trust your default model, a single session is more efficient.
+Agent Arena는 단일 세션보다 훨씬 더 많은 토큰을 사용합니다(각 에이전트에는 자체 컨텍스트 창과 모델 호출이 있습니다). 비교 가치가 비용을 정당화할 때 가장 잘 작동합니다. 기본 모델을 신뢰하는 일상적인 작업의 경우 단일 세션이 더 효율적입니다.
 
-## Start an arena session
+## 경기장 세션 시작
 
-Use the `/arena` slash command to launch a session. Specify the models you want to compete and the task:
+사용`/arena`세션을 시작하는 슬래시 명령. 경쟁하려는 모델과 작업을 지정하십시오.
 
 ```
 /arena --models qwen3.5-plus,glm-5,kimi-k2.5 "Refactor the authentication module to use JWT tokens"
 ```
 
-If you omit `--models`, an interactive model selection dialog appears, letting you pick from your configured providers.
+생략하는 경우`--models`, 구성된 공급자 중에서 선택할 수 있는 대화형 모델 선택 대화 상자가 나타납니다.
 
-### What happens when you start
+### 시작하면 어떻게 되나요?
 
-1. **Worktree setup**: Qwen Code creates isolated Git worktrees for each agent at `~/.qwen/arena/<session-id>/worktrees/<model-name>/`. Each worktree mirrors your current working directory state exactly — including staged changes, unstaged changes, and untracked files.
-2. **Agent spawning**: Each agent starts in its own worktree with full tool access and its configured model. Agents are launched sequentially but execute in parallel.
-3. **Execution**: All agents work on the task independently with no shared state or communication. You can monitor their progress and interact with any of them.
-4. **Completion**: When all agents finish (or fail), you enter the result comparison phase.
+1. **작업트리 설정**: Qwen Code는 각 에이전트에 대해 격리된 Git 작업 트리를 생성합니다.`~/.qwen/arena/<session-id>/worktrees/<model-name>/`. 각 작업 트리는 단계적 변경, 단계적이지 않은 변경, 추적되지 않은 파일을 포함하여 현재 작업 디렉터리 상태를 정확하게 미러링합니다.
+2. **에이전트 생성**: 각 에이전트는 전체 도구 액세스 및 구성된 모델을 사용하여 자체 작업 트리에서 시작됩니다. 에이전트는 순차적으로 시작되지만 병렬로 실행됩니다.
+3. **실행**: 모든 에이전트는 공유된 상태나 통신 없이 독립적으로 작업을 수행합니다. 진행 상황을 모니터링하고 누구와도 상호 작용할 수 있습니다.
+4. **완성**: 모든 상담원이 종료(또는 실패)되면 결과 비교 단계로 들어갑니다.
 
-## Interact with agents
+## 상담원과 상호작용
 
-### Display modes
+### 디스플레이 모드
 
-Agent Arena currently supports **in-process mode**, where all agents run asynchronously within the same terminal process. A tab bar at the bottom of the terminal lets you switch between agents.
+Agent Arena는 현재 지원합니다.**처리 중 모드**, 모든 에이전트는 동일한 터미널 프로세스 내에서 비동기적으로 실행됩니다. 터미널 하단에 있는 탭 표시줄을 사용하면 에이전트 간에 전환할 수 있습니다.
 
-> [!note]
-> **Split-pane display modes are planned for the future.** We intend to support tmux-based and iTerm2-based split-pane layouts, where each agent gets its own terminal pane for true side-by-side viewing. Currently, only in-process tab switching is available.
+> \[!메모]**분할 창 디스플레이 모드는 향후에 계획되어 있습니다.**&#xC6B0;리는 각 에이전트가 진정한 나란히 보기를 위해 자체 터미널 창을 갖는 tmux 기반 및 iTerm2 기반 분할 창 레이아웃을 지원할 계획입니다. 현재는 진행 중인 탭 전환만 가능합니다.
 
-### Navigate between agents
+### 에이전트 간 이동
 
-In in-process mode, use keyboard shortcuts to switch between agent views:
+처리 중 모드에서는 키보드 단축키를 사용하여 에이전트 보기 간에 전환합니다.
 
-| Shortcut | Action                            |
-| :------- | :-------------------------------- |
-| `Right`  | Switch to the next agent tab      |
-| `Left`   | Switch to the previous agent tab  |
-| `Up`     | Switch focus to the input box     |
-| `Down`   | Switch focus to the agent tab bar |
+| 지름길     | 행동                |
+| :------ | :---------------- |
+| `Right` | 다음 상담원 탭으로 전환     |
+| `Left`  | 이전 에이전트 탭으로 전환    |
+| `Up`    | 입력 상자로 포커스 전환     |
+| `Down`  | 상담원 탭 표시줄로 포커스 전환 |
 
-The tab bar shows each agent's current status:
+탭 표시줄에는 각 에이전트의 현재 상태가 표시됩니다.
 
-| Indicator | Meaning                |
-| :-------- | :--------------------- |
-| `●`       | Running or idle        |
-| `✓`       | Completed successfully |
-| `✗`       | Failed                 |
-| `○`       | Cancelled              |
+| 지시자 | 의미            |
+| :-- | :------------ |
+| `●` | 실행 중 또는 유휴 상태 |
+| `✓` | 성공적으로 완료되었습니다 |
+| `✗` | 실패한           |
+| `○` | 취소            |
 
-### Interact with individual agents
+### 개별 상담원과 상호작용
 
-When viewing an agent's tab, you can:
+상담원 탭을 볼 때 다음을 수행할 수 있습니다.
 
-- **Send messages** — type in the input area to give the agent additional instructions
-- **Approve tool calls** — if an agent requests tool approval, the confirmation dialog appears in its tab
-- **View full history** — scroll through the agent's complete conversation, including model output, tool calls, and results
+* **메시지 보내기**— 상담원에게 추가 지침을 제공하려면 입력 영역에 입력하세요.
+* **도구 호출 승인**— 에이전트가 도구 승인을 요청하면 해당 탭에 확인 대화 상자가 나타납니다.
+* **전체 기록 보기**— 모델 출력, 도구 호출 및 결과를 포함하여 에이전트의 전체 대화를 스크롤합니다.
 
-Each agent is a full, independent session. Anything you can do with the main agent, you can do with an arena agent.
+각 에이전트는 완전하고 독립적인 세션입니다. 메인 에이전트로 할 수 있는 모든 것은 아레나 에이전트로도 할 수 있습니다.
 
-## Compare results and select a winner
+## 결과를 비교하고 승자를 선택하세요
 
-When all agents complete, the Arena enters the result comparison phase. You'll see:
+모든 에이전트가 완료되면 아레나는 결과 비교 단계로 들어갑니다. 다음을 볼 수 있습니다:
 
-- **Status summary**: Which agents succeeded, failed, or were cancelled
-- **Execution metrics**: Duration, rounds of reasoning, token usage, and tool call counts for each agent
-- **Arena comparison summary**: Files changed in common vs. by one agent only, line-change counts, token efficiency, and a high-level approach summary generated from each agent's diff, metrics, and conversation history
+* **상태 요약**: 성공, 실패 또는 취소된 에이전트
+* **실행 지표**: 각 에이전트의 지속 시간, 추론 라운드, 토큰 사용 및 도구 호출 횟수
+* **아레나 비교 요약**: 공통적으로 변경된 파일과 단일 에이전트에 의해서만 변경된 파일, 줄 변경 횟수, 토큰 효율성 및 각 에이전트의 차이점, 메트릭 및 대화 기록에서 생성된 상위 수준 접근 요약
 
-A selection dialog presents the successful agents. Choose one to apply its changes to your main workspace, or discard all results. Press `p` to toggle a quick preview for the highlighted agent, or `d` to toggle that agent's detailed diff before selecting a winner.
+선택 대화 상자에 성공적인 에이전트가 표시됩니다. 변경 사항을 기본 작업 공간에 적용하거나 모든 결과를 삭제하려면 하나를 선택하세요. 누르다`p`강조 표시된 에이전트에 대한 빠른 미리보기를 전환하거나`d`승자를 선택하기 전에 해당 상담원의 세부 비교를 전환합니다.
 
-### What happens when you select a winner
+### 우승자를 선택하면 어떻게 되나요?
 
-1. The winning agent's changes are extracted as a diff against the baseline
-2. The diff is applied to your main working directory
-3. All worktrees and temporary branches are cleaned up automatically
+1. 승리한 에이전트의 변경 사항은 기준선과의 차이점으로 추출됩니다.
+2. 차이점은 기본 작업 디렉터리에 적용됩니다.
+3. 모든 작업 트리와 임시 분기가 자동으로 정리됩니다.
 
-If you want to inspect the complete reasoning path before deciding, each agent's full conversation history is still available via the tab bar while the selection dialog is active.
+결정하기 전에 전체 추론 경로를 검사하려는 경우 선택 대화 상자가 활성화되어 있는 동안 탭 표시줄을 통해 각 에이전트의 전체 대화 기록을 계속 사용할 수 있습니다.
 
-## Configuration
+## 구성
 
-Arena behavior can be customized in [settings.json](/users/configuration/settings):
+경기장 행동은 다음에서 사용자 정의할 수 있습니다.[설정.json](/users/configuration/settings):
 
 ```json
 {
@@ -116,104 +115,104 @@ Arena behavior can be customized in [settings.json](/users/configuration/setting
 }
 ```
 
-| Setting                   | Description                        | Default         |
-| :------------------------ | :--------------------------------- | :-------------- |
-| `arena.worktreeBaseDir`   | Base directory for arena worktrees | `~/.qwen/arena` |
-| `arena.maxRoundsPerAgent` | Maximum reasoning rounds per agent | `50`            |
-| `arena.timeoutSeconds`    | Timeout for each agent in seconds  | `600`           |
+| 환경                        | 설명                   | 기본              |
+| :------------------------ | :------------------- | :-------------- |
+| `arena.worktreeBaseDir`   | Arena 작업 트리의 기본 디렉터리 | `~/.qwen/arena` |
+| `arena.maxRoundsPerAgent` | 에이전트당 최대 추론 라운드      | `50`            |
+| `arena.timeoutSeconds`    | 각 에이전트의 시간 초과(초)     | `600`           |
 
-## Best practices
+## 모범 사례
 
-### Choose models that complement each other
+### 서로 보완하는 모델을 선택하세요
 
-Arena is most valuable when you compare models with meaningfully different strengths. For example:
+Arena는 의미 있는 강점을 지닌 모델을 비교할 때 가장 가치가 높습니다. 예를 들어:
 
 ```
 /arena --models qwen3.5-plus,glm-5,kimi-k2.5 "Optimize the database query layer"
 ```
 
-Comparing three versions of the same model family yields less insight than comparing across providers.
+동일한 모델 제품군의 세 가지 버전을 비교하면 제공업체 간 비교보다 통찰력이 떨어집니다.
 
-### Keep tasks self-contained
+### 작업을 독립적으로 유지
 
-Arena agents work independently with no communication. Tasks should be fully describable in the prompt without requiring back-and-forth:
+투기장 요원은 의사소통 없이 독립적으로 작업합니다. 작업은 앞뒤로 이동할 필요 없이 프롬프트에서 완전히 설명 가능해야 합니다.
 
-**Good**: "Refactor the payment module to use the strategy pattern. Update all tests."
+**좋은**: "전략 패턴을 사용하도록 결제 모듈을 리팩터링합니다. 모든 테스트를 업데이트하세요."
 
-**Less effective**: "Let's discuss how to improve the payment module" — this benefits from conversation, which is better suited to a single session.
+**덜 효과적**: "결제 모듈을 개선하는 방법에 대해 논의합시다" — 이는 단일 세션에 더 적합한 대화의 이점입니다.
 
-### Limit the number of agents
+### 상담원 수 제한
 
-Up to 5 agents can run simultaneously. In practice, 2-3 agents provide the best balance of comparison value to resource cost. More agents means:
+최대 5개의 에이전트를 동시에 실행할 수 있습니다. 실제로는 2\~3명의 에이전트가 리소스 비용에 대한 비교 가치의 균형이 가장 잘 맞습니다. 상담원이 많다는 것은 다음을 의미합니다.
 
-- Higher token costs (each agent has its own context window)
-- Longer total execution time
-- More results to compare
+* 높은 토큰 비용(각 에이전트에는 자체 컨텍스트 창이 있음)
+* 총 실행 시간이 길어짐
+* 비교할 추가 결과
 
-Start with 2-3 and scale up only when the comparison value justifies it.
+2\~3으로 시작하고 비교 값이 타당할 때만 확장하세요.
 
-### Use Arena for high-impact decisions
+### 영향력이 큰 결정을 위해 Arena를 사용하세요
 
-Arena shines when the stakes justify running multiple models:
+Arena는 여러 모델을 실행하는 것이 정당화될 때 빛을 발합니다.
 
-- Choosing an architecture for a new module
-- Selecting an approach for a complex refactor
-- Validating a critical bug fix from multiple angles
+* 새 모듈을 위한 아키텍처 선택
+* 복잡한 리팩터링을 위한 접근 방식 선택
+* 여러 각도에서 중요한 버그 수정 확인
 
-For routine changes like renaming a variable or updating a config file, a single session is faster and cheaper.
+변수 이름 바꾸기 또는 구성 파일 업데이트와 같은 일상적인 변경의 경우 단일 세션이 더 빠르고 저렴합니다.
 
-## Troubleshooting
+## 문제 해결
 
-### Agents failing to start
+### 에이전트가 시작되지 않습니다.
 
-- Verify that each model in `--models` is properly configured with valid API credentials
-- Check that your working directory is a Git repository (worktrees require Git)
-- Ensure you have write access to the worktree base directory (`~/.qwen/arena/` by default)
+* 각 모델이`--models`유효한 API 자격 증명으로 올바르게 구성되었습니다.
+* 작업 디렉터리가 Git 저장소인지 확인하세요(작업 트리에는 Git이 필요함).
+* 작업 트리 기본 디렉터리(`~/.qwen/arena/`기본적으로)
 
-### Worktree creation fails
+### 작업 트리 생성 실패
 
-- Run `git worktree list` to check for stale worktrees from previous sessions
-- Clean up stale worktrees with `git worktree prune`
-- Ensure your Git version supports worktrees (`git --version`, requires Git 2.5+)
+* 달리다`git worktree list`이전 세션의 오래된 작업 트리를 확인하려면
+* 오래된 작업 트리를 정리하십시오.`git worktree prune`
+* Git 버전이 작업 트리(`git --version`, Git 2.5+ 필요)
 
-### Agent takes too long
+### 에이전트가 너무 오래 걸림
 
-- Increase the timeout: set `arena.timeoutSeconds` in settings
-- Reduce task complexity — Arena tasks should be focused and well-defined
-- Lower `arena.maxRoundsPerAgent` if agents are spending too many rounds
+* 시간 제한 늘리기: 설정`arena.timeoutSeconds`설정에서
+* 작업 복잡성 감소 - Arena 작업은 집중적이고 잘 정의되어야 합니다.
+* 낮추다`arena.maxRoundsPerAgent`상담원이 너무 많은 라운드를 소비하는 경우
 
-### Applying winner fails
+### 당첨자 신청 실패
 
-- Check for uncommitted changes in your main working directory that might conflict
-- The diff is applied as a patch — merge conflicts are possible if your working directory changed during the session
+* 충돌할 수 있는 기본 작업 디렉터리의 커밋되지 않은 변경 사항을 확인하세요.
+* 차이점은 패치로 적용됩니다. 세션 중에 작업 디렉터리가 변경되면 병합 충돌이 발생할 수 있습니다.
 
-## Limitations
+## 제한 사항
 
-Agent Arena is experimental. Current limitations:
+에이전트 아레나는 실험적입니다. 현재 제한 사항:
 
-- **In-process mode only**: Split-pane display via tmux or iTerm2 is not yet available. All agents run within a single terminal window with tab switching.
-- **No diff preview before selection**: You can view each agent's conversation history, but there is no unified diff viewer to compare solutions side-by-side before picking a winner.
-- **No worktree retention**: Worktrees are always cleaned up after selection. There is no option to preserve them for further inspection.
-- **No session resumption**: Arena sessions cannot be resumed after exiting. If you close the terminal mid-session, worktrees remain on disk and must be cleaned up manually via `git worktree prune`.
-- **Maximum 5 agents**: The hard limit of 5 concurrent agents cannot be changed.
-- **Git repository required**: Arena requires a Git repository for worktree isolation. It cannot be used in non-Git directories.
+* **In-Process 모드에만 해당**: tmux 또는 iTerm2를 통한 분할 창 표시는 아직 사용할 수 없습니다. 모든 에이전트는 탭 전환을 통해 단일 터미널 창 내에서 실행됩니다.
+* **선택 전 차이점 미리보기 없음**: 각 상담원의 대화 기록을 볼 수 있지만 승자를 선택하기 전에 솔루션을 나란히 비교할 수 있는 통합 diff 뷰어는 없습니다.
+* **작업 트리 보존 없음**: 작업 트리는 선택 후 항상 정리됩니다. 추가 검사를 위해 보존할 수 있는 옵션은 없습니다.
+* **세션 재개 없음**: 아레나 세션 종료 후에는 다시 시작할 수 없습니다. 세션 중에 터미널을 닫으면 작업 트리가 디스크에 남아 있으므로 다음을 통해 수동으로 정리해야 합니다.`git worktree prune`.
+* **최대 5명의 상담원**: 동시 상담원 5명이라는 하드 제한은 변경할 수 없습니다.
+* **Git 저장소가 필요합니다.**: Arena에는 작업 트리 격리를 위해 Git 저장소가 필요합니다. Git이 아닌 디렉토리에서는 사용할 수 없습니다.
 
-## Comparison with other multi-agent modes
+## 다른 멀티 에이전트 모드와의 비교
 
-Agent Arena is one of several planned multi-agent modes in Qwen Code. **Agent Team** and **Agent Swarm** are not yet implemented — the table below describes their intended design for reference.
+Agent Arena는 Qwen Code에서 계획된 여러 다중 에이전트 모드 중 하나입니다.**에이전트 팀**그리고**에이전트 스웜**아직 구현되지 않았습니다. 아래 표에는 참조용으로 의도된 설계가 설명되어 있습니다.
 
-|                   | **Agent Arena**                                        | **Agent Team** (planned)                           | **Agent Swarm** (planned)                                |
-| :---------------- | :----------------------------------------------------- | :------------------------------------------------- | :------------------------------------------------------- |
-| **Goal**          | Competitive: Find the best solution to the _same_ task | Collaborative: Tackle _different_ aspects together | Batch parallel: Dynamically spawn workers for bulk tasks |
-| **Agents**        | Pre-configured models compete independently            | Teammates collaborate with assigned roles          | Workers spawned on-the-fly, destroyed on completion      |
-| **Communication** | No inter-agent communication                           | Direct peer-to-peer messaging                      | One-way: results aggregated by parent                    |
-| **Isolation**     | Full: separate Git worktrees                           | Independent sessions with shared task list         | Lightweight ephemeral context per worker                 |
-| **Output**        | One selected solution applied to workspace             | Synthesized results from multiple perspectives     | Aggregated results from parallel processing              |
-| **Best for**      | Benchmarking, choosing between model approaches        | Research, complex collaboration, cross-layer work  | Batch operations, data processing, map-reduce tasks      |
+|               | **에이전트 아레나**             | **에이전트 팀**(예정)         | **에이전트 스웜**(예정)                   |
+| :------------ | :----------------------- | :--------------------- | :-------------------------------- |
+| **목표**        | 경쟁적: 최선의 솔루션을 찾으세요.*같은*일 | 협동: 태클*다른*측면을 함께       | 일괄 병렬: 대량 작업을 위해 작업자를 동적으로 생성합니다. |
+| **자치령 대표**    | 사전 구성된 모델은 독립적으로 경쟁합니다.  | 팀원은 할당된 역할로 협업합니다.     | 작업자는 즉석에서 생성되고 완료 시 파괴됩니다.        |
+| **의사소통**      | 에이전트 간 통신 없음             | 직접 P2P 메시징             | 단방향: 상위 항목별로 집계된 결과               |
+| **격리**        | 전체: 별도의 Git 작업 트리        | 공유 작업 목록이 있는 독립 세션     | 작업자당 경량 임시 컨텍스트                   |
+| **산출**        | 작업 공간에 적용된 하나의 선택된 솔루션   | 다양한 관점에서 종합된 결과        | 병렬 처리에서 집계된 결과                    |
+| **다음에 가장 적합** | 벤치마킹, 모델 접근 방식 선택        | 연구, 복잡한 협업, 크로스 레이어 작업 | 일괄 작업, 데이터 처리, 맵 축소 작업            |
 
-## Next steps
+## 다음 단계
 
-Explore related approaches for parallel and delegated work:
+병렬 및 위임 작업에 대한 관련 접근 방식을 살펴보세요.
 
-- **Lightweight delegation**: [Subagents](/users/features/sub-agents) handle focused subtasks within your session — better when you don't need model comparison
-- **Manual parallel sessions**: Run multiple Qwen Code sessions yourself in separate terminals with [Git worktrees](https://git-scm.com/docs/git-worktree) for full manual control
+* **경량 위임**:[하위 에이전트](/users/features/sub-agents)세션 내에서 집중된 하위 작업을 처리합니다. 모델 비교가 필요하지 않을 때 더 좋습니다.
+* **수동 병렬 세션**: 별도의 터미널에서 직접 여러 Qwen Code 세션을 실행하세요.[Git 작업 트리](https://git-scm.com/docs/git-worktree)완전한 수동 제어를 위해

@@ -1,14 +1,14 @@
 export default {
   'Getting started': {
     type: 'separator',
-    title: 'Getting started', // Title is optional
+    title: '시작하기', // Title is optional
   },
   overview: 'Overview',
   quickstart: 'QuickStart',
   'common-workflow': 'Command Workflows',
   'Outside of the terminal': {
     type: 'separator',
-    title: 'Outside of the terminal', // Title is optional
+    title: '터미널 외부', // Title is optional
   },
   'integration-vscode': 'Visual Studio Code',
   'integration-zed': 'Zed IDE',
@@ -16,7 +16,7 @@ export default {
   'integration-github-action': 'Github Actions',
   'Code with Qwen Code': {
     type: 'separator',
-    title: 'Code with Qwen Code', // Title is optional
+    title: 'Qwen 코드로 코딩하기', // Title is optional
   },
   features: 'Features',
   configuration: 'Configuration',

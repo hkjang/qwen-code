@@ -1,120 +1,120 @@
-# Commands
+# 명령
 
-This document details all commands supported by Qwen Code, helping you efficiently manage sessions, customize the interface, and control its behavior.
+이 문서에서는 Qwen Code에서 지원하는 모든 명령을 자세히 설명하여 세션을 효율적으로 관리하고, 인터페이스를 사용자 정의하고, 동작을 제어하는 ​​데 도움을 줍니다.
 
-Qwen Code commands are triggered through specific prefixes and fall into three categories:
+Qwen 코드 명령은 특정 접두사를 통해 트리거되며 세 가지 범주로 분류됩니다.
 
-| Prefix Type                | Function Description                                | Typical Use Case                                                 |
-| -------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
-| Slash Commands (`/`)       | Meta-level control of Qwen Code itself              | Managing sessions, modifying settings, getting help              |
-| At Commands (`@`)          | Quickly inject local file content into conversation | Allowing AI to analyze specified files or code under directories |
-| Exclamation Commands (`!`) | Direct interaction with system Shell                | Executing system commands like `git status`, `ls`, etc.          |
+| 접두사 유형      | 기능 설명                  | Typical Use Case                      |
+| ----------- | ---------------------- | ------------------------------------- |
+| 슬래시 명령(`/`) | Qwen Code 자체의 메타 수준 제어 | 세션 관리, 설정 수정, 도움말 얻기                  |
+| 명령에서(`@`)   | 대화에 로컬 파일 콘텐츠를 빠르게 삽입  | AI가 디렉터리 아래의 지정된 파일이나 코드를 분석하도록 허용    |
+| 느낌표 명령(`!`) | 시스템 셸과 직접 상호 작용        | 다음과 같은 시스템 명령 실행`git status`,`ls`, 등. |
 
-## 1. Slash Commands (`/`)
+## 1. 슬래시 명령(`/`)
 
-Slash commands are used to manage Qwen Code sessions, interface, and basic behavior.
+슬래시 명령은 Qwen Code 세션, 인터페이스 및 기본 동작을 관리하는 데 사용됩니다.
 
-### 1.1 Session and Project Management
+### 1.1 세션 및 프로젝트 관리
 
-These commands help you save, restore, and summarize work progress.
+이러한 명령은 작업 진행 상황을 저장, 복원 및 요약하는 데 도움이 됩니다.
 
-| Command     | Description                                               | Usage Examples                       |
-| ----------- | --------------------------------------------------------- | ------------------------------------ |
-| `/init`     | Analyze current directory and create initial context file | `/init`                              |
-| `/summary`  | Generate project summary based on conversation history    | `/summary`                           |
-| `/compress` | Replace chat history with summary to save Tokens          | `/compress`                          |
-| `/resume`   | Resume a previous conversation session                    | `/resume`                            |
-| `/recap`    | Generate a one-line session recap now                     | `/recap`                             |
-| `/restore`  | Restore files to state before tool execution              | `/restore` (list) or `/restore <ID>` |
+| 명령          | 설명                           | 사용 예                             |
+| ----------- | ---------------------------- | -------------------------------- |
+| `/init`     | 현재 디렉터리 분석 및 초기 컨텍스트 파일 생성   | `/init`                          |
+| `/summary`  | 대화 기록을 기반으로 프로젝트 요약 생성       | `/summary`                       |
+| `/compress` | 토큰을 저장하려면 채팅 기록을 요약으로 대체하세요. | `/compress`                      |
+| `/resume`   | 이전 대화 세션 재개                  | `/resume`                        |
+| `/recap`    | 지금 한 줄짜리 세션 요약을 생성하세요        | `/recap`                         |
+| `/restore`  | 도구 실행 전 상태로 파일 복원            | `/restore`(목록) 또는`/restore <ID>` |
 
-### 1.2 Interface and Workspace Control
+### 1.2 인터페이스 및 작업 공간 제어
 
-Commands for adjusting interface appearance and work environment.
+인터페이스 모양 및 작업 환경을 조정하는 명령입니다.
 
-| Command      | Description                              | Usage Examples                |
-| ------------ | ---------------------------------------- | ----------------------------- |
-| `/clear`     | Clear terminal screen content            | `/clear` (shortcut: `Ctrl+L`) |
-| `/context`   | Show context window usage breakdown      | `/context`                    |
-| → `detail`   | Show per-item context usage breakdown    | `/context detail`             |
-| `/theme`     | Change Qwen Code visual theme            | `/theme`                      |
-| `/vim`       | Turn input area Vim editing mode on/off  | `/vim`                        |
-| `/directory` | Manage multi-directory support workspace | `/dir add ./src,./tests`      |
-| `/editor`    | Open dialog to select supported editor   | `/editor`                     |
+| 명령           | 설명                         | 사용 예                     |
+| ------------ | -------------------------- | ------------------------ |
+| `/clear`     | 터미널 화면 내용 지우기              | `/clear`(지름길:`Ctrl+L`)   |
+| `/context`   | 컨텍스트 창 사용량 분석 표시           | `/context`               |
+| →`detail`    | 항목별 컨텍스트 사용량 분석 표시         | `/context detail`        |
+| `/theme`     | Qwen Code 시각적 테마 변경        | `/theme`                 |
+| `/vim`       | 입력 영역 Vim 편집 모드 켜기/끄기      | `/vim`                   |
+| `/directory` | 다중 디렉터리 지원 작업 공간 관리        | `/dir add ./src,./tests` |
+| `/editor`    | 지원되는 편집기를 선택하려면 대화상자를 엽니다. | `/editor`                |
 
-### 1.3 Language Settings
+### 1.3 언어 설정
 
-Commands specifically for controlling interface and output language.
+인터페이스 및 출력 언어를 제어하기 위한 특수 명령입니다.
 
-| Command               | Description                      | Usage Examples             |
-| --------------------- | -------------------------------- | -------------------------- |
-| `/language`           | View or change language settings | `/language`                |
-| → `ui [language]`     | Set UI interface language        | `/language ui zh-CN`       |
-| → `output [language]` | Set LLM output language          | `/language output Chinese` |
+| 명령                   | 설명             | 사용 예                       |
+| -------------------- | -------------- | -------------------------- |
+| `/language`          | 언어 설정 보기 또는 변경 | `/language`                |
+| →`ui [language]`     | UI 인터페이스 언어 설정 | `/language ui zh-CN`       |
+| →`output [language]` | LLM 출력 언어 설정   | `/language output Chinese` |
 
-- Available built-in UI languages: `zh-CN` (Simplified Chinese), `en-US` (English), `ru-RU` (Russian), `de-DE` (German)
-- Output language examples: `Chinese`, `English`, `Japanese`, etc.
+* 사용 가능한 내장 UI 언어:`zh-CN` (Simplified Chinese), `en-US`(영어),`ru-RU`(러시아인),`de-DE`(독일 사람)
+* 출력 언어 예:`Chinese`,`English`,`Japanese`, 등.
 
-### 1.4 Tool and Model Management
+### 1.4 도구 및 모델 관리
 
-Commands for managing AI tools and models.
+AI 도구 및 모델을 관리하기 위한 명령입니다.
 
-| Command          | Description                                   | Usage Examples                                |
-| ---------------- | --------------------------------------------- | --------------------------------------------- |
-| `/mcp`           | List configured MCP servers and tools         | `/mcp`, `/mcp desc`                           |
-| `/tools`         | Display currently available tool list         | `/tools`, `/tools desc`                       |
-| `/skills`        | List and run available skills                 | `/skills`, `/skills <name>`                   |
-| `/plan`          | Switch to plan mode or exit plan mode         | `/plan`, `/plan <task>`, `/plan exit`         |
-| `/approval-mode` | Change approval mode for tool usage           | `/approval-mode <mode (auto-edit)> --project` |
-| →`plan`          | Analysis only, no execution                   | Secure review                                 |
-| →`default`       | Require approval for edits                    | Daily use                                     |
-| →`auto-edit`     | Automatically approve edits                   | Trusted environment                           |
-| →`yolo`          | Automatically approve all                     | Quick prototyping                             |
-| `/model`         | Switch model used in current session          | `/model`                                      |
-| `/model --fast`  | Set a lighter model for prompt suggestions    | `/model --fast qwen3-coder-flash`             |
-| `/extensions`    | List all active extensions in current session | `/extensions`                                 |
-| `/memory`        | Open the Memory Manager dialog                | `/memory`                                     |
-| `/remember`      | Save a durable memory                         | `/remember Prefer terse responses`            |
-| `/forget`        | Remove matching entries from auto-memory      | `/forget <query>`                             |
-| `/dream`         | Manually run auto-memory consolidation        | `/dream`                                      |
+| 명령               | 설명                     | 사용 예                                          |
+| ---------------- | ---------------------- | --------------------------------------------- |
+| `/mcp`           | 구성된 MCP 서버 및 도구 나열     | `/mcp`,`/mcp desc`                            |
+| `/tools`         | 현재 사용 가능한 도구 목록 표시     | `/tools`,`/tools desc`                        |
+| `/skills`        | 사용 가능한 기술 나열 및 실행      | `/skills`,`/skills <name>`                    |
+| `/plan`          | 계획 모드로 전환하거나 계획 모드 종료  | `/plan`,`/plan <task>`,`/plan exit`           |
+| `/approval-mode` | 도구 사용에 대한 승인 모드 변경     | `/approval-mode <mode (auto-edit)> --project` |
+| →`plan`          | 분석만 가능, 실행 없음          | 안전한 검토                                        |
+| →`default`       | 수정하려면 승인이 필요합니다.       | 매일 사용                                         |
+| →`auto-edit`     | 수정사항 자동 승인             | 신뢰할 수 있는 환경                                   |
+| →`yolo`          | 자동으로 모두 승인             | 빠른 프로토타이핑                                     |
+| `/model`         | 현재 세션에서 사용되는 스위치 모델    | `/model`                                      |
+| `/model --fast`  | 신속한 제안을 위해 더 가벼운 모델 설정 | `/model --fast qwen3-coder-flash`             |
+| `/extensions`    | 현재 세션의 모든 활성 확장 나열     | `/extensions`                                 |
+| `/memory`        | 메모리 관리자 대화 상자 열기       | `/memory`                                     |
+| `/remember`      | Save a durable memory  | `/remember Prefer terse responses`            |
+| `/forget`        | 자동 메모리에서 일치하는 항목 제거    | `/forget <query>`                             |
+| `/dream`         | 자동 메모리 통합을 수동으로 실행     | `/dream`                                      |
 
 ### 1.5 Built-in Skills
 
-These commands invoke bundled skills that provide specialized workflows.
+이러한 명령은 특수한 워크플로를 제공하는 번들 기술을 호출합니다.
 
-| Command      | Description                                                         | Usage Examples                                    |
-| ------------ | ------------------------------------------------------------------- | ------------------------------------------------- |
-| `/review`    | Review code changes with 5 parallel agents + deterministic analysis | `/review`, `/review 123`, `/review 123 --comment` |
-| `/loop`      | Run a prompt on a recurring schedule                                | `/loop 5m check the build`                        |
-| `/qc-helper` | Answer questions about Qwen Code usage and configuration            | `/qc-helper how do I configure MCP?`              |
+| 명령           | 설명                                    | 사용 예                                            |
+| ------------ | ------------------------------------- | ----------------------------------------------- |
+| `/review`    | 5개의 병렬 에이전트 + 결정론적 분석을 통해 코드 변경 사항 검토 | `/review`,`/review 123`,`/review 123 --comment` |
+| `/loop`      | 반복 일정에 따라 프롬프트 실행                     | `/loop 5m check the build`                      |
+| `/qc-helper` | Qwen Code 사용 및 구성에 관한 질문에 답변하세요.      | `/qc-helper how do I configure MCP?`            |
 
-See [Code Review](./code-review.md) for full `/review` documentation.
+보다[코드 검토](./code-review.md)완전한`/review`선적 서류 비치.
 
-### 1.6 Side Question (`/btw`)
+### 1.6 부가 질문(`/btw`)
 
-The `/btw` command allows you to ask quick side questions without interrupting or affecting the main conversation flow.
+그만큼`/btw`명령을 사용하면 주요 대화 흐름을 방해하거나 영향을 주지 않고 빠른 부가 질문을 할 수 있습니다.
 
-| Command                | Description                           |
-| ---------------------- | ------------------------------------- |
-| `/btw <your question>` | Ask a quick side question             |
-| `?btw <your question>` | Alternative syntax for side questions |
+| 명령                     | 설명                        |
+| ---------------------- | ------------------------- |
+| `/btw <your question>` | Ask a quick side question |
+| `?btw <your question>` | 부가 질문에 대한 대체 구문           |
 
-**How It Works:**
+**작동 방식:**
 
-- The side question is sent as a separate API call with recent conversation context (up to the last 20 messages)
-- The response is displayed above the Composer — you can continue typing while waiting
-- The main conversation is **not blocked** — it continues independently
-- The side question response does **not** become part of the main conversation history
-- Answers are rendered with full Markdown support (code blocks, lists, tables, etc.)
+* 부가 질문은 최근 대화 컨텍스트(최대 최근 20개 메시지)와 함께 별도의 API 호출로 전송됩니다.
+* 응답은 작성기 위에 표시됩니다. 기다리는 동안 계속 입력할 수 있습니다.
+* 주요 대화는**차단되지 않음**— 독립적으로 계속됩니다.
+* 부가 질문 응답&#xC740;**\~ 아니다**주요 대화 기록의 일부가 됩니다
+* 답변은 완전한 Markdown 지원(코드 블록, 목록, 테이블 등)으로 렌더링됩니다.
 
-**Keyboard Shortcuts (Interactive Mode):**
+**키보드 단축키(대화형 모드):**
 
-| Shortcut             | Action                                              |
-| -------------------- | --------------------------------------------------- |
-| `Escape`             | Cancel (while loading) or dismiss (after completed) |
-| `Space` or `Enter`   | Dismiss the answer (when input is empty)            |
-| `Ctrl+C` or `Ctrl+D` | Cancel an in-flight side question                   |
+| 지름길                | 행동                   |
+| ------------------ | -------------------- |
+| `Escape`           | 취소(로드 중) 또는 해제(완료 후) |
+| `Space`또는`Enter`   | 답변 닫기(입력이 비어 있는 경우)  |
+| `Ctrl+C`또는`Ctrl+D` | 기내 질문 취소             |
 
-**Example:**
+**예:**
 
 ```
 (While the main conversation is about refactoring code)
@@ -145,53 +145,53 @@ The `/btw` command allows you to ask quick side questions without interrupting o
   > (Composer still active)
 ```
 
-**Supported Execution Modes:**
+**지원되는 실행 모드:**
 
-| Mode                 | Behavior                                     |
-| -------------------- | -------------------------------------------- |
-| Interactive          | Shows above Composer with Markdown rendering |
-| Non-interactive      | Returns text result: `btw> question\nanswer` |
-| ACP (Agent Protocol) | Returns stream_messages async generator      |
+| 방법             | 행동                                    |
+| -------------- | ------------------------------------- |
+| 인터랙티브          | Markdown 렌더링을 사용하여 Composer 위에 표시     |
+| 비대화형           | 텍스트 결과를 반환합니다.`btw> question\nanswer` |
+| ACP(에이전트 프로토콜) | stream\_messages 비동기 생성기를 반환합니다.      |
 
-> [!tip]
+> \[!팁]
 >
-> Use `/btw` when you need a quick answer without derailing your main task. It's especially useful for clarifying concepts, checking facts, or getting quick explanations while staying focused on your primary workflow.
+> 사용`/btw`주요 업무를 방해하지 않고 빠른 답변이 필요할 때. 기본 워크플로에 집중하면서 개념을 명확히 하고, 사실을 확인하고, 빠른 설명을 얻는 데 특히 유용합니다.
 
-### 1.7 Session Recap (`/recap`)
+### 1.7 세션 요약(`/recap`)
 
-The `/recap` command generates a short "where you left off" summary of the
-current session, so you can resume an old conversation without scrolling
-back through pages of history.
+그만큼`/recap`명령은 "중단한 부분"에 대한 짧은 요약을 생성합니다.&#x20;
+현재 세션이므로 스크롤하지 않고도 이전 대화를 재개할 수 있습니다.&#x20;
+역사의 페이지를 통해 다시 돌아옵니다.
 
-| Command  | Description                                |
-| -------- | ------------------------------------------ |
-| `/recap` | Generate and show a one-line session recap |
+| 명령       | 설명                       |
+| -------- | ------------------------ |
+| `/recap` | 한 줄짜리 세션 요약을 생성하고 표시합니다. |
 
-**How it works:**
+**작동 방식:**
 
-- Uses the configured fast model (`fastModel` setting) when available, falling
-  back to the main session model. A small, cheap model is enough for a recap.
-- The recent conversation (up to 30 messages, text only — tool calls and tool
-  responses are filtered out) is sent to the model with a tight system prompt.
-- The recap is rendered in dim color with a `❯` prefix so it stands apart
-  from real assistant replies.
-- Refuses with an inline error if a model turn is in flight or another command
-  is processing. If there is no usable conversation, or the underlying
-  generation fails, `/recap` shows a short info message instead of a recap —
-  the manual command always responds with something.
+* 구성된 빠른 모델을 사용합니다(`fastModel`설정) 사용 가능한 경우 감소&#x20;
+  기본 세션 모델로 돌아갑니다. 요약하자면 작고 저렴한 모델이면 충분합니다.
+* 최근 대화(최대 30개 메시지, 텍스트만 — 도구 호출 및 도구&#x20;
+  응답은 필터링됨)은 엄격한 시스템 프롬프트와 함께 모델로 전송됩니다.
+* 요약은 다음과 같은 희미한 색상으로 렌더링됩니다.`❯`접두사 그래서 구별됩니다&#x20;
+  실제 비서의 답변에서.
+* 모델 회전이 비행 중이거나 다른 명령인 경우 인라인 오류로 거부합니다.&#x20;
+  처리 중입니다. 사용할 수 있는 대화가 없거나 기본이 되는 경우&#x20;
+  세대 실패,`/recap`요약 대신 짧은 정보 메시지 표시 —&#x20;
+  수동 명령은 항상 무언가로 응답합니다.
 
-**Auto-trigger when returning from being away:**
+**자리를 비웠다가 돌아올 때 자동 트리거:**
 
-If the terminal is blurred for **5+ minutes** and gets focused again, a recap
-is generated and shown automatically (only when no model response is in
-progress; otherwise it waits for the current turn to finish and then fires).
-Unlike the manual command, the auto-trigger is fully silent on failure: if
-generation errors or there is nothing to summarize, no message is added to
-the history. Controlled by the `general.showSessionRecap` setting
-(default: `true`); the manual `/recap` command always works regardless of
-this setting.
+터미널이 흐릿한 경우**5분 이상**다시 집중해서 요약하자면&#x20;
+자동으로 생성되어 표시됩니다(모델 응답이 없는 경우에만 해당).&#x20;
+진행; 그렇지 않으면 현재 턴이 완료될 때까지 기다린 다음 실행됩니다).&#x20;
+수동 명령과 달리 자동 트리거는 실패 시 완전히 조용합니다.&#x20;
+생성 오류가 있거나 요약할 내용이 없으며 메시지가 추가되지 않습니다.&#x20;
+역사. 다음에 의해 통제됨`general.showSessionRecap`설정&#x20;
+(기본값:`true`); 매뉴얼`/recap`명령은 항상 관계없이 작동합니다.&#x20;
+이 설정.
 
-**Example:**
+**예:**
 
 ```
 > /recap
@@ -201,110 +201,108 @@ this setting.
   implement option B (LRU sliding window with FNV-1a) pending confirmation.
 ```
 
-> [!tip]
+> \[!팁]
 >
-> Configure a fast model via `/model --fast <model>` (e.g.
-> `qwen3-coder-flash`) to make `/recap` fast and cheap. Set
-> `general.showSessionRecap` to `false` to opt out of the auto-trigger
-> while keeping the manual command available.
+> 다음을 통해 빠른 모델 구성`/model --fast <model>`(예:`qwen3-coder-flash`) 만들다`/recap`빠르고 저렴합니다. 세트`general.showSessionRecap`에게`false`자동 트리거를 선택 해제하려면&#x20;
+> 수동 명령을 계속 사용할 수 있습니다.
 
-### 1.8 Information, Settings, and Help
+### 1.8 정보, 설정 및 도움말
 
-Commands for obtaining information and performing system settings.
+정보를 얻고 시스템 설정을 수행하는 명령입니다.
 
-| Command     | Description                                     | Usage Examples                   |
-| ----------- | ----------------------------------------------- | -------------------------------- |
-| `/help`     | Display help information for available commands | `/help` or `/?`                  |
-| `/about`    | Display version information                     | `/about`                         |
-| `/stats`    | Display detailed statistics for current session | `/stats`                         |
-| `/settings` | Open settings editor                            | `/settings`                      |
-| `/auth`     | Change authentication method                    | `/auth`                          |
-| `/bug`      | Submit issue about Qwen Code                    | `/bug Button click unresponsive` |
-| `/copy`     | Copy last output content to clipboard           | `/copy`                          |
-| `/quit`     | Exit Qwen Code immediately                      | `/quit` or `/exit`               |
+| 명령          | 설명                      | 사용 예                             |
+| ----------- | ----------------------- | -------------------------------- |
+| `/help`     | 사용 가능한 명령에 대한 도움말 정보 표시 | `/help`또는`/?`                    |
+| `/about`    | 버전 정보 표시                | `/about`                         |
+| `/stats`    | 현재 세션에 대한 자세한 통계 표시     | `/stats`                         |
+| `/settings` | 설정 편집기 열기               | `/settings`                      |
+| `/auth`     | 인증방법 변경                 | `/auth`                          |
+| `/bug`      | Qwen 코드에 관한 문제 제출       | `/bug Button click unresponsive` |
+| `/copy`     | 마지막 출력 내용을 클립보드에 복사     | `/copy`                          |
+| `/quit`     | 즉시 Qwen 코드 종료           | `/quit`또는`/exit`                 |
 
-### 1.9 Common Shortcuts
+### 1.9 공통 단축키
 
-| Shortcut           | Function                | Note                   |
-| ------------------ | ----------------------- | ---------------------- |
-| `Ctrl/cmd+L`       | Clear screen            | Equivalent to `/clear` |
-| `Ctrl/cmd+T`       | Toggle tool description | MCP tool management    |
-| `Ctrl/cmd+C`×2     | Exit confirmation       | Secure exit mechanism  |
-| `Ctrl/cmd+Z`       | Undo input              | Text editing           |
-| `Ctrl/cmd+Shift+Z` | Redo input              | Text editing           |
+| 지름길                | 기능       | 메모           |
+| ------------------ | -------- | ------------ |
+| `Ctrl/cmd+L`       | 화면 지우기   | 동등하다`/clear` |
+| `Ctrl/cmd+T`       | 도구 설명 전환 | MCP 도구 관리    |
+| `Ctrl/cmd+C`×2     | 종료 확인    | 보안 종료 메커니즘   |
+| `Ctrl/cmd+Z`       | 입력 취소    | 텍스트 편집       |
+| `Ctrl/cmd+Shift+Z` | 입력 다시 실행 | 텍스트 편집       |
 
-### 1.10 CLI Auth Subcommands
+### 1.10 CLI 인증 하위 명령
 
-In addition to the in-session `/auth` slash command, Qwen Code provides standalone CLI subcommands for managing authentication directly from the terminal:
+세션 중 외에도`/auth`슬래시 명령인 Qwen Code는 터미널에서 직접 인증을 관리하기 위한 독립형 CLI 하위 명령을 제공합니다.
 
-| Command                                              | Description                                                   |
-| ---------------------------------------------------- | ------------------------------------------------------------- |
-| `qwen auth`                                          | Interactive authentication setup                              |
-| `qwen auth coding-plan`                              | Authenticate with Alibaba Cloud Coding Plan                   |
-| `qwen auth coding-plan --region china --key sk-sp-…` | Non-interactive Coding Plan setup (for scripting)             |
-| `qwen auth api-key`                                  | Authenticate with an API key                                  |
-| `qwen auth qwen-oauth`                               | ~~Authenticate with Qwen OAuth~~ (discontinued on 2026-04-15) |
-| `qwen auth status`                                   | Show current authentication status                            |
+| 명령                                                   | 설명                                  |
+| ---------------------------------------------------- | ----------------------------------- |
+| `qwen auth`                                          | 대화형 인증 설정                           |
+| `qwen auth coding-plan`                              | Alibaba Cloud Coding Plan으로 인증      |
+| `qwen auth coding-plan --region china --key sk-sp-…` | 비대화형 코딩 계획 설정(스크립팅용)                |
+| `qwen auth api-key`                                  | API 키로 인증                           |
+| `qwen auth qwen-oauth`                               | ~~Qwen OAuth로 인증~~(2026-04-15에 중단됨) |
+| `qwen auth status`                                   | 현재 인증 상태 표시                         |
 
-> [!tip]
+> \[!팁]
 >
-> These commands run outside of a Qwen Code session. Use them to configure authentication before starting a session, or in scripts and CI environments. See the [Authentication](../configuration/auth) page for full details.
+> 이러한 명령은 Qwen Code 세션 외부에서 실행됩니다. 세션을 시작하기 전이나 스크립트 및 CI 환경에서 인증을 구성하는 데 사용합니다. 참조[입증](../configuration/auth)자세한 내용은 페이지를 참조하세요.
 
-## 2. @ Commands (Introducing Files)
+## 2. @ 명령(파일 소개)
 
-@ commands are used to quickly add local file or directory content to the conversation.
+@ 명령은 로컬 파일이나 디렉터리 콘텐츠를 대화에 빠르게 추가하는 데 사용됩니다.
 
-| Command Format      | Description                                  | Examples                                         |
-| ------------------- | -------------------------------------------- | ------------------------------------------------ |
-| `@<file path>`      | Inject content of specified file             | `@src/main.py Please explain this code`          |
-| `@<directory path>` | Recursively read all text files in directory | `@docs/ Summarize content of this document`      |
-| Standalone `@`      | Used when discussing `@` symbol itself       | `@ What is this symbol used for in programming?` |
+| 명령 형식               | 설명                           | 예                                                |
+| ------------------- | ---------------------------- | ------------------------------------------------ |
+| `@<file path>`      | 지정된 파일의 내용 삽입                | `@src/main.py Please explain this code`          |
+| `@<directory path>` | 디렉터리의 모든 텍스트 파일을 반복적으로 읽습니다. | `@docs/ Summarize content of this document`      |
+| 독립형`@`              | 토론할 때 사용`@`상징 그 자체           | `@ What is this symbol used for in programming?` |
 
-Note: Spaces in paths need to be escaped with backslash (e.g., `@My\ Documents/file.txt`)
+참고: 경로의 공백은 백슬래시로 이스케이프해야 합니다(예:`@My\ Documents/file.txt`)
 
-## 3. Exclamation Commands (`!`) - Shell Command Execution
+## 3. 느낌표 명령(`!`) - 쉘 명령 실행
 
-Exclamation commands allow you to execute system commands directly within Qwen Code.
+느낌표 명령을 사용하면 Qwen Code 내에서 직접 시스템 명령을 실행할 수 있습니다.
 
-| Command Format     | Description                                                        | Examples                               |
-| ------------------ | ------------------------------------------------------------------ | -------------------------------------- |
-| `!<shell command>` | Execute command in sub-Shell                                       | `!ls -la`, `!git status`               |
-| Standalone `!`     | Switch Shell mode, any input is executed directly as Shell command | `!`(enter) → Input command → `!`(exit) |
+| 명령 형식              | 설명                               | 예                        |
+| ------------------ | -------------------------------- | ------------------------ |
+| `!<shell command>` | 하위 쉘에서 명령 실행                     | `!ls -la`,`!git status`  |
+| 독립형`!`             | 셸 모드 전환, 모든 입력은 셸 명령으로 직접 실행됩니다. | `!`(입력) → 명령 입력 →`!`(출구) |
 
-Environment Variables: Commands executed via `!` will set the `QWEN_CODE=1` environment variable.
+환경 변수: 다음을 통해 실행되는 명령`!`을 설정할 것이다`QWEN_CODE=1`환경 변수.
 
-## 4. Custom Commands
+## 4. 사용자 정의 명령
 
-Save frequently used prompts as shortcut commands to improve work efficiency and ensure consistency.
+자주 사용하는 프롬프트를 바로가기 명령으로 저장하여 작업 효율성을 높이고 일관성을 보장하세요.
 
-> [!note]
+> \[!메모]
 >
-> Custom commands now use Markdown format with optional YAML frontmatter. TOML format is deprecated but still supported for backwards compatibility. When TOML files are detected, an automatic migration prompt will be displayed.
+> 이제 사용자 정의 명령은 선택적 YAML 프런트매터와 함께 Markdown 형식을 사용합니다. TOML 형식은 더 이상 사용되지 않지만 이전 버전과의 호환성을 위해 계속 지원됩니다. TOML 파일이 감지되면 자동 마이그레이션 프롬프트가 표시됩니다.
 
-### Quick Overview
+### 빠른 개요
 
-| Function         | Description                                | Advantages                             | Priority | Applicable Scenarios                                 |
-| ---------------- | ------------------------------------------ | -------------------------------------- | -------- | ---------------------------------------------------- |
-| Namespace        | Subdirectory creates colon-named commands  | Better command organization            |          |                                                      |
-| Global Commands  | `~/.qwen/commands/`                        | Available in all projects              | Low      | Personal frequently used commands, cross-project use |
-| Project Commands | `<project root directory>/.qwen/commands/` | Project-specific, version-controllable | High     | Team sharing, project-specific commands              |
+| 기능      | 설명                                         | 장점              | 우선 사항 | 적용 가능한 시나리오               |
+| ------- | ------------------------------------------ | --------------- | ----- | ------------------------- |
+| 네임스페이스  | 하위 디렉터리는 콜론으로 명명된 명령을 생성합니다.               | 더 나은 지휘 조직      |       |                           |
+| 전역 명령   | `~/.qwen/commands/`                        | 모든 프로젝트에서 사용 가능 | 낮은    | 개인이 자주 사용하는 명령, 프로젝트 간 사용 |
+| 프로젝트 명령 | `<project root directory>/.qwen/commands/` | 프로젝트별, 버전 제어 가능 | 높은    | 팀 공유, 프로젝트별 명령            |
 
-Priority Rules: Project commands > User commands (project command used when names are same)
+우선순위 규칙: 프로젝트 명령 > 사용자 명령(이름이 동일한 경우 사용되는 프로젝트 명령)
 
-### Command Naming Rules
+### 명령 명명 규칙
 
-#### File Path to Command Name Mapping Table
+#### 명령 이름 매핑 테이블에 대한 파일 경로
 
-| File Location                            | Generated Command | Example Call          |
-| ---------------------------------------- | ----------------- | --------------------- |
-| `~/.qwen/commands/test.md`               | `/test`           | `/test Parameter`     |
-| `<project>/.qwen/commands/git/commit.md` | `/git:commit`     | `/git:commit Message` |
+| 파일 위치                                    | 생성된 명령        | 예시 통화                 |
+| ---------------------------------------- | ------------- | --------------------- |
+| `~/.qwen/commands/test.md`               | `/test`       | `/test Parameter`     |
+| `<project>/.qwen/commands/git/commit.md` | `/git:commit` | `/git:commit Message` |
 
-Naming Rules: Path separator (`/` or `\`) converted to colon (`:`)
+명명 규칙: 경로 구분 기호(`/`또는`\`)를 콜론(`:`)
 
-### Markdown File Format Specification (Recommended)
+### 마크다운 파일 형식 사양(권장)
 
-Custom commands use Markdown files with optional YAML frontmatter:
+사용자 정의 명령은 선택적 YAML 프런트매터와 함께 Markdown 파일을 사용합니다.
 
 ```markdown
 ---
@@ -315,63 +313,63 @@ Your prompt content here.
 Use {{args}} for parameter injection.
 ```
 
-| Field         | Required | Description                              | Example                                    |
-| ------------- | -------- | ---------------------------------------- | ------------------------------------------ |
-| `description` | Optional | Command description (displayed in /help) | `description: Code analysis tool`          |
-| Prompt body   | Required | Prompt content sent to model             | Any Markdown content after the frontmatter |
+| 필드            | 필수의   | 설명                | 예                                 |
+| ------------- | ----- | ----------------- | --------------------------------- |
+| `description` | 선택 과목 | 명령 설명(/help에 표시됨) | `description: Code analysis tool` |
+| 프롬프트 본문       | 필수의   | 모델에 전송된 프롬프트 콘텐츠  | 머리말 뒤의 모든 마크다운 콘텐츠                |
 
-### TOML File Format (Deprecated)
+### TOML 파일 형식(더 이상 사용되지 않음)
 
-> [!warning]
+> \[!경고]
 >
-> **Deprecated:** TOML format is still supported but will be removed in a future version. Please migrate to Markdown format.
+> **더 이상 사용되지 않음:**&#x54;OML 형식은 계속 지원되지만 향후 버전에서는 제거될 예정입니다. Markdown 형식으로 마이그레이션하세요.
 
-| Field         | Required | Description                              | Example                                    |
-| ------------- | -------- | ---------------------------------------- | ------------------------------------------ |
-| `prompt`      | Required | Prompt content sent to model             | `prompt = "Please analyze code: {{args}}"` |
-| `description` | Optional | Command description (displayed in /help) | `description = "Code analysis tool"`       |
+| 필드            | 필수의   | 설명                | 예                                          |
+| ------------- | ----- | ----------------- | ------------------------------------------ |
+| `prompt`      | 필수의   | 모델에 전송된 프롬프트 콘텐츠  | `prompt = "Please analyze code: {{args}}"` |
+| `description` | 선택 과목 | 명령 설명(/help에 표시됨) | `description = "Code analysis tool"`       |
 
-### Parameter Processing Mechanism
+### 매개변수 처리 메커니즘
 
-| Processing Method            | Syntax             | Applicable Scenarios                 | Security Features                      |
-| ---------------------------- | ------------------ | ------------------------------------ | -------------------------------------- |
-| Context-aware Injection      | `{{args}}`         | Need precise parameter control       | Automatic Shell escaping               |
-| Default Parameter Processing | No special marking | Simple commands, parameter appending | Append as-is                           |
-| Shell Command Injection      | `!{command}`       | Need dynamic content                 | Execution confirmation required before |
+| 처리방법       | 통사론          | 적용 가능한 시나리오      | 보안 기능             |
+| ---------- | ------------ | ---------------- | ----------------- |
+| 상황 인식 주입   | `{{args}}`   | 정확한 매개변수 제어가 필요함 | 자동 쉘 탈출           |
+| 기본 매개변수 처리 | 특별한 표기 없음    | 간단한 명령, 매개변수 추가  | 있는 그대로 추가         |
+| 쉘 명령 주입    | `!{command}` | 동적 콘텐츠가 필요함      | 이전에 실행 확인이 필요합니다. |
 
-#### 1. Context-aware Injection (`{{args}}`)
+#### 1. 상황 인식 주입(`{{args}}`)
 
-| Scenario         | TOML Configuration                      | Call Method           | Actual Effect            |
-| ---------------- | --------------------------------------- | --------------------- | ------------------------ |
-| Raw Injection    | `prompt = "Fix: {{args}}"`              | `/fix "Button issue"` | `Fix: "Button issue"`    |
-| In Shell Command | `prompt = "Search: !{grep {{args}} .}"` | `/search "hello"`     | Execute `grep "hello" .` |
+| 대본     | TOML 구성                                 | 통화 방법                 | 실제 효과                 |
+| ------ | --------------------------------------- | --------------------- | --------------------- |
+| 원시 주입  | `prompt = "Fix: {{args}}"`              | `/fix "Button issue"` | `Fix: "Button issue"` |
+| 쉘 명령에서 | `prompt = "Search: !{grep {{args}} .}"` | `/search "hello"`     | 실행하다`grep "hello" .`  |
 
-#### 2. Default Parameter Processing
+#### 2. 기본 매개변수 처리
 
-| Input Situation | Processing Method                                      | Example                                        |
-| --------------- | ------------------------------------------------------ | ---------------------------------------------- |
-| Has parameters  | Append to end of prompt (separated by two line breaks) | `/cmd parameter` → Original prompt + parameter |
-| No parameters   | Send prompt as is                                      | `/cmd` → Original prompt                       |
+| 입력 상황   | 처리방법                    | 예                                |
+| ------- | ----------------------- | -------------------------------- |
+| 매개변수 있음 | 프롬프트 끝에 추가(두 줄 바꿈으로 구분) | `/cmd parameter`→ 원래 프롬프트 + 매개변수 |
+| 매개변수 없음 | 프롬프트를 있는 그대로 보내기        | `/cmd`→ 원본 프롬프트                  |
 
-🚀 Dynamic Content Injection
+🚀 동적 콘텐츠 삽입
 
-| Injection Type        | Syntax         | Processing Order    | Purpose                          |
-| --------------------- | -------------- | ------------------- | -------------------------------- |
-| File Content          | `@{file path}` | Processed first     | Inject static reference files    |
-| Shell Commands        | `!{command}`   | Processed in middle | Inject dynamic execution results |
-| Parameter Replacement | `{{args}}`     | Processed last      | Inject user parameters           |
+| 주입 유형   | 통사론            | 처리 순서     | 목적          |
+| ------- | -------------- | --------- | ----------- |
+| 파일 내용   | `@{file path}` | 먼저 처리됨    | 정적 참조 파일 삽입 |
+| 쉘 명령    | `!{command}`   | 중간에 처리됨   | 동적 실행 결과 삽입 |
+| 매개변수 교체 | `{{args}}`     | 마지막으로 처리됨 | 사용자 매개변수 삽입 |
 
-#### 3. Shell Command Execution (`!{...}`)
+#### 3. 쉘 명령 실행(`!{...}`)
 
-| Operation                       | User Interaction     |
-| ------------------------------- | -------------------- |
-| 1. Parse command and parameters | -                    |
-| 2. Automatic Shell escaping     | -                    |
-| 3. Show confirmation dialog     | ✅ User confirmation |
-| 4. Execute command              | -                    |
-| 5. Inject output to prompt      | -                    |
+| 작업                  | 사용자 상호작용 |
+| ------------------- | -------- |
+| 1. 구문 분석 명령 및 매개변수  | -        |
+| 2. 자동 쉘 탈출          | -        |
+| 3. 확인 대화상자 표시       | ✅ 사용자 확인 |
+| 4. 명령 실행            | -        |
+| 5. 프롬프트에 출력을 삽입합니다. | -        |
 
-Example: Git Commit Message Generation
+예: Git 커밋 메시지 생성
 
 ````markdown
 ---
@@ -385,16 +383,16 @@ Please generate a Commit message based on the following diff:
 ```
 ````
 
-#### 4. File Content Injection (`@{...}`)
+#### 4. 파일 컨텐츠 주입(`@{...}`)
 
-| File Type    | Support Status         | Processing Method           |
-| ------------ | ---------------------- | --------------------------- |
-| Text Files   | ✅ Full Support        | Directly inject content     |
-| Images/PDF   | ✅ Multi-modal Support | Encode and inject           |
-| Binary Files | ⚠️ Limited Support     | May be skipped or truncated |
-| Directory    | ✅ Recursive Injection | Follow .gitignore rules     |
+| 파일 유형   | 지원현황       | 처리방법                 |
+| ------- | ---------- | -------------------- |
+| 텍스트 파일  | ✅ 전체 지원    | 콘텐츠 직접 주입            |
+| 이미지/PDF | ✅ 다중 모드 지원 | 인코딩 및 주입             |
+| 바이너리 파일 | ⚠️ 제한된 지원  | 건너뛰거나 잘릴 수 있음        |
+| 예배 규칙서  | ✅ 재귀적 주입   | .gitignore 규칙을 따르세요. |
 
-Example: Code Review Command
+예: 코드 검토 명령
 
 ```markdown
 ---
@@ -406,16 +404,16 @@ Review {{args}}, reference standards:
 @{docs/code-standards.md}
 ```
 
-### Practical Creation Example
+### 실제 창작 사례
 
-#### "Pure Function Refactoring" Command Creation Steps Table
+#### "순수 함수 리팩토링" 명령 생성 단계 표
 
-| Operation                     | Command/Code                              |
-| ----------------------------- | ----------------------------------------- |
-| 1. Create directory structure | `mkdir -p ~/.qwen/commands/refactor`      |
-| 2. Create command file        | `touch ~/.qwen/commands/refactor/pure.md` |
-| 3. Edit command content       | Refer to the complete code below.         |
-| 4. Test command               | `@file.js` → `/refactor:pure`             |
+| 작업            | 명령/코드                                     |
+| ------------- | ----------------------------------------- |
+| 1. 디렉토리 구조 생성 | `mkdir -p ~/.qwen/commands/refactor`      |
+| 2. 명령 파일 생성   | `touch ~/.qwen/commands/refactor/pure.md` |
+| 3. 명령 내용 편집   | 아래의 전체 코드를 참조하세요.                         |
+| 4. 테스트 명령     | `@file.js`→`/refactor:pure`               |
 
 ```markdown
 ---
@@ -430,22 +428,22 @@ Requirements:
 3. Maintain function unchanged
 ```
 
-### Custom Command Best Practices Summary
+### 사용자 정의 명령 모범 사례 요약
 
-#### Command Design Recommendations Table
+#### 명령 설계 권장 사항 표
 
-| Practice Points      | Recommended Approach                | Avoid                                       |
-| -------------------- | ----------------------------------- | ------------------------------------------- |
-| Command Naming       | Use namespaces for organization     | Avoid overly generic names                  |
-| Parameter Processing | Clearly use `{{args}}`              | Rely on default appending (easy to confuse) |
-| Error Handling       | Utilize Shell error output          | Ignore execution failure                    |
-| File Organization    | Organize by function in directories | All commands in root directory              |
-| Description Field    | Always provide clear description    | Rely on auto-generated description          |
+| 연습포인트   | 권장 접근 방식          | 피하다                 |
+| ------- | ----------------- | ------------------- |
+| 명령 명명   | 조직에 네임스페이스 사용     | 지나치게 일반적인 이름은 피하세요. |
+| 매개변수 처리 | 명확하게 사용`{{args}}` | 기본 추가에 의존(혼동하기 쉬움)  |
+| 오류 처리   | Shell 오류 출력 활용    | 실행 실패 무시            |
+| 파일 구성   | 디렉토리에서 기능별로 구성    | 루트 디렉터리의 모든 명령      |
+| 설명 필드   | 항상 명확한 설명을 제공하세요. | 자동 생성된 설명에 의존       |
 
-#### Security Features Reminder Table
+#### 보안 기능 알림 표
 
-| Security Mechanism     | Protection Effect          | User Operation         |
-| ---------------------- | -------------------------- | ---------------------- |
-| Shell Escaping         | Prevent command injection  | Automatic processing   |
-| Execution Confirmation | Avoid accidental execution | Dialog confirmation    |
-| Error Reporting        | Help diagnose issues       | View error information |
+| 보안 메커니즘 | 보호 효과      | 사용자 작업   |
+| ------- | ---------- | -------- |
+| 쉘 탈출    | 명령 주입 방지   | 자동 처리    |
+| 실행 확인   | 우발적인 실행 방지 | 대화상자 확인  |
+| 오류 보고   | 문제 진단에 도움  | 오류 정보 보기 |

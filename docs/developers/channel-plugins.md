@@ -1,10 +1,10 @@
-# Channel Plugin Developer Guide
+# 채널 플러그인 개발자 가이드
 
-A channel plugin connects Qwen Code to a messaging platform. It's packaged as an [extension](../users/extension/introduction) and loaded at startup. For user-facing docs on installing and configuring plugins, see [Plugins](../users/features/channels/plugins).
+채널 플러그인은 Qwen Code를 메시징 플랫폼에 연결합니다. 으로 포장되어 있어요[확대](../users/extension/introduction)시작 시 로드됩니다. 플러그인 설치 및 구성에 대한 사용자용 문서는 다음을 참조하세요.[플러그인](../users/features/channels/plugins).
 
-## How It Fits Together
+## 서로 어울리는 방법
 
-Your plugin sits in the Platform Adapter layer. You handle platform-specific concerns (connecting, receiving messages, sending responses). `ChannelBase` handles everything else (access control, session routing, prompt queuing, slash commands, crash recovery).
+플러그인은 플랫폼 어댑터 계층에 있습니다. 플랫폼별 문제(연결, 메시지 수신, 응답 전송)를 처리합니다.`ChannelBase`다른 모든 것(액세스 제어, 세션 라우팅, 프롬프트 대기열, 슬래시 명령, 충돌 복구)을 처리합니다.
 
 ```
 Your Plugin  →  builds Envelope  →  handleInbound()
@@ -12,9 +12,9 @@ ChannelBase  →  gates → commands → routing → AcpBridge.prompt()
 ChannelBase  →  calls your sendMessage() with the agent's response
 ```
 
-## The Plugin Object
+## 플러그인 객체
 
-Your extension entry point exports a `plugin` conforming to `ChannelPlugin`:
+확장 진입점은`plugin`에 부합하는`ChannelPlugin`:
 
 ```typescript
 import type { ChannelPlugin } from '@qwen-code/channel-base';
@@ -29,9 +29,9 @@ export const plugin: ChannelPlugin = {
 };
 ```
 
-## The Channel Adapter
+## 채널 어댑터
 
-Extend `ChannelBase` and implement three methods:
+연장하다`ChannelBase`세 가지 방법을 구현합니다.
 
 ```typescript
 import { ChannelBase } from '@qwen-code/channel-base';
@@ -64,30 +64,30 @@ export class MyChannel extends ChannelBase {
 }
 ```
 
-## The Envelope
+## 봉투
 
-The normalized message object you build from platform data. The boolean flags drive gate logic, so they must be accurate.
+플랫폼 데이터에서 빌드한 정규화된 메시지 개체입니다. 부울 플래그는 게이트 로직을 구동하므로 정확해야 합니다.
 
-| Field            | Type         | Required | Notes                                                                      |
-| ---------------- | ------------ | -------- | -------------------------------------------------------------------------- |
-| `channelName`    | string       | Yes      | Use `this.name`                                                            |
-| `senderId`       | string       | Yes      | Must be stable across messages (used for session routing + access control) |
-| `senderName`     | string       | Yes      | Display name                                                               |
-| `chatId`         | string       | Yes      | Must distinguish DMs from groups                                           |
-| `text`           | string       | Yes      | Strip bot @mentions                                                        |
-| `threadId`       | string       | No       | For `sessionScope: "thread"`                                               |
-| `messageId`      | string       | No       | Platform message ID — useful for response correlation                      |
-| `isGroup`        | boolean      | Yes      | GroupGate relies on this                                                   |
-| `isMentioned`    | boolean      | Yes      | GroupGate relies on this                                                   |
-| `isReplyToBot`   | boolean      | Yes      | GroupGate relies on this                                                   |
-| `referencedText` | string       | No       | Quoted message — prepended as context                                      |
-| `imageBase64`    | string       | No       | Base64-encoded image (legacy — prefer `attachments`)                       |
-| `imageMimeType`  | string       | No       | e.g., `image/jpeg` (legacy — prefer `attachments`)                         |
-| `attachments`    | Attachment[] | No       | Structured media attachments (see below)                                   |
+| 필드               | 유형    | 필수의 | 메모                                         |
+| ---------------- | ----- | --- | ------------------------------------------ |
+| `channelName`    | 끈     | 예   | 사용`this.name`                              |
+| `senderId`       | 끈     | 예   | 메시지 전체에서 안정적이어야 합니다(세션 라우팅 + 액세스 제어에 사용됨). |
+| `senderName`     | 끈     | 예   | 표시 이름                                      |
+| `chatId`         | 끈     | 예   | DM과 그룹을 구분해야 합니다.                          |
+| `text`           | 끈     | 예   | 스트립 봇 @멘션                                  |
+| `threadId`       | 끈     | 아니요 | 을 위한`sessionScope: "thread"`               |
+| `messageId`      | 끈     | 아니요 | 플랫폼 메시지 ID - 응답 상관 관계에 유용합니다.              |
+| `isGroup`        | 부울    | 예   | GroupGate는 이에 의존합니다.                       |
+| `isMentioned`    | 부울    | 예   | GroupGate는 이에 의존합니다.                       |
+| `isReplyToBot`   | 부울    | 예   | GroupGate는 이에 의존합니다.                       |
+| `referencedText` | 끈     | 아니요 | 인용된 메시지 - 컨텍스트로 추가됨                        |
+| `imageBase64`    | 끈     | 아니요 | Base64로 인코딩된 이미지(레거시 — 선호`attachments`)    |
+| `imageMimeType`  | 끈     | 아니요 | 예를 들어,`image/jpeg`(레거시 — 선호`attachments`)  |
+| `attachments`    | 부착\[] | 아니요 | 구조화된 미디어 첨부 파일(아래 참조)                      |
 
-### Attachments
+### 첨부파일
 
-Use the `attachments` array for images, files, audio, and video. `handleInbound()` resolves them automatically: images with base64 `data` are sent to the model as vision input, files with a `filePath` get their path appended to the prompt so the agent can read them.
+사용`attachments`이미지, 파일, 오디오, 비디오용 배열입니다.`handleInbound()`자동으로 해결: base64를 사용한 이미지`data`비전 입력으로 모델에 전송되며,`filePath`에이전트가 읽을 수 있도록 경로를 프롬프트에 추가하세요.
 
 ```typescript
 interface Attachment {
@@ -99,7 +99,7 @@ interface Attachment {
 }
 ```
 
-Example — handling a file upload in your adapter:
+예 — 어댑터에서 파일 업로드 처리:
 
 ```typescript
 import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -122,11 +122,11 @@ envelope.attachments = [
 ];
 ```
 
-The legacy `imageBase64`/`imageMimeType` fields still work for backwards compatibility but `attachments` is preferred for new code.
+유산`imageBase64`/`imageMimeType`필드는 여전히 이전 버전과의 호환성을 위해 작동하지만`attachments`새로운 코드에 선호됩니다.
 
-## Extension Manifest
+## 확장 매니페스트
 
-Your `qwen-extension.json` declares the channel type. The key must match `channelType` in your plugin object:
+당신의`qwen-extension.json`채널 유형을 선언합니다. 키가 일치해야 합니다.`channelType`플러그인 개체에서:
 
 ```json
 {
@@ -141,9 +141,9 @@ Your `qwen-extension.json` declares the channel type. The key must match `channe
 }
 ```
 
-## Optional Extension Points
+## 선택적 확장 지점
 
-**Custom slash commands** — register in your constructor:
+**사용자 정의 슬래시 명령**— 생성자에 등록하십시오.
 
 ```typescript
 this.registerCommand('mycommand', async (envelope, args) => {
@@ -152,7 +152,7 @@ this.registerCommand('mycommand', async (envelope, args) => {
 });
 ```
 
-**Working indicators** — override `onPromptStart()` and `onPromptEnd()` to show platform-specific typing indicators. These hooks fire only when a prompt actually begins processing — not for buffered messages (collect mode) or gated/blocked messages:
+**작업 표시기**— 재정의`onPromptStart()`그리고`onPromptEnd()`플랫폼별 입력 표시기를 표시합니다. 이러한 후크는 프롬프트가 실제로 처리를 시작할 때만 실행되며 버퍼링된 메시지(수집 모드) 또는 제한/차단된 메시지에는 실행되지 않습니다.
 
 ```typescript
 protected override onPromptStart(chatId: string, sessionId: string, messageId?: string): void {
@@ -164,16 +164,16 @@ protected override onPromptEnd(chatId: string, sessionId: string, messageId?: st
 }
 ```
 
-**Tool call hooks** — override `onToolCall()` to display agent activity (e.g., "Running shell command...").
+**도구 호출 후크**— 재정의`onToolCall()`에이전트 활동을 표시합니다(예: "셸 명령 실행 중...").
 
-**Streaming hooks** — override `onResponseChunk(chatId, chunk, sessionId)` for per-chunk progressive display (e.g., editing a message in-place). Override `onResponseComplete(chatId, fullText, sessionId)` to customize final delivery.
+**스트리밍 후크**— 재정의`onResponseChunk(chatId, chunk, sessionId)`청크별 점진적 표시(예: 메시지를 내부에서 편집) 보수`onResponseComplete(chatId, fullText, sessionId)`최종 배송을 맞춤화합니다.
 
-**Block streaming** — set `blockStreaming: "on"` in the channel config. The base class automatically splits responses into multiple messages at paragraph boundaries. No plugin code needed — it works alongside `onResponseChunk`.
+**스트리밍 차단**- 세트`blockStreaming: "on"`채널 구성에서 기본 클래스는 자동으로 단락 경계에서 응답을 여러 메시지로 분할합니다. 플러그인 코드가 필요하지 않습니다. 함께 작동합니다.`onResponseChunk`.
 
-**Media** — populate `envelope.attachments` with images/files. See [Attachments](#attachments) above.
+**메디아**— 채우기`envelope.attachments`이미지/파일로. 보다[첨부파일](#attachments)위에.
 
-## Reference Implementations
+## 참조 구현
 
-- **Plugin example** (`packages/channels/plugin-example/`) — minimal WebSocket-based adapter, good starting point
-- **Telegram** (`packages/channels/telegram/`) — full-featured: images, files, formatting, typing indicators
-- **DingTalk** (`packages/channels/dingtalk/`) — stream-based with rich text handling
+* **플러그인 예시**(`packages/channels/plugin-example/`) — 최소한의 WebSocket 기반 어댑터, 좋은 시작점
+* **전보**(`packages/channels/telegram/`) — 모든 기능을 갖추고 있습니다: 이미지, 파일, 서식, 입력 표시기
+* **딩톡**(`packages/channels/dingtalk/`) — 서식 있는 텍스트를 처리하는 스트림 기반

@@ -1,29 +1,29 @@
-# Token Caching and Cost Optimization
+# 토큰 캐싱 및 비용 최적화
 
-Qwen Code automatically optimizes API costs through token caching when using API key authentication. This feature stores frequently used content like system instructions and conversation history to reduce the number of tokens processed in subsequent requests.
+Qwen Code는 API 키 인증 사용 시 토큰 캐싱을 통해 API 비용을 자동으로 최적화합니다. 이 기능은 시스템 지침, 대화 기록 등 자주 사용하는 콘텐츠를 저장하여 후속 요청에서 처리되는 토큰 수를 줄입니다.
 
-## How It Benefits You
+## 그것이 당신에게 주는 이점
 
-- **Cost reduction**: Less tokens mean lower API costs
-- **Faster responses**: Cached content is retrieved more quickly
-- **Automatic optimization**: No configuration needed - it works behind the scenes
+* **비용 절감**: 토큰이 적다는 것은 API 비용이 낮다는 것을 의미합니다.
+* **더 빠른 응답**: 캐시된 콘텐츠를 더 빠르게 검색합니다.
+* **자동 최적화**: 구성이 필요하지 않습니다. 백그라운드에서 작동합니다.
 
-## Token caching is available for
+## 토큰 캐싱은 다음에 대해 사용할 수 있습니다.
 
-- API key users (Qwen API key, OpenAI-compatible providers)
+* API 키 사용자(Qwen API 키, OpenAI 호환 공급자)
 
-## Monitoring Your Savings
+## 저축 모니터링
 
-Use the `/stats` command to see your cached token savings:
+사용`/stats`캐시된 토큰 절감액을 확인하는 명령:
 
-- When active, the stats display shows how many tokens were served from cache
-- You'll see both the absolute number and percentage of cached tokens
-- Example: "10,500 (90.4%) of input tokens were served from the cache, reducing costs."
+* 활성화되면 통계 디스플레이에 캐시에서 제공된 토큰 수가 표시됩니다.
+* 캐시된 토큰의 절대 개수와 비율을 모두 볼 수 있습니다.
+* 예: "입력 토큰 중 10,500개(90.4%)가 캐시에서 제공되어 비용이 절감되었습니다."
 
-This information is only displayed when cached tokens are being used, which occurs with API key authentication but not with OAuth authentication.
+이 정보는 캐시된 토큰이 사용될 때만 표시됩니다. 이는 API 키 인증에서는 발생하지만 OAuth 인증에서는 발생하지 않습니다.
 
-## Example Stats Display
+## 통계 표시 예
 
 ![Qwen Code Stats Display](https://img.alicdn.com/imgextra/i3/O1CN01F1yzRs1juyZu63jdS_!!6000000004609-2-tps-1038-738.png)
 
-The above image shows an example of the `/stats` command output, highlighting the cached token savings information.
+위 이미지는 예시를 보여줍니다.`/stats`캐시된 토큰 저장 정보를 강조 표시하는 명령 출력입니다.

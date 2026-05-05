@@ -1,39 +1,39 @@
-# Github Actions：qwen-code-action
+# Github 작업:qwen-code-action
 
-## Overview
+## 개요
 
-`qwen-code-action` is a GitHub Action that integrates [Qwen Code] into your development workflow via the [Qwen Code CLI]. It acts both as an autonomous agent for critical routine coding tasks, and an on-demand collaborator you can quickly delegate work to.
+`qwen-code-action`통합된 GitHub Action입니다.[퀀 코드][Qwen Code]다음을 통해 개발 워크플로우에 추가하세요.[Qwen 코드 CLI][Qwen Code CLI]. 이는 중요한 일상적인 코딩 작업을 위한 자율 에이전트이자 신속하게 작업을 위임할 수 있는 주문형 공동 작업자 역할을 합니다.
 
-Use it to perform GitHub pull request reviews, triage issues, perform code analysis and modification, and more using [Qwen Code] conversationally (e.g., `@qwencoder fix this issue`) directly inside your GitHub repositories.
+이를 사용하여 GitHub 풀 요청 검토, 문제 분류, 코드 분석 및 수정 수행 등을 수행할 수 있습니다.[퀀 코드][Qwen Code]대화적으로(예:`@qwencoder fix this issue`) GitHub 리포지토리 내부에 직접 저장됩니다.
 
-## Features
+## 특징
 
-- **Automation**: Trigger workflows based on events (e.g. issue opening) or schedules (e.g. nightly).
-- **On-demand Collaboration**: Trigger workflows in issue and pull request
-  comments by mentioning the [Qwen Code CLI](./features/commands) (e.g., `@qwencoder /review`).
-- **Extensible with Tools**: Leverage [Qwen Code](../developers/tools/introduction.md) models' tool-calling capabilities to interact with other CLIs like the [GitHub CLI] (`gh`).
-- **Customizable**: Use a `QWEN.md` file in your repository to provide
-  project-specific instructions and context to [Qwen Code CLI](./features/commands).
+* **오토메이션**: 이벤트(예: 이슈 개시) 또는 일정(예: 야간)을 기반으로 워크플로를 트리거합니다.
+* **주문형 협업**: 문제가 있는 워크플로 및 끌어오기 요청을 트리거합니다.&#x20;
+  언급하면서 댓글을 달았다.[Qwen 코드 CLI](./features/commands)(예:`@qwencoder /review`).
+* **도구로 확장 가능**: 영향력[퀀 코드](../developers/tools/introduction.md)다음과 같은 다른 CLI와 상호 작용하는 모델의 도구 호출 기능[GitHub CLI]\(`gh`).
+* **맞춤형**: 사용`QWEN.md`제공할 저장소의 파일&#x20;
+  프로젝트별 지침 및 컨텍스트[Qwen 코드 CLI](./features/commands).
 
-## Quick Start
+## 빠른 시작
 
-Get started with Qwen Code CLI in your repository in just a few minutes:
+단 몇 분만에 저장소에서 Qwen Code CLI를 시작하세요.
 
-### 1. Get a Qwen API Key
+### 1. Qwen API 키 받기
 
-Obtain your API key from [DashScope](https://help.aliyun.com/zh/model-studio/qwen-code) (Alibaba Cloud's AI platform)
+다음에서 API 키를 받으세요.[대시스코프](https://help.aliyun.com/zh/model-studio/qwen-code)(알리바바 클라우드의 AI 플랫폼)
 
-### 2. Add it as a GitHub Secret
+### 2. GitHub Secret으로 추가하세요
 
-Store your API key as a secret named `QWEN_API_KEY` in your repository:
+API 키를 비밀 이름으로 저장하세요.`QWEN_API_KEY`저장소에서:
 
-- Go to your repository's **Settings > Secrets and variables > Actions**
-- Click **New repository secret**
-- Name: `QWEN_API_KEY`, Value: your API key
+* 저장소로 이동**설정 > 비밀 및 변수 > 작업**
+* 딸깍 하는 소리**새 저장소 비밀**
+* 이름:`QWEN_API_KEY`, 값: API 키
 
-### 3. Update your .gitignore
+### 3. .gitignore 업데이트
 
-Add the following entries to your `.gitignore` file:
+다음 항목을`.gitignore`파일:
 
 ```gitignore
 # qwen-code-cli settings
@@ -43,199 +43,203 @@ Add the following entries to your `.gitignore` file:
 gha-creds-*.json
 ```
 
-### 4. Choose a Workflow
+### 4. 워크플로 선택
 
-You have two options to set up a workflow:
+워크플로를 설정하는 데는 두 가지 옵션이 있습니다.
 
-**Option A: Use setup command (Recommended)**
+**옵션 A: setup 명령 사용(권장)**
 
-1. Start the Qwen Code CLI in your terminal:
+1. 터미널에서 Qwen Code CLI를 시작합니다.
 
    ```shell
    qwen
    ```
 
-2. In Qwen Code CLI in your terminal, type:
+2. 터미널의 Qwen Code CLI에 다음을 입력합니다.
 
    ```
    /setup-github
    ```
 
-**Option B: Manually copy workflows**
+**옵션 B: 워크플로를 수동으로 복사**
 
-1. Copy the pre-built workflows from the [`examples/workflows`](./common-workflow) directory to your repository's `.github/workflows` directory. Note: the `qwen-dispatch.yml` workflow must also be copied, which triggers the workflows to run.
+1. 사전 구축된 워크플로를 다음에서 복사합니다.[`examples/workflows`](./common-workflow)저장소의 디렉토리`.github/workflows`예배 규칙서. 참고:`qwen-dispatch.yml`워크플로도 복사해야 하며, 그러면 워크플로가 실행됩니다.
 
-### 5. Try it out
+### 5. 사용해 보세요
 
-**Pull Request Review:**
+**풀 요청 검토:**
 
-- Open a pull request in your repository and wait for automatic review
-- Comment `@qwencoder /review` on an existing pull request to manually trigger a review
+* 저장소에서 풀 요청을 열고 자동 검토를 기다립니다.
+* 논평`@qwencoder /review`기존 풀 요청에 대해 수동으로 검토 실행
 
-**Issue Triage:**
+**문제 분류:**
 
-- Open an issue and wait for automatic triage
-- Comment `@qwencoder /triage` on existing issues to manually trigger triaging
+* 문제를 열고 자동 분류를 기다립니다.
+* 논평`@qwencoder /triage`기존 문제에 대해 수동으로 분류를 실행
 
-**General AI Assistance:**
+**일반 AI 지원:**
 
-- In any issue or pull request, mention `@qwencoder` followed by your request
-- Examples:
-  - `@qwencoder explain this code change`
-  - `@qwencoder suggest improvements for this function`
-  - `@qwencoder help me debug this error`
-  - `@qwencoder write unit tests for this component`
+* 문제나 끌어오기 요청에서 다음을 언급하세요.`@qwencoder`귀하의 요청에 따라
+* 예:
+  * `@qwencoder explain this code change`
+  * `@qwencoder suggest improvements for this function`
+  * `@qwencoder help me debug this error`
+  * `@qwencoder write unit tests for this component`
 
 ## Workflows
 
-This action provides several pre-built workflows for different use cases. Each workflow is designed to be copied into your repository's `.github/workflows` directory and customized as needed.
+이 작업은 다양한 사용 사례에 대해 사전 구축된 여러 워크플로를 제공합니다. 각 워크플로는 저장소의`.github/workflows`디렉토리에 추가하고 필요에 따라 사용자 정의합니다.
 
-### Qwen Code Dispatch
+### Qwen 코드 파견
 
-This workflow acts as a central dispatcher for Qwen Code CLI, routing requests to the appropriate workflow based on the triggering event and the command provided in the comment. For a detailed guide on how to set up the dispatch workflow, go to the [Qwen Code Dispatch workflow documentation](./common-workflow).
+이 워크플로는 Qwen Code CLI의 중앙 디스패처 역할을 하며, 주석에 제공된 명령과 트리거 이벤트를 기반으로 요청을 적절한 워크플로로 라우팅합니다. 디스패치 워크플로를 설정하는 방법에 대한 자세한 지침을 보려면[Qwen 코드 디스패치 워크플로우 문서](./common-workflow).
 
-### Issue Triage
+### 문제 분류
 
-This action can be used to triage GitHub Issues automatically or on a schedule. For a detailed guide on how to set up the issue triage system, go to the [GitHub Issue Triage workflow documentation](./examples/workflows/issue-triage).
+이 작업을 사용하면 GitHub 문제를 자동으로 또는 일정에 따라 분류할 수 있습니다. 이슈 분류 시스템 설정 방법에 대한 자세한 안내는 다음을 참조하세요.[GitHub Issue Triage 워크플로 문서](./examples/workflows/issue-triage).
 
-### Pull Request Review
+### 풀 요청 검토
 
-This action can be used to automatically review pull requests when they are opened. For a detailed guide on how to set up the pull request review system, go to the [GitHub PR Review workflow documentation](./common-workflow).
+이 작업을 사용하면 풀 요청이 열릴 때 자동으로 검토할 수 있습니다. 풀 요청 검토 시스템을 설정하는 방법에 대한 자세한 지침을 보려면[GitHub PR 검토 워크플로 문서](./common-workflow).
 
-### Qwen Code CLI Assistant
+### Qwen 코드 CLI 도우미
 
-This type of action can be used to invoke a general-purpose, conversational Qwen Code AI assistant within the pull requests and issues to perform a wide range of tasks. For a detailed guide on how to set up the general-purpose Qwen Code CLI workflow, go to the [Qwen Code Assistant workflow documentation](./common-workflow).
+이러한 유형의 작업은 풀 요청 및 이슈 내에서 범용 대화형 Qwen Code AI 도우미를 호출하여 광범위한 작업을 수행하는 데 사용할 수 있습니다. 범용 Qwen Code CLI 워크플로를 설정하는 방법에 대한 자세한 지침을 보려면 다음으로 이동하세요.[Qwen Code Assistant 워크플로 문서](./common-workflow).
 
-## Configuration
+## 구성
 
-### Inputs
+### 입력
 
 <!-- BEGIN_AUTOGEN_INPUTS -->
 
-- <a name="__input_qwen_api_key"></a><a href="#user-content-__input_qwen_api_key"><code>qwen*api_key</code></a>: *(Optional)\_ The API key for the Qwen API.
+* <a name="__input_qwen_api_key"></a><a href="#user-content-__input_qwen_api_key"><code>qwen\*api\_key</code></a>: \*(선택 사항)\_ Qwen API용 API 키입니다.
 
-- <a name="__input_qwen_cli_version"></a><a href="#user-content-__input_qwen_cli_version"><code>qwen*cli_version</code></a>: *(Optional, default: `latest`)\_ The version of the Qwen Code CLI to install. Can be "latest", "preview", "nightly", a specific version number, or a git branch, tag, or commit. For more information, see [Qwen Code CLI releases](https://github.com/QwenLM/qwen-code-action/blob/main/docs/releases.md).
+* <a name="__input_qwen_cli_version"></a><a href="#user-content-__input_qwen_cli_version"><code>qwen\*cli\_version</code></a>: \*(선택 사항, 기본값:`latest`)\_ 설치할 Qwen Code CLI 버전입니다. "최신", "미리 보기", "nightly", 특정 버전 번호 또는 git 브랜치, 태그 또는 커밋일 수 있습니다. 자세한 내용은 다음을 참조하세요.[Qwen Code CLI 릴리스](https://github.com/QwenLM/qwen-code-action/blob/main/docs/releases.md).
 
-- <a name="__input_qwen_debug"></a><a href="#user-content-__input_qwen_debug"><code>qwen*debug</code></a>: *(Optional)\_ Enable debug logging and output streaming.
+* <a name="__input_qwen_debug"></a><a href="#user-content-__input_qwen_debug"><code>qwen\*디버그</code></a>: \*(선택 사항)\_ 디버그 로깅 및 출력 스트리밍을 활성화합니다.
 
-- <a name="__input_qwen_model"></a><a href="#user-content-__input_qwen_model"><code>qwen*model</code></a>: *(Optional)\_ The model to use with Qwen Code.
+* <a name="__input_qwen_model"></a><a href="#user-content-__input_qwen_model"><code>qwen\*모델</code></a>: \*(선택)\_ Qwen Code와 함께 사용할 모델입니다.
 
-- <a name="__input_prompt"></a><a href="#user-content-__input_prompt"><code>prompt</code></a>: _(Optional, default: `You are a helpful assistant.`)_ A string passed to the Qwen Code CLI's [`--prompt` argument](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#command-line-arguments).
+* <a name="__input_prompt"></a><a href="#user-content-__input_prompt"><code>즉각적인</code></a>:*(선택사항, 기본값:`You are a helpful assistant.`)*&#x51;wen Code CLI에 전달된 문자열[`--prompt`논쟁](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#command-line-arguments).
 
-- <a name="__input_settings"></a><a href="#user-content-__input_settings"><code>settings</code></a>: _(Optional)_ A JSON string written to `.qwen/settings.json` to configure the CLI's _project_ settings.
-  For more details, see the documentation on [settings files](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#settings-files).
+* <a name="__input_settings"></a><a href="#user-content-__input_settings"><code>설정</code></a>:*(선택 과목)*&#xB2E4;음에 작성된 JSON 문자열`.qwen/settings.json`CLI를 구성하려면*프로젝트*설정.
+  자세한 내용은 에 대한 설명서를 참조하세요.[설정 파일](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#settings-files).
 
-- <a name="__input_use_qwen_code_assist"></a><a href="#user-content-__input_use_qwen_code_assist"><code>use*qwen_code_assist</code></a>: *(Optional, default: `false`)\_ Whether to use Code Assist for Qwen Code model access instead of the default Qwen Code API key.
-  For more information, see the [Qwen Code CLI documentation](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/authentication.md).
+* <a name="__input_use_qwen_code_assist"></a><a href="#user-content-__input_use_qwen_code_assist"><code>\*qwen\_code\_assist 사용</code></a>: \*(선택 사항, 기본값:`false`)\_ Qwen Code 모델 액세스를 위해 기본 Qwen Code API 키 대신 Code Assist를 사용할지 여부입니다.
+  자세한 내용은 다음을 참조하세요.[Qwen 코드 CLI 문서](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/authentication.md).
 
-- <a name="__input_use_vertex_ai"></a><a href="#user-content-__input_use_vertex_ai"><code>use*vertex_ai</code></a>: *(Optional, default: `false`)\_ Whether to use Vertex AI for Qwen Code model access instead of the default Qwen Code API key.
-  For more information, see the [Qwen Code CLI documentation](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/authentication.md).
+* <a name="__input_use_vertex_ai"></a><a href="#user-content-__input_use_vertex_ai"><code>사용\*vertex\_ai</code></a>: \*(선택 사항, 기본값:`false`)\_ Qwen Code 모델 액세스에 기본 Qwen Code API 키 대신 Vertex AI를 사용할지 여부입니다.
+  자세한 내용은 다음을 참조하세요.[Qwen 코드 CLI 문서](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/authentication.md).
 
-- <a name="__input_extensions"></a><a href="#user-content-__input_extensions"><code>extensions</code></a>: _(Optional)_ A list of Qwen Code CLI extensions to install.
+* <a name="__input_extensions"></a><a href="#user-content-__input_extensions"><code>확장</code></a>:*(선택 과목)*&#xC124;치할 Qwen Code CLI 확장 목록입니다.
 
-- <a name="__input_upload_artifacts"></a><a href="#user-content-__input_upload_artifacts"><code>upload*artifacts</code></a>: *(Optional, default: `false`)\_ Whether to upload artifacts to the github action.
+* <a name="__input_upload_artifacts"></a><a href="#user-content-__input_upload_artifacts"><code>업로드\*아티팩트</code></a>: \*(선택 사항, 기본값:`false`)\_ github 작업에 아티팩트를 업로드할지 여부입니다.
 
-- <a name="__input_use_pnpm"></a><a href="#user-content-__input_use_pnpm"><code>use*pnpm</code></a>: *(Optional, default: `false`)\_ Whether or not to use pnpm instead of npm to install qwen-code-cli
+* <a name="__input_use_pnpm"></a><a href="#user-content-__input_use_pnpm"><code>사용\*pnpm</code></a>: \*(선택 사항, 기본값:`false`)\_ qwen-code-cli 설치에 npm 대신 pnpm을 사용할지 여부
 
-- <a name="__input_workflow_name"></a><a href="#user-content-__input_workflow_name"><code>workflow*name</code></a>: *(Optional, default: `${{ github.workflow }}`)\_ The GitHub workflow name, used for telemetry purposes.
+* <a name="__input_workflow_name"></a><a href="#user-content-__input_workflow_name"><code>워크플로\*이름</code></a>: \*(선택 사항, 기본값:`${{ github.workflow }}`)\_ 원격 측정 목적으로 사용되는 GitHub 워크플로 이름입니다.
 
 <!-- END_AUTOGEN_INPUTS -->
 
-### Outputs
+### 출력
 
 <!-- BEGIN_AUTOGEN_OUTPUTS -->
 
-- <a name="__output_summary"></a><a href="#user-content-__output_summary"><code>summary</code></a>: The summarized output from the Qwen Code CLI execution.
+* <a name="__output_summary"></a><a href="#user-content-__output_summary"><code>요약</code></a>: Qwen Code CLI 실행의 요약된 출력입니다.
 
-- <a name="__output_error"></a><a href="#user-content-__output_error"><code>error</code></a>: The error output from the Qwen Code CLI execution, if any.
+* <a name="__output_error"></a><a href="#user-content-__output_error"><code>오류</code></a>: Qwen Code CLI 실행의 오류 출력(있는 경우)입니다.
 
 <!-- END_AUTOGEN_OUTPUTS -->
 
-### Repository Variables
+### 리포지토리 변수
 
-We recommend setting the following values as repository variables so they can be reused across all workflows. Alternatively, you can set them inline as action inputs in individual workflows or to override repository-level values.
+모든 워크플로에서 재사용할 수 있도록 다음 값을 리포지토리 변수로 설정하는 것이 좋습니다. 또는 개별 워크플로의 작업 입력으로 인라인으로 설정하거나 저장소 수준 값을 재정의할 수 있습니다.
 
-| Name               | Description                                               | Type     | Required | When Required             |
-| ------------------ | --------------------------------------------------------- | -------- | -------- | ------------------------- |
-| `DEBUG`            | Enables debug logging for the Qwen Code CLI.              | Variable | No       | Never                     |
-| `QWEN_CLI_VERSION` | Controls which version of the Qwen Code CLI is installed. | Variable | No       | Pinning the CLI version   |
-| `APP_ID`           | GitHub App ID for custom authentication.                  | Variable | No       | Using a custom GitHub App |
+| 이름                 | 설명                                | 유형     | 필수의 | 필요한 경우             |
+| ------------------ | --------------------------------- | ------ | --- | ------------------ |
+| `DEBUG`            | Qwen Code CLI에 대한 디버그 로깅을 활성화합니다. | 변하기 쉬운 | 아니요 | 절대                 |
+| `QWEN_CLI_VERSION` | 설치된 Qwen Code CLI 버전을 제어합니다.      | 변하기 쉬운 | 아니요 | CLI 버전 고정          |
+| `APP_ID`           | 사용자 정의 인증을 위한 GitHub 앱 ID입니다.     | 변하기 쉬운 | 아니요 | 사용자 정의 GitHub 앱 사용 |
 
-To add a repository variable:
+저장소 변수를 추가하려면 다음을 수행하십시오.
 
-1. Go to your repository's **Settings > Secrets and variables > Actions > New variable**.
-2. Enter the variable name and value.
-3. Save.
+1. 저장소로 이동**설정 > 비밀 및 변수 > 작업 > 새 변수**.
+2. 변수 이름과 값을 입력합니다.
+3. 구하다.
 
-For details about repository variables, refer to the [GitHub documentation on variables][variables].
+리포지토리 변수에 대한 자세한 내용은[변수에 대한 GitHub 문서][variables].
 
-### Secrets
+### 기미
 
-You can set the following secrets in your repository:
+저장소에서 다음 비밀을 설정할 수 있습니다.
 
-| Name              | Description                                   | Required | When Required                              |
-| ----------------- | --------------------------------------------- | -------- | ------------------------------------------ |
-| `QWEN_API_KEY`    | Your Qwen API key from DashScope.             | Yes      | Required for all workflows that call Qwen. |
-| `APP_PRIVATE_KEY` | Private key for your GitHub App (PEM format). | No       | Using a custom GitHub App.                 |
+| 이름                | 설명                         | 필수의 | 필요한 경우                     |
+| ----------------- | -------------------------- | --- | -------------------------- |
+| `QWEN_API_KEY`    | DashScope의 Qwen API 키입니다.  | 예   | Qwen을 호출하는 모든 워크플로에 필요합니다. |
+| `APP_PRIVATE_KEY` | GitHub 앱의 개인 키(PEM 형식)입니다. | 아니요 | 사용자 정의 GitHub 앱을 사용합니다.    |
 
-To add a secret:
+비밀을 추가하려면:
 
-1. Go to your repository's **Settings > Secrets and variables >Actions > New repository secret**.
-2. Enter the secret name and value.
-3. Save.
+1. 저장소로 이동**설정 > 비밀 및 변수 > 작업 > 새 저장소 비밀**.
+2. 비밀 이름과 값을 입력합니다.
+3. 구하다.
 
-For more information, refer to the [official GitHub documentation on creating and using encrypted secrets][secrets].
+자세한 내용은 다음을 참조하세요.[암호화된 비밀 생성 및 사용에 대한 공식 GitHub 문서][secrets].
 
-## Authentication
+## 입증
 
-This action requires authentication to the GitHub API and optionally to Qwen Code services.
+이 작업을 수행하려면 GitHub API에 대한 인증이 필요하며 선택적으로 Qwen Code 서비스에 대한 인증이 필요합니다.
 
-### GitHub Authentication
+### GitHub 인증
 
-You can authenticate with GitHub in two ways:
+다음 두 가지 방법으로 GitHub에 인증할 수 있습니다.
 
-1. **Default `GITHUB_TOKEN`:** For simpler use cases, the action can use the
-   default `GITHUB_TOKEN` provided by the workflow.
-2. **Custom GitHub App (Recommended):** For the most secure and flexible
-   authentication, we recommend creating a custom GitHub App.
+1. **기본`GITHUB_TOKEN`:**&#xB354; 간단한 사용 사례의 경우 작업에서
+   기본값`GITHUB_TOKEN`워크플로에서 제공됩니다.
+2. **사용자 정의 GitHub 앱(권장):**&#xAC00;장 안전하고 유연한 솔루션을 위해
+   인증을 위해서는 사용자 정의 GitHub 앱을 생성하는 것이 좋습니다.
 
-For detailed setup instructions for both Qwen and GitHub authentication, go to the
-[**Authentication documentation**](./configuration/auth).
+Qwen 및 GitHub 인증에 대한 자세한 설정 지침을 보려면 다음으로 이동하세요.[**인증 문서**](./configuration/auth).
 
-## Extensions
+## 확장
 
-The Qwen Code CLI can be extended with additional functionality through extensions.
-These extensions are installed from source from their GitHub repositories.
+Qwen Code CLI는 확장을 통해 추가 기능으로 확장될 수 있습니다.
+이러한 확장은 GitHub 리포지토리의 소스에서 설치됩니다.
 
-For detailed instructions on how to set up and configure extensions, go to the
-[Extensions documentation](../developers/extensions/extension).
+확장을 설정하고 구성하는 방법에 대한 자세한 지침을 보려면[확장 문서](../developers/extensions/extension).
 
-## Best Practices
+## 모범 사례
 
-To ensure the security, reliability, and efficiency of your automated workflows, we strongly recommend following our best practices. These guidelines cover key areas such as repository security, workflow configuration, and monitoring.
+자동화된 워크플로의 보안, 안정성 및 효율성을 보장하려면 모범 사례를 따르는 것이 좋습니다. 이 지침은 저장소 보안, 워크플로 구성, 모니터링과 같은 주요 영역을 다룹니다.
 
-Key recommendations include:
+주요 권장 사항은 다음과 같습니다.
 
-- **Securing Your Repository:** Implementing branch and tag protection, and restricting pull request approvers.
-- **Monitoring and Auditing:** Regularly reviewing action logs and enabling OpenTelemetry for deeper insights into performance and behavior.
+* **저장소 보안:**&#xBD84;기 및 태그 보호를 구현하고 끌어오기 요청 승인자를 제한합니다.
+* **모니터링 및 감사:**&#xC815;기적으로 작업 로그를 검토하고 OpenTelemetry를 활성화하여 성능과 동작에 대한 더 깊은 통찰력을 얻습니다.
 
-For a comprehensive guide on securing your repository and workflows, please refer to our [**Best Practices documentation**](./common-workflow).
+리포지토리 및 작업 흐름 보안에 대한 포괄적인 가이드는 다음을 참조하세요.[**모범 사례 문서**](./common-workflow).
 
-## Customization
+## 맞춤화
 
-Create a QWEN.md file in the root of your repository to provide
-project-specific context and instructions to [Qwen Code CLI](./common-workflow). This is useful for defining
-coding conventions, architectural patterns, or other guidelines the model should
-follow for a given repository.
+다음을 제공하기 위해 저장소 루트에 QWEN.md 파일을 생성합니다.&#x20;
+프로젝트별 컨텍스트 및 지침[Qwen 코드 CLI](./common-workflow). 이는 정의하는 데 유용합니다.&#x20;
+코딩 규칙, 아키텍처 패턴 또는 모델이 수행해야 하는 기타 지침&#x20;
+주어진 저장소를 따르십시오.
 
-## Contributing
+## 기여
 
-Contributions are welcome! Check out the Qwen Code CLI **Contributing Guide** for more details on how to get started.
+기여를 환영합니다! Qwen 코드 CLI를 확인하세요**기여 가이드**시작하는 방법에 대한 자세한 내용을 알아보세요.
 
 [secrets]: https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
+
 [Qwen Code]: https://github.com/QwenLM/qwen-code
+
 [DashScope]: https://dashscope.console.aliyun.com/apiKey
+
 [Qwen Code CLI]: https://github.com/QwenLM/qwen-code-action/
+
 [variables]: https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables#creating-configuration-variables-for-a-repository
+
 [GitHub CLI]: https://docs.github.com/en/github-cli/github-cli
+
 [QWEN.md]: https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#context-files-hierarchical-instructional-context

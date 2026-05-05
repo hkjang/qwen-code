@@ -5,10 +5,10 @@ export default {
   },
   users: {
     type: 'page',
-    title: 'User Guide',
+    title: '사용자 가이드',
   },
   developers: {
     type: 'page',
-    title: 'Developer Guide',
+    title: '개발자 가이드',
   },
 };

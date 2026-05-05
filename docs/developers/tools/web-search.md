@@ -1,25 +1,25 @@
-# Web Search
+# 웹 검색
 
-Qwen Code supports web search capabilities through **MCP (Model Context Protocol)** integrations. Rather than a built-in search tool, web search is provided by connecting to external MCP servers, giving you full flexibility to choose the search service that best fits your needs.
+Qwen Code는 다음을 통해 웹 검색 기능을 지원합니다.**MCP(모델 컨텍스트 프로토콜)**&#xD1B5;합. 내장된 검색 도구가 아닌 외부 MCP 서버에 연결하여 웹 검색이 제공되므로 필요에 가장 적합한 검색 서비스를 선택할 수 있는 완전한 유연성을 제공합니다.
 
-## ⚠️ Breaking Change: Built-in `web_search` Tool Removed
+## ⚠️ 획기적인 변화: 내장`web_search`도구가 제거되었습니다.
 
-> **Affected versions:** `V0.0.7+` through the last release with built-in web search support.
+> **영향을 받는 버전:** `V0.0.7+`내장된 웹 검색 지원이 포함된 마지막 릴리스를 통해.
 
-The built-in `web_search` tool and all its associated configuration have been **removed**. If you were using any of the following, you should migrate to the MCP-based approach described in this document:
+내장`web_search`도구 및 관련 구성이 모두 완료되었습니다.**제거됨**. 다음 중 하나를 사용하는 경우 이 문서에 설명된 MCP 기반 접근 방식으로 마이그레이션해야 합니다.
 
-| Removed                                                                | What to do                                                                                  |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `webSearch` block in `settings.json`                                   | Configure an MCP server in `mcpServers` instead (see below)                                 |
-| `advanced.tavilyApiKey` in `settings.json`                             | Use the [Tavily MCP server](#tavily-websearch)                                              |
-| `TAVILY_API_KEY` environment variable                                  | Use the [Tavily MCP server](#tavily-websearch)                                              |
-| `DASHSCOPE_API_KEY` for web search                                     | Use the [Alibaba Cloud Bailian WebSearch MCP](#alibaba-cloud-bailian-websearch-recommended) |
-| `GLM_API_KEY` for web search                                           | Use the [GLM WebSearch Prime MCP](#glm-websearch-prime-zhipuai)                             |
-| `--tavily-api-key` / `--glm-api-key` / `--dashscope-api-key` CLI flags | Configure via `mcpServers` in `settings.json`                                               |
+| 제거됨                                                                 | 해야 할 일                                                                                |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `webSearch`막다`settings.json`                                        | MCP 서버 구성`mcpServers`대신 (아래 참조)                                                       |
+| `advanced.tavilyApiKey`\~에`settings.json`                           | 사용[Tavily MCP 서버](#tavily-websearch)                                                  |
+| `TAVILY_API_KEY`환경 변수                                               | 사용[Tavily MCP 서버](#tavily-websearch)                                                  |
+| `DASHSCOPE_API_KEY`웹 검색용                                            | 사용[Alibaba Cloud Bailian WebSearch MCP](#alibaba-cloud-bailian-websearch-recommended) |
+| `GLM_API_KEY`웹 검색용                                                  | 사용[GLM 웹서치 프라임 MCP](#glm-websearch-prime-zhipuai)                                     |
+| `--tavily-api-key` / `--glm-api-key` / `--dashscope-api-key`CLI 플래그 | 다음을 통해 구성`mcpServers`\~에`settings.json`                                               |
 
-### Migration Examples
+### 마이그레이션 예
 
-**Before (Tavily via built-in tool):**
+**이전(내장 도구를 통한 Tavily):**
 
 ```json
 {
@@ -30,7 +30,7 @@ The built-in `web_search` tool and all its associated configuration have been **
 }
 ```
 
-**After (Tavily via MCP):**
+**이후(MCP를 통한 Tavily):**
 
 ```json
 {
@@ -42,9 +42,9 @@ The built-in `web_search` tool and all its associated configuration have been **
 }
 ```
 
----
+***
 
-**Before (DashScope via built-in tool):**
+**이전(내장 도구를 통한 DashScope):**
 
 ```json
 {
@@ -55,7 +55,7 @@ The built-in `web_search` tool and all its associated configuration have been **
 }
 ```
 
-**After (Alibaba Cloud Bailian WebSearch via MCP):**
+**이후(MCP를 통한 Alibaba Cloud Bailian WebSearch):**
 
 ```json
 {
@@ -70,22 +70,22 @@ The built-in `web_search` tool and all its associated configuration have been **
 }
 ```
 
----
+***
 
-## Supported MCP Web Search Services
+## 지원되는 MCP 웹 검색 서비스
 
-### Alibaba Cloud Bailian WebSearch (Recommended)
+### Alibaba Cloud Bailian 웹 검색(권장)
 
-The official web search MCP service provided by Alibaba Cloud Bailian platform, powered by DashScope.
+DashScope가 지원하는 Alibaba Cloud Bailian 플랫폼에서 제공하는 공식 웹 검색 MCP 서비스입니다.
 
-- **MCP Marketplace:** https://bailian.console.aliyun.com/cn-beijing?tab=mcp#/mcp-market/detail/WebSearch
-- **Cost:** Paid (billed via Alibaba Cloud DashScope)
-- **Get API Key:** https://help.aliyun.com/zh/model-studio/get-api-key
-- **Best for:** Chinese-language queries, access to Chinese web content, integration with the Alibaba Cloud ecosystem
+* **MCP 마켓플레이스:** <https://bailian.console.aliyun.com/cn-beijing?tab=mcp#/mcp-market/detail/WebSearch>
+* **비용:**&#xC720;료(Alibaba Cloud DashScope를 통해 청구)
+* **API 키 받기:** <https://help.aliyun.com/zh/model-studio/get-api-key>
+* **가장 적합한 대상:**&#xC911;국어 쿼리, 중국어 웹 콘텐츠 액세스, Alibaba Cloud 생태계와의 통합
 
-#### Setup
+#### 설정
 
-**Method 1: CLI command**
+**방법 1: CLI 명령**
 
 ```bash
 qwen mcp add WebSearch \
@@ -94,7 +94,7 @@ qwen mcp add WebSearch \
   -H "Authorization: Bearer ${DASHSCOPE_API_KEY}"
 ```
 
-**Method 2: `settings.json`**
+**방법 2:`settings.json`**
 
 ```json
 {
@@ -109,29 +109,29 @@ qwen mcp add WebSearch \
 }
 ```
 
-Replace `${DASHSCOPE_API_KEY}` with your actual API key, or set it as an environment variable so Qwen Code picks it up automatically.
+바꾸다`${DASHSCOPE_API_KEY}`실제 API 키를 사용하거나 Qwen Code가 자동으로 선택하도록 환경 변수로 설정하세요.
 
----
+***
 
-### Tavily WebSearch
+### 타빌리 웹서치
 
-A production-ready MCP server providing real-time web search, extract, map, and crawl capabilities.
+실시간 웹 검색, 추출, 매핑 및 크롤링 기능을 제공하는 프로덕션 지원 MCP 서버입니다.
 
-- **Repository:** https://github.com/tavily-ai/tavily-mcp
-- **Cost:** Paid (free tier available)
-- **Get API Key:** https://app.tavily.com/home
-- **Best for:** General-purpose web search with high-quality AI-generated answers
+* **저장소:** <https://github.com/tavily-ai/tavily-mcp>
+* **비용:**&#xC720;료(무료 등급 사용 가능)
+* **API 키 받기:** <https://app.tavily.com/home>
+* **가장 적합한 대상:**&#xACE0;품질 AI 생성 답변을 갖춘 범용 웹 검색
 
-#### Available Tools
+#### 사용 가능한 도구
 
-- `tavily_search` — Real-time web search
-- `tavily_extract` — Intelligent data extraction from web pages
-- `tavily_map` — Create a structured map of a website
-- `tavily_crawl` — Systematically explore websites
+* `tavily_search`— 실시간 웹 검색
+* `tavily_extract`— 웹 페이지에서 지능형 데이터 추출
+* `tavily_map`— 웹사이트의 구조화된 지도를 만듭니다.
+* `tavily_crawl`— 체계적으로 웹사이트 탐색
 
-#### Setup
+#### 설정
 
-**Method 1: CLI command (Remote MCP)**
+**방법 1: CLI 명령(원격 MCP)**
 
 ```bash
 qwen mcp add tavily \
@@ -139,7 +139,7 @@ qwen mcp add tavily \
   "https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}"
 ```
 
-**Method 2: `settings.json` (Remote MCP)**
+**방법 2:`settings.json`(원격 MCP)**
 
 ```json
 {
@@ -151,9 +151,9 @@ qwen mcp add tavily \
 }
 ```
 
-Replace `${TAVILY_API_KEY}` with your actual API key, or set it as an environment variable.
+바꾸다`${TAVILY_API_KEY}`실제 API 키를 사용하거나 환경 변수로 설정하세요.
 
-**Method 3: `settings.json` (Local NPX)**
+**방법 3:`settings.json`(로컬 NPX)**
 
 ```json
 {
@@ -169,24 +169,24 @@ Replace `${TAVILY_API_KEY}` with your actual API key, or set it as an environmen
 }
 ```
 
----
+***
 
-### GLM WebSearch Prime (ZhipuAI)
+### GLM 웹서치 프라임 (ZhipuAI)
 
-The official web search Remote MCP service provided by ZhipuAI (智谱AI), designed for GLM Coding Plan users. Provides real-time web search including news, stock prices, weather, and more.
+GLM Coding Plan 사용자를 위해 설계된 ZhipuAI(智谱AI)에서 제공하는 공식 웹 검색 Remote MCP 서비스입니다. 뉴스, 주가, 날씨 등을 포함한 실시간 웹 검색을 제공합니다.
 
-- **Documentation:** https://docs.bigmodel.cn/cn/coding-plan/mcp/search-mcp-server
-- **Cost:** Included in GLM Coding Plan subscription (Lite: 100 calls/month, Pro: 1,000/month, Max: 4,000/month)
-- **Get API Key:** https://open.bigmodel.cn/apikey/platform
-- **Best for:** Chinese-language queries, real-time information retrieval
+* **선적 서류 비치:** <https://docs.bigmodel.cn/cn/coding-plan/mcp/search-mcp-server>
+* **비용:**&#x47;LM 코딩 플랜 구독에 포함됨(Lite: 100콜/월, Pro: 1,000/월, 최대: 4,000/월)
+* **API 키 받기:** <https://open.bigmodel.cn/apikey/platform>
+* **가장 적합한 대상:**&#xC911;국어 질의, 실시간 정보 검색
 
-#### Available Tools
+#### 사용 가능한 도구
 
-- `webSearchPrime` — Web search returning page title, URL, summary, site name, and favicon
+* `webSearchPrime`— 페이지 제목, URL, 요약, 사이트 이름, 파비콘을 반환하는 웹 검색
 
-#### Setup
+#### 설정
 
-**Method 1: CLI command**
+**방법 1: CLI 명령**
 
 ```bash
 qwen mcp add web-search-prime \
@@ -195,7 +195,7 @@ qwen mcp add web-search-prime \
   -H "Authorization: Bearer ${GLM_API_KEY}"
 ```
 
-**Method 2: `settings.json`**
+**방법 2:`settings.json`**
 
 ```json
 {
@@ -210,6 +210,6 @@ qwen mcp add web-search-prime \
 }
 ```
 
-Replace `${GLM_API_KEY}` with your actual ZhipuAI API key, or set it as an environment variable.
+바꾸다`${GLM_API_KEY}`실제 ZhipuAI API 키를 사용하거나 환경 변수로 설정하세요.
 
----
+***

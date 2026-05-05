@@ -1,40 +1,40 @@
-# Checkpointing
+# 체크포인트
 
-Qwen Code includes a Checkpointing feature that automatically saves a snapshot of your project's state before any file modifications are made by AI-powered tools. This allows you to safely experiment with and apply code changes, knowing you can instantly revert back to the state before the tool was run.
+Qwen Code에는 AI 기반 도구로 파일을 수정하기 전에 프로젝트 상태의 스냅샷을 자동으로 저장하는 체크포인트 기능이 포함되어 있습니다. 이를 통해 코드 변경 사항을 안전하게 실험하고 적용할 수 있으며 도구가 실행되기 전 상태로 즉시 되돌릴 수 있습니다.
 
-## How It Works
+## 작동 방식
 
-When you approve a tool that modifies the file system (like `write_file` or `edit`), the CLI automatically creates a "checkpoint." This checkpoint includes:
+파일 시스템을 수정하는 도구(예:`write_file`또는`edit`), CLI는 자동으로 "체크포인트"를 생성합니다. 이 체크포인트에는 다음이 포함됩니다.
 
-1.  **A Git Snapshot:** A commit is made in a special, shadow Git repository located in your home directory (`~/.qwen/history/<project_hash>`). This snapshot captures the complete state of your project files at that moment. It does **not** interfere with your own project's Git repository.
-2.  **Conversation History:** The entire conversation you've had with the agent up to that point is saved.
-3.  **The Tool Call:** The specific tool call that was about to be executed is also stored.
+1. **Git 스냅샷:**&#xCEE4;밋은 홈 디렉터리(`~/.qwen/history/<project_hash>`). 이 스냅샷은 해당 시점의 프로젝트 파일의 전체 상태를 캡처합니다. 그렇습니&#xB2E4;**\~ 아니다**자신의 프로젝트의 Git 저장소를 방해합니다.
+2. **대화 기록:**&#xD574;당 시점까지 상담원과 나눈 대화 전체가 저장됩니다.
+3. **도구 호출:**&#xC2E4;행되려고 했던 특정 도구 호출도 저장됩니다.
 
-If you want to undo the change or simply go back, you can use the `/restore` command. Restoring a checkpoint will:
+변경 사항을 취소하거나 간단히 돌아가려면 다음을 사용할 수 있습니다.`/restore`명령. 체크포인트를 복원하면 다음이 수행됩니다.
 
-- Revert all files in your project to the state captured in the snapshot.
-- Restore the conversation history in the CLI.
-- Re-propose the original tool call, allowing you to run it again, modify it, or simply ignore it.
+* 프로젝트의 모든 파일을 스냅샷에 캡처된 상태로 되돌립니다.
+* CLI에서 대화 기록을 복원합니다.
+* 원래 도구 호출을 다시 제안하여 다시 실행하거나 수정하거나 간단히 무시할 수 있습니다.
 
-All checkpoint data, including the Git snapshot and conversation history, is stored locally on your machine. The Git snapshot is stored in the shadow repository while the conversation history and tool calls are saved in a JSON file in your project's temporary directory, typically located at `~/.qwen/tmp/<project_hash>/checkpoints`.
+Git 스냅샷 및 대화 기록을 포함한 모든 체크포인트 데이터는 컴퓨터에 로컬로 저장됩니다. Git 스냅샷은 섀도우 저장소에 저장되는 반면 대화 기록 및 도구 호출은 일반적으로 다음 위치에 있는 프로젝트 임시 디렉터리의 JSON 파일에 저장됩니다.`~/.qwen/tmp/<project_hash>/checkpoints`.
 
-## Enabling the Feature
+## 기능 활성화
 
-The Checkpointing feature is disabled by default. To enable it, you can either use a command-line flag or edit your `settings.json` file.
+체크포인트 기능은 기본적으로 비활성화되어 있습니다. 이를 활성화하려면 명령줄 플래그를 사용하거나`settings.json`파일.
 
-### Using the Command-Line Flag
+### 명령줄 플래그 사용
 
-You can enable checkpointing for the current session by using the `--checkpointing` flag when starting Qwen Code:
+다음을 사용하여 현재 세션에 대한 체크포인트를 활성화할 수 있습니다.`--checkpointing`Qwen 코드를 시작할 때 플래그:
 
 ```bash
 qwen --checkpointing
 ```
 
-### Using the `settings.json` File
+### 사용하여`settings.json`파일
 
-To enable checkpointing by default for all sessions, you need to edit your `settings.json` file.
+모든 세션에 대해 기본적으로 체크포인트를 활성화하려면`settings.json`파일.
 
-Add the following key to your `settings.json`:
+다음 키를 추가하세요.`settings.json`:
 
 ```json
 {
@@ -46,32 +46,32 @@ Add the following key to your `settings.json`:
 }
 ```
 
-## Using the `/restore` Command
+## 사용하여`/restore`명령
 
-Once enabled, checkpoints are created automatically. To manage them, you use the `/restore` command.
+활성화되면 체크포인트가 자동으로 생성됩니다. 이를 관리하려면`/restore`명령.
 
-### List Available Checkpoints
+### 사용 가능한 체크포인트 나열
 
-To see a list of all saved checkpoints for the current project, simply run:
+현재 프로젝트에 대해 저장된 모든 체크포인트 목록을 보려면 다음을 실행하면 됩니다.
 
 ```
 /restore
 ```
 
-The CLI will display a list of available checkpoint files. These file names are typically composed of a timestamp, the name of the file being modified, and the name of the tool that was about to be run (e.g., `2025-06-22T10-00-00_000Z-my-file.txt-write_file`).
+CLI는 사용 가능한 체크포인트 파일 목록을 표시합니다. 이러한 파일 이름은 일반적으로 타임스탬프, 수정 중인 파일 이름, 실행하려는 도구 이름(예:`2025-06-22T10-00-00_000Z-my-file.txt-write_file`).
 
-### Restore a Specific Checkpoint
+### 특정 체크포인트 복원
 
-To restore your project to a specific checkpoint, use the checkpoint file from the list:
+프로젝트를 특정 체크포인트로 복원하려면 목록에서 체크포인트 파일을 사용하세요.
 
 ```
 /restore <checkpoint_file>
 ```
 
-For example:
+예를 들어:
 
 ```
 /restore 2025-06-22T10-00-00_000Z-my-file.txt-write_file
 ```
 
-After running the command, your files and conversation will be immediately restored to the state they were in when the checkpoint was created, and the original tool prompt will reappear.
+명령을 실행하면 파일과 대화가 검사점이 생성되었을 때의 상태로 즉시 복원되고 원래 도구 프롬프트가 다시 나타납니다.

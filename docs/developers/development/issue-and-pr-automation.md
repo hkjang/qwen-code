@@ -1,84 +1,84 @@
-# Automation and Triage Processes
+# 자동화 및 분류 프로세스
 
-This document provides a detailed overview of the automated processes we use to manage and triage issues and pull requests. Our goal is to provide prompt feedback and ensure that contributions are reviewed and integrated efficiently. Understanding this automation will help you as a contributor know what to expect and how to best interact with our repository bots.
+이 문서에서는 문제와 끌어오기 요청을 관리하고 분류하는 데 사용하는 자동화된 프로세스에 대한 자세한 개요를 제공합니다. 우리의 목표는 즉각적인 피드백을 제공하고 기여가 효율적으로 검토 및 통합되도록 하는 것입니다. 이 자동화를 이해하면 기여자로서 예상되는 내용과 리포지토리 봇과 가장 잘 상호 작용하는 방법을 아는 데 도움이 됩니다.
 
 ## Guiding Principle: Issues and Pull Requests
 
-First and foremost, almost every Pull Request (PR) should be linked to a corresponding Issue. The issue describes the "what" and the "why" (the bug or feature), while the PR is the "how" (the implementation). This separation helps us track work, prioritize features, and maintain clear historical context. Our automation is built around this principle.
+무엇보다도, 거의 모든 PR(Pull Request)은 해당 이슈에 연결되어야 합니다. 이슈는 "무엇"과 "이유"(버그 또는 기능)를 설명하는 반면 PR은 "어떻게"(구현)를 설명합니다. 이러한 분리는 작업을 추적하고, 기능의 우선순위를 지정하고, 명확한 기록 맥락을 유지하는 데 도움이 됩니다. 우리의 자동화는 이 원칙을 기반으로 구축되었습니다.
 
----
+***
 
-## Detailed Automation Workflows
+## 상세한 자동화 워크플로우
 
-Here is a breakdown of the specific automation workflows that run in our repository.
+다음은 우리 저장소에서 실행되는 특정 자동화 워크플로우에 대한 분석입니다.
 
-### 1. When you open an Issue: `Automated Issue Triage`
+### 1. 이슈를 열 때:`Automated Issue Triage`
 
-This is the first bot you will interact with when you create an issue. Its job is to perform an initial analysis and apply the correct labels.
+이슈를 생성할 때 가장 먼저 상호 작용하는 봇입니다. 그 임무는 초기 분석을 수행하고 올바른 라벨을 적용하는 것입니다.
 
-- **Workflow File**: `.github/workflows/qwen-automated-issue-triage.yml`
-- **When it runs**: Immediately after an issue is created or reopened.
-- **What it does**:
-  - It uses a Qwen model to analyze the issue's title and body against a detailed set of guidelines.
-  - **Applies one `area/*` label**: Categorizes the issue into a functional area of the project (e.g., `area/ux`, `area/models`, `area/platform`).
-  - **Applies one `kind/*` label**: Identifies the type of issue (e.g., `kind/bug`, `kind/enhancement`, `kind/question`).
-  - **Applies one `priority/*` label**: Assigns a priority from P0 (critical) to P3 (low) based on the described impact.
-  - **May apply `status/need-information`**: If the issue lacks critical details (like logs or reproduction steps), it will be flagged for more information.
-  - **May apply `status/need-retesting`**: If the issue references a CLI version that is more than six versions old, it will be flagged for retesting on a current version.
-- **What you should do**:
-  - Fill out the issue template as completely as possible. The more detail you provide, the more accurate the triage will be.
-  - If the `status/need-information` label is added, please provide the requested details in a comment.
+* **워크플로 파일**:`.github/workflows/qwen-automated-issue-triage.yml`
+* **실행될 때**: 이슈가 생성되거나 재개된 직후입니다.
+* **기능**:
+  * Qwen 모델을 사용하여 세부 지침에 따라 문제의 제목과 본문을 분석합니다.
+  * **하나를 적용`area/*`상표**: 문제를 프로젝트의 기능 영역으로 분류합니다(예:`area/ux`,`area/models`,`area/platform`).
+  * **하나를 적용`kind/*`상표**: 문제 유형을 식별합니다(예:`kind/bug`,`kind/enhancement`,`kind/question`).
+  * **하나를 적용`priority/*`상표**: 설명된 영향을 기준으로 P0(심각)에서 P3(낮음)까지 우선순위를 할당합니다.
+  * **적용될 수 있음`status/need-information`**: 문제에 중요한 세부정보(예: 로그 또는 재현 단계)가 부족한 경우 추가 정보를 제공하도록 플래그가 지정됩니다.
+  * **적용될 수 있음`status/need-retesting`**: 문제가 6개보다 오래된 CLI 버전을 참조하는 경우 현재 버전에서 다시 테스트하도록 플래그가 지정됩니다.
+* **당신이해야 할 일**:
+  * 이슈 템플릿을 최대한 완벽하게 작성하세요. 더 자세한 정보를 제공할수록 분류가 더 정확해집니다.
+  * 만약`status/need-information`라벨이 추가되면 댓글로 요청 세부정보를 제공해 주세요.
 
-### 2. When you open a Pull Request: `Continuous Integration (CI)`
+### 2. Pull Request를 열 때:`Continuous Integration (CI)`
 
-This workflow ensures that all changes meet our quality standards before they can be merged.
+이 워크플로는 모든 변경 사항이 병합되기 전에 품질 표준을 충족하는지 확인합니다.
 
-- **Workflow File**: `.github/workflows/ci.yml`
-- **When it runs**: On every push to a pull request.
-- **What it does**:
-  - **Lint**: Checks that your code adheres to our project's formatting and style rules.
-  - **Test**: Runs our full suite of automated tests across macOS, Windows, and Linux, and on multiple Node.js versions. This is the most time-consuming part of the CI process.
-  - **Post Coverage Comment**: After all tests have successfully passed, a bot will post a comment on your PR. This comment provides a summary of how well your changes are covered by tests.
-- **What you should do**:
-  - Ensure all CI checks pass. A green checkmark ✅ will appear next to your commit when everything is successful.
-  - If a check fails (a red "X" ❌), click the "Details" link next to the failed check to view the logs, identify the problem, and push a fix.
+* **워크플로 파일**:`.github/workflows/ci.yml`
+* **실행될 때**: 풀 요청을 푸시할 때마다.
+* **기능**:
+  * **린트**: 코드가 프로젝트의 형식 및 스타일 규칙을 준수하는지 확인합니다.
+  * **시험**: macOS, Windows, Linux 및 여러 Node.js 버전에서 전체 자동화 테스트 제품군을 실행합니다. 이는 CI 프로세스에서 가장 시간이 많이 걸리는 부분입니다.
+  * **게시물 취재 댓글**: 모든 테스트가 성공적으로 통과되면 봇이 귀하의 PR에 댓글을 게시합니다. 이 주석은 테스트에서 변경 사항이 얼마나 잘 처리되었는지에 대한 요약을 제공합니다.
+* **당신이해야 할 일**:
+  * 모든 CI 검사가 통과되었는지 확인합니다. 모든 것이 성공하면 커밋 옆에 녹색 확인 표시 ✅가 나타납니다.
+  * 검사에 실패하면(빨간색 "X" ❌) 실패한 검사 옆에 있는 "세부 정보" 링크를 클릭하여 로그를 보고, 문제를 식별하고, 수정 사항을 푸시하세요.
 
-### 3. Ongoing Triage for Pull Requests: `PR Auditing and Label Sync`
+### 3. 끌어오기 요청에 대한 지속적인 분류:`PR Auditing and Label Sync`
 
-This workflow runs periodically to ensure all open PRs are correctly linked to issues and have consistent labels.
+이 워크플로는 열려 있는 모든 PR이 문제에 올바르게 연결되고 일관된 레이블이 있는지 확인하기 위해 정기적으로 실행됩니다.
 
-- **Workflow File**: `.github/workflows/qwen-scheduled-pr-triage.yml`
-- **When it runs**: Every 15 minutes on all open pull requests.
-- **What it does**:
-  - **Checks for a linked issue**: The bot scans your PR description for a keyword that links it to an issue (e.g., `Fixes #123`, `Closes #456`).
-  - **Adds `status/need-issue`**: If no linked issue is found, the bot will add the `status/need-issue` label to your PR. This is a clear signal that an issue needs to be created and linked.
-  - **Synchronizes labels**: If an issue _is_ linked, the bot ensures the PR's labels perfectly match the issue's labels. It will add any missing labels and remove any that don't belong, and it will remove the `status/need-issue` label if it was present.
-- **What you should do**:
-  - **Always link your PR to an issue.** This is the most important step. Add a line like `Resolves #<issue-number>` to your PR description.
-  - This will ensure your PR is correctly categorized and moves through the review process smoothly.
+* **워크플로 파일**:`.github/workflows/qwen-scheduled-pr-triage.yml`
+* **실행될 때**: 열려 있는 모든 풀 요청에 대해 15분마다.
+* **기능**:
+  * **연결된 문제를 확인합니다.**: 봇은 PR 설명에서 문제와 연결되는 키워드를 검색합니다(예:`Fixes #123`,`Closes #456`).
+  * **추가`status/need-issue`**: 연결된 문제가 발견되지 않으면 봇이 다음을 추가합니다.`status/need-issue`PR에 라벨을 붙입니다. 이는 이슈를 생성하고 연결해야 한다는 명확한 신호입니다.
+  * **라벨을 동기화합니다.**: 문제가 있는 경&#xC6B0;*\~이다*링크되면 봇은 PR의 레이블이 문제의 레이블과 완벽하게 일치하는지 확인합니다. 누락된 라벨을 추가하고 속하지 않는 라벨을 제거합니다.`status/need-issue`존재하는 경우 라벨을 붙입니다.
+* **당신이해야 할 일**:
+  * **항상 PR을 이슈에 연결하세요.**&#xC774;것이 가장 중요한 단계입니다. 다음과 같은 줄을 추가하십시오.`Resolves #<issue-number>`귀하의 PR 설명에.
+  * 이렇게 하면 PR이 올바르게 분류되고 검토 프로세스가 원활하게 진행됩니다.
 
-### 4. Ongoing Triage for Issues: `Scheduled Issue Triage`
+### 4. 지속적인 문제 분류:`Scheduled Issue Triage`
 
-This is a fallback workflow to ensure that no issue gets missed by the triage process.
+이는 분류 프로세스에서 문제가 누락되지 않도록 하기 위한 대체 워크플로입니다.
 
-- **Workflow File**: `.github/workflows/qwen-scheduled-issue-triage.yml`
-- **When it runs**: Every hour on all open issues.
-- **What it does**:
-  - It actively seeks out issues that either have no labels at all or still have the `status/need-triage` label.
-  - It then triggers the same powerful QwenCode-based analysis as the initial triage bot to apply the correct labels.
-- **What you should do**:
-  - You typically don't need to do anything. This workflow is a safety net to ensure every issue is eventually categorized, even if the initial triage fails.
+* **워크플로 파일**:`.github/workflows/qwen-scheduled-issue-triage.yml`
+* **실행될 때**: 모든 미해결 이슈에 대해 매 시간마다.
+* **기능**:
+  * 라벨이 전혀 없거나 여전히 문제가 있는 문제를 적극적으로 찾습니다.`status/need-triage`상표.
+  * 그런 다음 초기 분류 봇과 동일한 강력한 QwenCode 기반 분석을 실행하여 올바른 라벨을 적용합니다.
+* **당신이해야 할 일**:
+  * 일반적으로 아무것도 할 필요가 없습니다. 이 워크플로는 초기 분류가 실패하더라도 모든 문제가 최종적으로 분류되도록 보장하는 안전망입니다.
 
-### 5. Release Automation
+### 5. 출시 자동화
 
-This workflow handles the process of packaging and publishing new versions of Qwen Code.
+이 워크플로는 Qwen Code의 새 버전을 패키징하고 게시하는 프로세스를 처리합니다.
 
-- **Workflow File**: `.github/workflows/release.yml`
-- **When it runs**: On a daily schedule for "nightly" releases, and manually for official patch/minor releases.
-- **What it does**:
-  - Automatically builds the project, bumps the version numbers, and publishes the packages to npm.
-  - Creates a corresponding release on GitHub with generated release notes.
-- **What you should do**:
-  - As a contributor, you don't need to do anything for this process. You can be confident that once your PR is merged into the `main` branch, your changes will be included in the very next nightly release.
+* **워크플로 파일**:`.github/workflows/release.yml`
+* **실행될 때**: "야간" 릴리스의 경우 일일 일정으로, 공식 패치/부 릴리스의 경우 수동으로 수행됩니다.
+* **기능**:
+  * 자동으로 프로젝트를 빌드하고, 버전 번호를 높이고, 패키지를 npm에 게시합니다.
+  * 생성된 릴리스 노트를 사용하여 GitHub에 해당 릴리스를 만듭니다.
+* **당신이해야 할 일**:
+  * 기여자로서 귀하는 이 프로세스를 위해 아무것도 할 필요가 없습니다. 귀하의 PR이`main`분기의 경우 변경 사항은 바로 다음 야간 릴리스에 포함됩니다.
 
-We hope this detailed overview is helpful. If you have any questions about our automation or processes, please don't hesitate to ask!
+이 자세한 개요가 도움이 되기를 바랍니다. 자동화나 프로세스에 대해 궁금한 점이 있으면 주저하지 말고 문의하세요!

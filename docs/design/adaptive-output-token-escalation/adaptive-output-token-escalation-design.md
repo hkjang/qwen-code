@@ -1,22 +1,22 @@
-# Adaptive Output Token Escalation Design
+# 적응형 출력 토큰 에스컬레이션 설계
 
-> Reduces GPU slot over-reservation by ~4x through a "low default + escalate on truncation" strategy for output tokens, with multi-turn recovery for responses that exceed even the escalated limit.
+> 에스컬레이션된 한도를 초과하는 응답에 대한 다중 턴 복구를 통해 출력 토큰에 대한 "낮은 기본값 + 잘림 시 에스컬레이션" 전략을 통해 GPU 슬롯 초과 예약을 최대 4배까지 줄입니다.
 
-## Problem
+## 문제
 
-Every API request reserves a fixed GPU slot proportional to `max_tokens`. The previous default of 32K tokens means each request reserves a 32K output slot, but 99% of responses are under 5K tokens. This over-reserves GPU capacity by 4-6x, limiting server concurrency and increasing cost.
+모든 API 요청은 다음에 비례하여 고정 GPU 슬롯을 예약합니다.`max_tokens`. 이전 기본값인 32K 토큰은 각 요청이 32K 출력 슬롯을 예약하지만 응답의 99%가 5K 토큰 미만임을 의미합니다. 이는 GPU 용량을 4\~6배 이상 예약하여 서버 동시성을 제한하고 비용을 증가시킵니다.
 
-## Solution
+## 해결책
 
-Use a capped default of **8K** output tokens. When a response is truncated (the model hits `max_tokens`):
+제한된 기본값을 사용하십시오.**8K**토큰을 출력합니다. 응답이 잘릴 때(모델이`max_tokens`):
 
-1. **Escalate** to the model's full output limit (with 64K as a floor for unknown models)
-2. If still truncated, **recover** by keeping the partial response in history and injecting a continuation message, up to 3 times
-3. If recovery is exhausted, fall back to the tool scheduler's truncation guidance
+1. **차츰 오르다**모델의 전체 출력 제한까지(알 수 없는 모델의 경우 최소 64K)
+2. 그래도 잘린 경우**다시 덮다**부분 응답을 기록에 유지하고 연속 메시지를 삽입하여 최대 3회
+3. 복구가 소진되면 도구 스케줄러의 잘림 지침으로 돌아갑니다.
 
-Since <1% of requests are actually truncated, this reduces average slot reservation significantly while preserving output quality for long responses.
+요청의 1% 미만이 실제로 잘리기 때문에 이는 긴 응답에 대한 출력 품질을 유지하면서 평균 슬롯 예약을 크게 줄입니다.
 
-## Architecture
+## 건축학
 
 ```
 Request (max_tokens = 8K)
@@ -74,33 +74,33 @@ Request (max_tokens = 8K)
 └──────────────────────────────────────────────────┘
 ```
 
-## Token limit determination
+## 토큰 한도 결정
 
-The effective `max_tokens` is resolved in the following priority order:
+효과적인`max_tokens`다음 우선순위에 따라 해결됩니다.
 
-| Priority    | Source                                               | Value (known model)          | Value (unknown model) | Escalation behavior                             |
-| ----------- | ---------------------------------------------------- | ---------------------------- | --------------------- | ----------------------------------------------- |
-| 1 (highest) | User config (`samplingParams.max_tokens`)            | `min(userValue, modelLimit)` | `userValue`           | No escalation                                   |
-| 2           | Environment variable (`QWEN_CODE_MAX_OUTPUT_TOKENS`) | `min(envValue, modelLimit)`  | `envValue`            | No escalation                                   |
-| 3 (lowest)  | Capped default                                       | `min(modelLimit, 8K)`        | `min(32K, 8K)` = 8K   | Escalates to model limit (64K floor) + recovery |
+| 우선 사항    | 원천                                  | 값(알려진 모델)                    | 값(알 수 없는 모델)       | 에스컬레이션 동작                  |
+| -------- | ----------------------------------- | ---------------------------- | ------------------ | -------------------------- |
+| 1(가장 높음) | 사용자 구성(`samplingParams.max_tokens`) | `min(userValue, modelLimit)` | `userValue`        | 에스컬레이션 없음                  |
+| 2        | 환경변수(`QWEN_CODE_MAX_OUTPUT_TOKENS`) | `min(envValue, modelLimit)`  | `envValue`         | 에스컬레이션 없음                  |
+| 3(최저)    | 한도가 있는 기본값                          | `min(modelLimit, 8K)`        | `min(32K, 8K)`= 8K | 모델 제한(64K 층)으로 에스컬레이션 + 복구 |
 
-A "known model" is one that has an explicit entry in `OUTPUT_PATTERNS` (checked via `hasExplicitOutputLimit()`). For known models, the effective value is always capped at the model's declared output limit to avoid API errors. Unknown models (custom deployments, self-hosted endpoints) pass the user's value through directly, since the backend may support larger limits.
+"알려진 모델"은 다음에 명시적인 항목이 있는 모델입니다.`OUTPUT_PATTERNS`(다음을 통해 확인됨`hasExplicitOutputLimit()`). 알려진 모델의 경우 유효 값은 API 오류를 방지하기 위해 항상 모델이 선언한 출력 제한으로 제한됩니다. 백엔드가 더 큰 제한을 지원할 수 있으므로 알 수 없는 모델(사용자 지정 배포, 자체 호스팅 엔드포인트)은 사용자의 가치를 직접 전달합니다.
 
-This logic is implemented in three content generators:
+이 논리는 세 가지 콘텐츠 생성기에서 구현됩니다.
 
-- `DefaultOpenAICompatibleProvider.applyOutputTokenLimit()` — OpenAI-compatible providers
-- `DashScopeProvider` — inherits `applyOutputTokenLimit()` from the default provider
-- `AnthropicContentGenerator.buildSamplingParameters()` — Anthropic provider
+* `DefaultOpenAICompatibleProvider.applyOutputTokenLimit()`— OpenAI 호환 제공업체
+* `DashScopeProvider`— 상속`applyOutputTokenLimit()`기본 공급자로부터
+* `AnthropicContentGenerator.buildSamplingParameters()`— 인류 공급자
 
-## Escalation mechanism
+## 에스컬레이션 메커니즘
 
-The escalation logic lives in `geminiChat.ts`, placed **outside** the main retry loop. This is intentional:
+에스컬레이션 논리는`geminiChat.ts`, 배치됨**밖의**주요 재시도 루프. 이는 의도적인 것입니다:
 
-1. The retry loop handles transient errors (rate limits, invalid streams, content validation)
-2. Truncation is not an error — it's a successful response that was cut short
-3. Errors from the escalated stream should propagate directly to the caller, not be caught by retry logic
+1. 재시도 루프는 일시적인 오류(속도 제한, 잘못된 스트림, 콘텐츠 유효성 검사)를 처리합니다.
+2. 잘림은 오류가 아닙니다. 짧게 잘린 성공적인 응답입니다.
+3. 에스컬레이션된 스트림의 오류는 재시도 논리에 의해 포착되지 않고 호출자에게 직접 전파되어야 합니다.
 
-### Escalation steps (geminiChat.ts)
+### 에스컬레이션 단계(geminiChat.ts)
 
 ```
 1. Stream completes successfully (lastError === null)
@@ -114,9 +114,9 @@ The escalation logic lives in `geminiChat.ts`, placed **outside** the main retry
 7. Re-send the same request with maxOutputTokens: escalatedLimit
 ```
 
-### Recovery steps (geminiChat.ts)
+### 복구 단계(geminiChat.ts)
 
-If the escalated response is also truncated (finishReason === MAX_TOKENS), the recovery loop runs up to `MAX_OUTPUT_RECOVERY_ATTEMPTS` (3) times:
+에스컬레이션된 응답도 잘리는 경우(finishReason === MAX\_TOKENS) 복구 루프는 최대`MAX_OUTPUT_RECOVERY_ATTEMPTS`(3)번:
 
 ```
 1. Partial model response is already in history (pushed by processStreamResponse)
@@ -129,60 +129,60 @@ If the escalated response is also truncated (finishReason === MAX_TOKENS), the r
    - Break out of recovery loop
 ```
 
-### State cleanup on RETRY (turn.ts)
+### RETRY 시 상태 정리(turn.ts)
 
-When the `Turn` class receives a RETRY event, it clears accumulated state to prevent inconsistencies:
+때`Turn`클래스가 RETRY 이벤트를 수신하면 불일치를 방지하기 위해 누적된 상태를 지웁니다.
 
-- `pendingToolCalls` — cleared to avoid duplicate tool calls if the first truncated response contained completed tool calls that are repeated in the escalated response
-- `pendingCitations` — cleared to avoid duplicate citations
-- `debugResponses` — cleared to avoid stale debug data
-- `finishReason` — reset to `undefined` so the new response's finish reason is used
+* `pendingToolCalls`— 첫 번째 잘린 응답에 에스컬레이션된 응답에서 반복되는 완료된 도구 호출이 포함된 경우 중복 도구 호출을 피하기 위해 지워집니다.
+* `pendingCitations`— 중복 인용을 피하기 위해 삭제됨
+* `debugResponses`— 오래된 디버그 데이터를 방지하기 위해 지워졌습니다.
+* `finishReason`— 재설정`undefined`따라서 새 응답의 종료 이유가 사용됩니다.
 
-The `isContinuation` flag is passed through to the UI so it can decide whether to reset text buffers (escalation) or keep them (recovery).
+그만큼`isContinuation`플래그는 UI를 통해 전달되므로 텍스트 버퍼를 재설정(에스컬레이션)할지 아니면 유지(복구)할지 결정할 수 있습니다.
 
-## Constants
+## 상수
 
-Defined in `geminiChat.ts` and `tokenLimits.ts`:
+정의됨`geminiChat.ts`그리고`tokenLimits.ts`:
 
-| Constant                       | Value  | Purpose                                                 |
-| ------------------------------ | ------ | ------------------------------------------------------- |
-| `CAPPED_DEFAULT_MAX_TOKENS`    | 8,000  | Default output token limit when no user override is set |
-| `ESCALATED_MAX_TOKENS`         | 64,000 | Floor for escalation (used when model limit is unknown) |
-| `MAX_OUTPUT_RECOVERY_ATTEMPTS` | 3      | Max multi-turn recovery attempts after escalation       |
+| 끊임없는                           | 값      | 목적                              |
+| ------------------------------ | ------ | ------------------------------- |
+| `CAPPED_DEFAULT_MAX_TOKENS`    | 8,000  | 사용자 재정의가 설정되지 않은 경우 기본 출력 토큰 제한 |
+| `ESCALATED_MAX_TOKENS`         | 64,000 | 에스컬레이션 최소값(모델 한도를 알 수 없는 경우 사용) |
+| `MAX_OUTPUT_RECOVERY_ATTEMPTS` | 3      | 에스컬레이션 후 최대 다중 턴 복구 시도 횟수       |
 
-The effective escalated limit is `max(ESCALATED_MAX_TOKENS, tokenLimit(model, 'output'))`:
+효과적인 에스컬레이션 한도는 다음과 같습니다.`max(ESCALATED_MAX_TOKENS, tokenLimit(model, 'output'))`:
 
-| Model            | Escalated limit |
-| ---------------- | --------------- |
-| Claude Opus 4.6  | 131,072 (128K)  |
-| GPT-5 / o-series | 131,072 (128K)  |
-| Qwen3.x          | 65,536 (64K)    |
-| Unknown models   | 64,000 (floor)  |
+| 모델            | 한도 상향 조정       |
+| ------------- | -------------- |
+| 직장폐쇄 4.6      | 131,072 (128K) |
+| GPT-5 / o 시리즈 | 131,072 (128K) |
+| Qwen3.x       | 65,536(64K)    |
+| 알 수 없는 모델     | 64,000 (층)     |
 
-## Design decisions
+## 디자인 결정
 
-### Why 8K default?
+### 왜 8K가 기본값인가요?
 
-- 99% of responses are under 5K tokens
-- 8K provides reasonable headroom for slightly longer responses without triggering unnecessary retries
-- Reduces average slot reservation from 32K to 8K (4x improvement)
+* 응답의 99%가 5,000개 토큰 미만입니다.
+* 8K는 불필요한 재시도를 유발하지 않고 약간 더 긴 응답을 위한 합리적인 헤드룸을 제공합니다.
+* 평균 슬롯 예약을 32K에서 8K로 줄입니다(4배 개선).
 
-### Why escalate to model limit instead of fixed 64K?
+### 고정 64K 대신 모델 제한으로 확대하는 이유는 무엇입니까?
 
-- Models with higher output limits (Claude Opus 128K, GPT-5 128K) were constrained to 64K unnecessarily
-- Using the model's actual limit captures the vast majority of long outputs without a second retry
-- `ESCALATED_MAX_TOKENS` (64K) serves as a floor for unknown models where `tokenLimit()` returns the default 32K
+* 출력 제한이 더 높은 모델(Claude Opus 128K, GPT-5 128K)은 불필요하게 64K로 제한되었습니다.
+* 모델의 실제 제한을 사용하면 두 번째 재시도 없이 긴 출력의 대부분을 캡처합니다.
+* `ESCALATED_MAX_TOKENS`(64K)는 알려지지 않은 모델의 바닥 역할을 합니다.`tokenLimit()`기본 32K를 반환합니다.
 
-### Why multi-turn recovery instead of progressive escalation?
+### 점진적인 에스컬레이션 대신 다단계 복구를 수행하는 이유는 무엇입니까?
 
-- Progressive escalation (8K → 16K → 32K → 64K) requires regenerating the full response each time
-- Multi-turn recovery keeps the partial response and lets the model continue, saving tokens and latency
-- Recovery messages are cheap (~40 tokens each) compared to regenerating large responses
-- The 3-attempt limit prevents infinite loops while covering most practical cases
+* 점진적 에스컬레이션(8K → 16K → 32K → 64K)을 수행하려면 매번 전체 응답을 재생성해야 합니다.
+* 다중 회전 복구는 부분 응답을 유지하고 모델이 계속되도록 하여 토큰과 대기 시간을 절약합니다.
+* 복구 메시지는 대규모 응답을 재생성하는 것에 비해 저렴합니다(각각 최대 40개 토큰).
+* 3회 시도 제한은 대부분의 실제 사례를 포괄하면서 무한 루프를 방지합니다.
 
-### Why is escalation outside the retry loop?
+### 에스컬레이션이 재시도 루프 외부에 있는 이유는 무엇입니까?
 
-- Truncation is a success case, not an error
-- Errors from the escalated stream (rate limits, network failures) should propagate directly rather than being silently retried with incorrect parameters
-- Keeps the retry loop focused on its original purpose (transient error recovery)
-- Recovery errors are caught separately to avoid aborting the entire conversation
+* 잘림은 오류가 아닌 성공 사례입니다.
+* 에스컬레이션된 스트림의 오류(속도 제한, 네트워크 오류)는 잘못된 매개변수를 사용하여 자동으로 재시도하는 대신 직접 전파되어야 합니다.
+* 원래 목적(일시적인 오류 복구)에 초점을 맞춘 재시도 루프를 유지합니다.
+* 전체 대화가 중단되는 것을 방지하기 위해 복구 오류가 별도로 포착됩니다.

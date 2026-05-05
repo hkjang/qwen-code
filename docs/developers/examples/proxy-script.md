@@ -1,6 +1,6 @@
-# Example Proxy Script
+# 예제 프록시 스크립트
 
-The following is an example of a proxy script that can be used with the `QWEN_SANDBOX_PROXY_COMMAND` environment variable. This script only allows `HTTPS` connections to `example.com:443` and declines all other requests.
+다음은 다음과 함께 사용할 수 있는 프록시 스크립트의 예입니다.`QWEN_SANDBOX_PROXY_COMMAND`환경 변수. 이 스크립트는 다음만 허용합니다.`HTTPS`연결`example.com:443`다른 모든 요청을 거부합니다.
 
 ```javascript
 #!/usr/bin/env node

@@ -1,87 +1,87 @@
-# Subagents
+# 하위 에이전트
 
-Subagents are specialized AI assistants that handle specific types of tasks within Qwen Code. They allow you to delegate focused work to AI agents that are configured with task-specific prompts, tools, and behaviors.
+하위 에이전트는 Qwen Code 내에서 특정 유형의 작업을 처리하는 전문 AI 도우미입니다. 이를 통해 작업별 프롬프트, 도구 및 동작으로 구성된 AI 에이전트에 집중된 작업을 위임할 수 있습니다.
 
-## What are Subagents?
+## 하위 에이전트란 ​​무엇입니까?
 
-Subagents are independent AI assistants that:
+하위 에이전트는 다음과 같은 기능을 수행하는 독립적인 AI 보조자입니다.
 
-- **Specialize in specific tasks** - Each Subagent is configured with a focused system prompt for particular types of work
-- **Have separate context** - They maintain their own conversation history, separate from your main chat
-- **Use controlled tools** - You can configure which tools each Subagent has access to
-- **Work autonomously** - Once given a task, they work independently until completion or failure
-- **Provide detailed feedback** - You can see their progress, tool usage, and execution statistics in real-time
+* **특정 업무를 전문적으로 수행**- 각 하위 에이전트는 특정 작업 유형에 대한 집중적인 시스템 프롬프트로 구성됩니다.
+* **별도의 컨텍스트가 있음**- 기본 채팅과 별도로 자신의 대화 기록을 유지합니다.
+* **통제된 도구를 사용하세요**- 각 하위 에이전트가 액세스할 수 있는 도구를 구성할 수 있습니다.
+* **자율적으로 작업**- 한번 임무가 주어지면 완료되거나 실패할 때까지 독립적으로 일함
+* **자세한 피드백 제공**- 진행 상황, 도구 사용, 실행 통계를 실시간으로 확인할 수 있습니다.
 
-## Fork Subagent (Implicit Fork)
+## 포크 하위 에이전트(암시적 포크)
 
-In addition to named subagents, Qwen Code supports **implicit forking** — when the AI omits the `subagent_type` parameter, it triggers a fork that inherits the parent's full conversation context.
+명명된 하위 에이전트 외에도 Qwen Code는 다음을 지원합니다.**암시적 분기**— AI가`subagent_type`매개변수를 사용하면 상위의 전체 대화 컨텍스트를 상속하는 포크를 트리거합니다.
 
-### How Fork Differs from Named Subagents
+### 포크가 명명된 하위 에이전트와 다른 점
 
-|               | Named Subagent                    | Fork Subagent                                         |
-| ------------- | --------------------------------- | ----------------------------------------------------- |
-| Context       | Starts fresh, no parent history   | Inherits parent's full conversation history           |
-| System prompt | Uses its own configured prompt    | Uses parent's exact system prompt (for cache sharing) |
-| Execution     | Blocks the parent until done      | Runs in background, parent continues immediately      |
-| Use case      | Specialized tasks (testing, docs) | Parallel tasks that need the current context          |
+|          | 명명된 하위 에이전트          | 포크 하위 에이전트                         |
+| -------- | -------------------- | ---------------------------------- |
+| 문맥       | 새로 시작되며 부모 기록이 없습니다. | 부모의 전체 대화 기록을 상속받습니다.              |
+| 시스템 프롬프트 | 자체 구성된 프롬프트를 사용합니다.  | 부모의 정확한 시스템 프롬프트를 사용합니다(캐시 공유를 위해) |
+| 실행       | 완료될 때까지 부모를 차단합니다.   | 백그라운드에서 실행되며 상위 항목은 즉시 계속됩니다.      |
+| 사용 사례    | 전문업무(테스트, 문서)        | 현재 컨텍스트가 필요한 병렬 작업                 |
 
-### When Fork is Used
+### 포크를 사용할 때
 
-The AI automatically uses fork when it needs to:
+AI는 다음과 같은 경우 자동으로 포크를 사용합니다.
 
-- Run multiple research tasks in parallel (e.g., "investigate module A, B, and C")
-- Perform background work while continuing the main conversation
-- Delegate tasks that require understanding of the current conversation context
+* 여러 연구 작업을 병렬로 실행합니다(예: "모듈 A, B 및 C 조사")
+* 기본 대화를 계속하면서 백그라운드 작업을 수행합니다.
+* 현재 대화 맥락에 대한 이해가 필요한 작업 위임
 
-### Prompt Cache Sharing
+### 신속한 캐시 공유
 
-All forks share the parent's exact API request prefix (system prompt, tools, conversation history), enabling DashScope prompt cache hits. When 3 forks run in parallel, the shared prefix is cached once and reused — saving 80%+ token costs compared to independent subagents.
+모든 포크는 상위의 정확한 API 요청 접두사(시스템 프롬프트, 도구, 대화 기록)를 공유하여 DashScope 프롬프트 캐시 히트를 활성화합니다. 3개의 포크가 병렬로 실행되면 공유 접두사가 한 번 캐시되고 재사용되므로 독립 하위 에이전트에 비해 80% 이상의 토큰 비용이 절약됩니다.
 
-### Recursive Fork Prevention
+### 재귀 포크 방지
 
-Fork children cannot create further forks. This is enforced at runtime — if a fork attempts to spawn another fork, it receives an error instructing it to execute tasks directly.
+포크 하위 항목은 추가 포크를 생성할 수 없습니다. 이는 런타임에 적용됩니다. 포크가 다른 포크를 생성하려고 하면 작업을 직접 실행하라는 오류가 수신됩니다.
 
-### Current Limitations
+### 현재 제한 사항
 
-- **No result feedback**: Fork results are reflected in the UI progress display but are not automatically fed back into the main conversation. The parent AI sees a placeholder message and cannot act on the fork's output.
-- **No worktree isolation**: Forks share the parent's working directory. Concurrent file modifications from multiple forks may conflict.
+* **결과 피드백 없음**: 포크 결과는 UI 진행률 표시에 반영되지만 기본 대화에 자동으로 피드백되지는 않습니다. 상위 AI는 자리 표시자 메시지를 보고 포크의 출력에 대해 조치를 취할 수 없습니다.
+* **작업 트리 격리 없음**: 포크는 상위 작업 디렉터리를 공유합니다. 여러 분기에서 동시에 파일을 수정하면 충돌이 발생할 수 있습니다.
 
-## Key Benefits
+## 주요 이점
 
-- **Task Specialization**: Create agents optimized for specific workflows (testing, documentation, refactoring, etc.)
-- **Context Isolation**: Keep specialized work separate from your main conversation
-- **Context Inheritance**: Fork subagents inherit the full conversation for context-heavy parallel tasks
-- **Prompt Cache Sharing**: Fork subagents share the parent's cache prefix, reducing token costs
-- **Reusability**: Save and reuse agent configurations across projects and sessions
-- **Controlled Access**: Limit which tools each agent can use for security and focus
-- **Progress Visibility**: Monitor agent execution with real-time progress updates
+* **업무 전문화**: 특정 워크플로우(테스트, 문서화, 리팩토링 등)에 최적화된 에이전트 생성
+* **컨텍스트 격리**: 전문적인 업무를 주요 대화와 별도로 유지하세요.
+* **컨텍스트 상속**: Fork 하위 에이전트는 컨텍스트가 많은 병렬 작업을 위해 전체 대화를 상속합니다.
+* **신속한 캐시 공유**: 포크 하위 에이전트는 상위 캐시 접두사를 공유하여 토큰 비용을 줄입니다.
+* **재사용성**: 프로젝트와 세션 전체에서 에이전트 구성을 저장하고 재사용합니다.
+* **통제된 접근**: 각 에이전트가 보안 및 집중을 위해 사용할 수 있는 도구를 제한합니다.
+* **진행 상황 가시성**: 실시간 진행 상황 업데이트로 에이전트 실행을 모니터링합니다.
 
-## How Subagents Work
+## 하위 에이전트 작동 방식
 
-1. **Configuration**: You create Subagents configurations that define their behavior, tools, and system prompts
-2. **Delegation**: The main AI can automatically delegate tasks to appropriate Subagents — or implicitly fork when no specific subagent type is needed
-3. **Execution**: Subagents work independently, using their configured tools to complete tasks
-4. **Results**: They return results and execution summaries back to the main conversation
+1. **구성**: 동작, 도구 및 시스템 프롬프트를 정의하는 하위 에이전트 구성을 생성합니다.
+2. **대표단**: 기본 AI는 작업을 적절한 하위 에이전트에 자동으로 위임하거나 특정 하위 에이전트 유형이 필요하지 않은 경우 암시적으로 분기할 수 있습니다.
+3. **실행**: 하위 에이전트는 구성된 도구를 사용하여 독립적으로 작업하여 작업을 완료합니다.
+4. **결과**: 결과 및 실행 요약을 기본 대화로 다시 반환합니다.
 
-## Getting Started
+## 시작하기
 
-### Quick Start
+### 빠른 시작
 
-1. **Create your first Subagent**:
+1. **첫 번째 하위 에이전트 만들기**:
 
    `/agents create`
 
-   Follow the guided wizard to create a specialized agent.
+   안내 마법사에 따라 전문 에이전트를 생성하세요.
 
-2. **Manage existing agents**:
+2. **기존 에이전트 관리**:
 
    `/agents manage`
 
-   View and manage your configured Subagents.
+   구성된 하위 에이전트를 보고 관리합니다.
 
-3. **Use Subagents automatically**: Simply ask the main AI to perform tasks that match your Subagents' specializations. The AI will automatically delegate appropriate work.
+3. **자동으로 하위 에이전트 사용**: 메인 AI에게 서브에이전트의 전문 분야에 맞는 작업을 수행하도록 요청하기만 하면 됩니다. AI는 자동으로 적절한 작업을 위임합니다.
 
-### Example Usage
+### 사용 예
 
 ```
 User: "Please write comprehensive tests for the authentication module"
@@ -91,44 +91,44 @@ AI: I'll delegate this to your testing specialist Subagents.
 [Returns with completed test files and execution summary]`
 ```
 
-## Management
+## 관리
 
-### CLI Commands
+### CLI 명령
 
-Subagents are managed through the `/agents` slash command and its subcommands:
+하위 에이전트는 다음을 통해 관리됩니다.`/agents`슬래시 명령 및 해당 하위 명령:
 
-**Usage:**：`/agents create`。Creates a new Subagent through a guided step wizard.
+**용법:**：`/agents create`。단계 안내 마법사를 통해 새 하위 에이전트를 생성합니다.
 
-**Usage:**：`/agents manage`。Opens an interactive management dialog for viewing and managing existing Subagents.
+**용법:**：`/agents manage`。기존 하위 에이전트를 보고 관리하기 위한 대화형 관리 대화 상자를 엽니다.
 
-### Storage Locations
+### 저장 위치
 
-Subagents are stored as Markdown files in multiple locations:
+하위 에이전트는 여러 위치에 Markdown 파일로 저장됩니다.
 
-- **Project-level**: `.qwen/agents/` (highest precedence)
-- **User-level**: `~/.qwen/agents/` (fallback)
-- **Extension-level**: Provided by installed extensions
+* **프로젝트 수준**:`.qwen/agents/`(가장 높은 우선순위)
+* **사용자 수준**:`~/.qwen/agents/`(대체)
+* **확장 수준**: 설치된 확장 프로그램에서 제공
 
-This allows you to have project-specific agents, personal agents that work across all projects, and extension-provided agents that add specialized capabilities.
+이를 통해 프로젝트별 에이전트, 모든 프로젝트에서 작동하는 개인 에이전트, 특수 기능을 추가하는 확장 제공 에이전트를 보유할 수 있습니다.
 
-### Extension Subagents
+### 확장 하위 에이전트
 
-Extensions can provide custom subagents that become available when the extension is enabled. These agents are stored in the extension's `agents/` directory and follow the same format as personal and project agents.
+확장은 확장이 활성화되면 사용할 수 있는 사용자 정의 하위 에이전트를 제공할 수 있습니다. 이러한 에이전트는 확장 프로그램의`agents/`디렉토리이며 개인 및 프로젝트 에이전트와 동일한 형식을 따릅니다.
 
-Extension subagents:
+확장 하위 에이전트:
 
-- Are automatically discovered when the extension is enabled
-- Appear in the `/agents manage` dialog under "Extension Agents" section
-- Cannot be edited directly (edit the extension source instead)
-- Follow the same configuration format as user-defined agents
+* 확장이 활성화되면 자동으로 검색됩니다.
+* 에 표시`/agents manage`"확장 에이전트" 섹션 아래의 대화 상자
+* 직접 편집할 수 없습니다. (대신 확장 소스를 편집하세요.)
+* 사용자 정의 에이전트와 동일한 구성 형식을 따릅니다.
 
-To see which extensions provide subagents, check the extension's `qwen-extension.json` file for an `agents` field.
+하위 에이전트를 제공하는 확장을 보려면 확장의`qwen-extension.json`파일을`agents`필드.
 
-### File Format
+### 파일 형식
 
-Subagents are configured using Markdown files with YAML frontmatter. This format is human-readable and easy to edit with any text editor.
+하위 에이전트는 YAML 프런트매터가 포함된 Markdown 파일을 사용하여 구성됩니다. 이 형식은 사람이 읽을 수 있고 어떤 텍스트 편집기로도 쉽게 편집할 수 있습니다.
 
-#### Basic Structure
+#### 기본 구조
 
 ```
 ---
@@ -147,31 +147,31 @@ System prompt content goes here.
 Multiple paragraphs are supported.
 ```
 
-#### Model Selection
+#### 모델 선택
 
-Use the optional `model` frontmatter field to control which model a subagent uses:
+선택사항을 사용하세요`model`하위 에이전트가 사용하는 모델을 제어하는 ​​머리말 필드:
 
-- `inherit`: Use the same model as the main conversation
-- Omit the field: Same as `inherit`
-- `glm-5`: Use that model ID with the main conversation's auth type
-- `openai:gpt-4o`: Use a different provider (resolves credentials from env vars)
+* `inherit`: 기본 대화와 동일한 모델을 사용합니다.
+* 필드 생략: 다음과 동일`inherit`
+* `glm-5`: 기본 대화의 인증 유형과 함께 해당 모델 ID를 사용합니다.
+* `openai:gpt-4o`: 다른 공급자 사용(env vars의 자격 증명 확인)
 
-#### Permission Mode
+#### 권한 모드
 
-Use the optional `approvalMode` frontmatter field to control how a subagent's tool calls are approved. Valid values:
+선택사항을 사용하세요`approvalMode`하위 에이전트의 도구 호출이 승인되는 방식을 제어하는 ​​머리말 필드입니다. 유효한 값:
 
-- `default`: Tools require interactive approval (same as the main session default)
-- `plan`: Analyze-only mode — the agent plans but does not execute changes
-- `auto-edit`: Tools are auto-approved without prompting (recommended for most agents)
-- `yolo`: All tools auto-approved, including potentially destructive ones
+* `default`: 도구에는 대화형 승인이 필요합니다(메인 세션 기본값과 동일).
+* `plan`: 분석 전용 모드 - 에이전트가 변경을 계획하지만 실행하지는 않습니다.
+* `auto-edit`: 도구는 메시지 없이 자동 승인됩니다(대부분의 상담원에게 권장).
+* `yolo`: 잠재적으로 파괴적인 도구를 포함하여 모든 도구가 자동 승인됩니다.
 
-If you omit this field, the subagent's permission mode is determined automatically:
+이 필드를 생략하면 하위 에이전트의 권한 모드가 자동으로 결정됩니다.
 
-- If the parent session is in **yolo** or **auto-edit** mode, the subagent inherits that mode. A permissive parent stays permissive.
-- If the parent session is in **plan** mode, the subagent stays in plan mode. An analyze-only session cannot mutate files through a delegated agent.
-- If the parent session is in **default** mode (in a trusted folder), the subagent gets **auto-edit** so it can work autonomously.
+* 상위 세션이 있는 경우**욜로**또는**자동 편집**모드인 경우 하위 에이전트는 해당 모드를 상속합니다. 허용적인 부모는 허용적인 태도를 유지합니다.
+* 상위 세션이 있는 경우**계획**모드에서는 하위 에이전트가 계획 모드를 유지합니다. 분석 전용 세션에서는 위임된 에이전트를 통해 파일을 변경할 수 없습니다.
+* 상위 세션이 있는 경우**기본**모드(신뢰할 수 있는 폴더)에서 하위 에이전트는**자동 편집**그래서 자율적으로 일할 수 있어요.
 
-When you do set `approvalMode`, the parent's permissive modes still take priority. For example, if the parent is in yolo mode, a subagent with `approvalMode: plan` will still run in yolo mode.
+설정을 하면`approvalMode`, 상위의 허용 모드가 여전히 우선순위를 갖습니다. 예를 들어 상위 에이전트가 Yolo 모드인 경우 하위 에이전트는`approvalMode: plan`여전히 욜로 모드로 실행됩니다.
 
 ```
 ---
@@ -188,11 +188,11 @@ You are a code reviewer. Analyze the code and report findings.
 Do not modify any files.
 ```
 
-#### Tool Configuration
+#### 도구 구성
 
-Use `tools` and `disallowedTools` to control which tools a subagent can access.
+사용`tools`그리고`disallowedTools`하위 에이전트가 액세스할 수 있는 도구를 제어합니다.
 
-**`tools` (allowlist):** When specified, the subagent can only use the listed tools. When omitted, the subagent inherits all available tools from the parent session.
+**`tools`(허용 목록):**&#xC9C0;정된 경우 하위 에이전트는 나열된 도구만 ​​사용할 수 있습니다. 생략하면 하위 에이전트는 상위 세션에서 사용 가능한 모든 도구를 상속합니다.
 
 ```
 ---
@@ -206,7 +206,7 @@ tools:
 ---
 ```
 
-**`disallowedTools` (blocklist):** When specified, the listed tools are removed from the subagent's tool pool. This is useful when you want "everything except X" without listing every permitted tool.
+**`disallowedTools`(차단 목록):**&#xC9C0;정되면 나열된 도구가 하위 에이전트의 도구 풀에서 제거됩니다. 이는 허용된 모든 도구를 나열하지 않고 "X를 제외한 모든 것"을 원할 때 유용합니다.
 
 ```
 ---
@@ -219,14 +219,14 @@ disallowedTools:
 ---
 ```
 
-If both `tools` and `disallowedTools` are set, the allowlist is applied first, then the blocklist removes from that set.
+둘 다라면`tools`그리고`disallowedTools`설정되면 허용 목록이 먼저 적용된 다음 차단 목록이 해당 집합에서 제거됩니다.
 
-**MCP tools** follow the same rules. If a subagent has no `tools` list, it inherits all MCP tools from the parent session. If a subagent has an explicit `tools` list, it only gets MCP tools that are explicitly named in that list.
+**MCP 도구**동일한 규칙을 따르십시오. 하위 에이전트가 없는 경우`tools`목록에서는 상위 세션의 모든 MCP 도구를 상속합니다. 하위 에이전트에 명시적인 권한이 있는 경우`tools`목록에 있는 경우 해당 목록에 명시적으로 이름이 지정된 MCP 도구만 가져옵니다.
 
-The `disallowedTools` field supports MCP server-level patterns:
+그만큼`disallowedTools`필드는 MCP 서버 수준 패턴을 지원합니다.
 
-- `mcp__server__tool_name` — blocks a specific MCP tool
-- `mcp__server` — blocks all tools from that MCP server
+* `mcp__server__tool_name`— 특정 MCP 도구를 차단합니다.
+* `mcp__server`— 해당 MCP 서버의 모든 도구를 차단합니다.
 
 ```
 ---
@@ -237,7 +237,7 @@ disallowedTools:
 ---
 ```
 
-#### Example Usage
+#### 사용 예
 
 ```
 ---
@@ -251,21 +251,21 @@ Focus on creating clear, comprehensive documentation that helps both
 new contributors and end users understand the project.
 ```
 
-## Using Subagents Effectively
+## 하위 에이전트의 효과적인 사용
 
-### Automatic Delegation
+### 자동 위임
 
-Qwen Code proactively delegates tasks based on:
+Qwen Code는 다음을 기반으로 작업을 사전에 위임합니다.
 
-- The task description in your request
-- The description field in Subagents configurations
-- Current context and available tools
+* 요청에 포함된 작업 설명
+* 하위 에이전트 구성의 설명 필드
+* 현재 상황 및 사용 가능한 도구
 
-To encourage more proactive Subagents use, include phrases like "use PROACTIVELY" or "MUST BE USED" in your description field.
+보다 적극적인 하위 에이전트 사용을 장려하려면 설명 필드에 "선제적으로 사용" 또는 "반드시 사용해야 함"과 같은 문구를 포함하세요.
 
-### Explicit Invocation
+### 명시적 호출
 
-Request a specific Subagent by mentioning it in your command:
+명령에 언급하여 특정 하위 에이전트를 요청합니다.
 
 ```
 Let the testing-expert Subagents create unit tests for the payment module
@@ -273,13 +273,13 @@ Have the documentation-writer Subagents update the API reference
 Get the react-specialist Subagents to optimize this component's performance
 ```
 
-## Examples
+## 예
 
-### Development Workflow Agents
+### 개발 워크플로 에이전트
 
-#### Testing Specialist
+#### 테스트 전문가
 
-Perfect for comprehensive test creation and test-driven development.
+포괄적인 테스트 생성 및 테스트 중심 개발에 적합합니다.
 
 ```
 ---
@@ -315,15 +315,15 @@ Always follow testing best practices for the detected language and framework.
 Focus on both positive and negative test cases.
 ```
 
-**Use Cases:**
+**사용 사례:**
 
-- “Write unit tests for the authentication service”
-- “Create integration tests for the payment processing workflow”
-- “Add test coverage for edge cases in the data validation module”
+* “인증 서비스를 위한 단위 테스트 작성”
+* “결제 처리 워크플로에 대한 통합 테스트 만들기”
+* “데이터 검증 모듈에 극단적인 경우에 대한 테스트 적용 범위를 추가하세요”
 
-#### Documentation Writer
+#### 문서 작성자
 
-Specialized in creating clear, comprehensive documentation.
+명확하고 포괄적인 문서 작성을 전문으로 합니다.
 
 ```
 ---
@@ -367,15 +367,15 @@ Always verify code examples and ensure documentation stays current with
 the actual implementation. Use clear headings, bullet points, and examples.
 ```
 
-**Use Cases:**
+**사용 사례:**
 
-- “Create API documentation for the user management endpoints”
-- “Write a comprehensive README for this project”
-- “Document the deployment process with troubleshooting steps”
+* “사용자 관리 엔드포인트에 대한 API 문서 생성”
+* “이 프로젝트에 대한 포괄적인 README를 작성하세요”
+* “문제 해결 단계를 포함하여 배포 프로세스를 문서화하세요”
 
-#### Code Reviewer
+#### 코드 검토자
 
-Focused on code quality, security, and best practices.
+코드 품질, 보안 및 모범 사례에 중점을 둡니다.
 
 ```
 ---
@@ -409,17 +409,17 @@ Focus on actionable feedback with specific examples and suggested solutions.
 Prioritize issues by impact and provide rationale for recommendations.
 ```
 
-**Use Cases:**
+**사용 사례:**
 
-- “Review this authentication implementation for security issues”
-- “Check the performance implications of this database query logic”
-- “Evaluate the code structure and suggest improvements”
+* “보안 문제에 대한 인증 구현을 검토하세요”
+* "이 데이터베이스 쿼리 로직이 성능에 미치는 영향을 확인하세요."
+* “코드 구조를 평가하고 개선 사항을 제안하세요”
 
-### Technology-Specific Agents
+### 기술별 에이전트
 
-#### React Specialist
+#### 반응 전문가
 
-Optimized for React development, hooks, and component patterns.
+React 개발, 후크 및 구성 요소 패턴에 최적화되었습니다.
 
 ```
 ---
@@ -456,15 +456,15 @@ Always stay current with React best practices and avoid deprecated patterns.
 Focus on accessibility and user experience considerations.
 ```
 
-**Use Cases:**
+**사용 사례:**
 
-- “Create a reusable data table component with sorting and filtering”
-- “Implement a custom hook for API data fetching with caching”
-- “Refactor this class component to use modern React patterns”
+* “정렬 및 필터링을 통해 재사용 가능한 데이터 테이블 구성 요소 만들기”
+* “캐싱을 통해 API 데이터를 가져오기 위한 사용자 정의 후크 구현”
+* “최신 React 패턴을 사용하도록 이 클래스 구성 요소를 리팩터링”
 
-#### Python Expert
+#### 파이썬 전문가
 
-Specialized in Python development, frameworks, and best practices.
+Python 개발, 프레임워크 및 모범 사례를 전문으로 합니다.
 
 ```
 ---
@@ -502,21 +502,21 @@ For Python tasks:
 Focus on writing clean, maintainable Python code that follows community standards.
 ```
 
-**Use Cases:**
+**사용 사례:**
 
-- “Create a FastAPI service for user authentication with JWT tokens”
-- “Implement a data processing pipeline with pandas and error handling”
-- “Write a CLI tool using argparse with comprehensive help documentation”
+* “JWT 토큰으로 사용자 인증을 위한 FastAPI 서비스 만들기”
+* “Pandas 및 오류 처리를 통해 데이터 처리 파이프라인 구현”
+* “포괄적인 도움말 문서와 함께 argparse를 사용하여 CLI 도구 작성”
 
-## Best Practices
+## 모범 사례
 
-### Design Principles
+### 디자인 원칙
 
-#### Single Responsibility Principle
+#### 단일 책임 원칙
 
-Each Subagent should have a clear, focused purpose.
+각 하위 에이전트에는 명확하고 집중된 목적이 있어야 합니다.
 
-**✅ Good:**
+**✅ 좋음:**
 
 ```
 ---
@@ -525,7 +525,7 @@ description: Writes comprehensive unit tests and integration tests
 ---
 ```
 
-**❌ Avoid:**
+**❌ 피해야 할 것:**
 
 ```
 ---
@@ -534,13 +534,13 @@ description: Helps with testing, documentation, code review, and deployment
 ---
 ```
 
-**Why:** Focused agents produce better results and are easier to maintain.
+**왜:**&#xC9D1;중된 에이전트는 더 나은 결과를 생성하고 유지 관리가 더 쉽습니다.
 
-#### Clear Specialization
+#### 명확한 전문화
 
-Define specific expertise areas rather than broad capabilities.
+광범위한 역량보다는 구체적인 전문 분야를 정의하세요.
 
-**✅ Good:**
+**✅ 좋음:**
 
 ```
 ---
@@ -549,7 +549,7 @@ description: Optimizes React applications for performance using profiling and be
 ---
 ```
 
-**❌ Avoid:**
+**❌ 피해야 할 것:**
 
 ```
 ---
@@ -558,31 +558,31 @@ description: Works on frontend development tasks
 ---
 ```
 
-**Why:** Specific expertise leads to more targeted and effective assistance.
+**왜:**&#xD2B9;정 전문지식은 보다 목표적이고 효과적인 지원으로 이어집니다.
 
-#### Actionable Descriptions
+#### 실행 가능한 설명
 
-Write descriptions that clearly indicate when to use the agent.
+에이전트를 언제 사용해야 하는지 명확하게 나타내는 설명을 작성하세요.
 
-**✅ Good:**
+**✅ 좋음:**
 
 ```
 description: Reviews code for security vulnerabilities, performance issues, and maintainability concerns
 ```
 
-**❌ Avoid:**
+**❌ 피해야 할 것:**
 
 ```
 description: A helpful code reviewer
 ```
 
-**Why:** Clear descriptions help the main AI choose the right agent for each task.
+**왜:**&#xBA85;확한 설명은 기본 AI가 각 작업에 적합한 에이전트를 선택하는 데 도움이 됩니다.
 
-### Configuration Best Practices
+### 구성 모범 사례
 
-#### System Prompt Guidelines
+#### 시스템 프롬프트 지침
 
-**Be Specific About Expertise:**
+**전문 지식을 구체적으로 기술하십시오:**
 
 ```
 You are a Python testing specialist with expertise in:
@@ -593,7 +593,7 @@ You are a Python testing specialist with expertise in:
 - Performance testing with pytest-benchmark
 ```
 
-**Include Step-by-Step Approaches:**
+**단계별 접근 방식을 포함합니다.**
 
 ```
 For each testing task:
@@ -605,7 +605,7 @@ For each testing task:
 5. Add comments explaining complex test scenarios
 ```
 
-**Specify Output Standards:**
+**출력 표준 지정:**
 
 ```
 Always follow these standards:
@@ -616,19 +616,19 @@ Always follow these standards:
 - Ensure tests are independent and can run in any order
 ```
 
-## Security Considerations
+## 보안 고려 사항
 
-- **Tool Restrictions**: Use `tools` to limit which tools a subagent can access, or `disallowedTools` to block specific tools while inheriting everything else
-- **Permission Mode**: Subagents inherit their parent's permission mode by default. Plan-mode sessions cannot escalate to auto-edit through delegated agents. Privileged modes (auto-edit, yolo) are blocked in untrusted folders.
-- **Sandboxing**: All tool execution follows the same security model as direct tool use
-- **Audit Trail**: All Subagents actions are logged and visible in real-time
-- **Access Control**: Project and user-level separation provides appropriate boundaries
-- **Sensitive Information**: Avoid including secrets or credentials in agent configurations
-- **Production Environments**: Consider separate agents for production vs development environments
+* **도구 제한**: 사용`tools`하위 에이전트가 액세스할 수 있는 도구를 제한하거나`disallowedTools`다른 모든 것을 상속하면서 특정 도구를 차단하려면
+* **권한 모드**: 하위 에이전트는 기본적으로 상위 권한 모드를 상속합니다. 계획 모드 세션은 위임된 에이전트를 통해 자동 편집으로 에스컬레이션될 수 없습니다. 신뢰할 수 없는 폴더에서는 권한 있는 모드(자동 편집, 욜로)가 차단됩니다.
+* **샌드박싱**: 모든 도구 실행은 직접 도구 사용과 동일한 보안 모델을 따릅니다.
+* **감사 추적**: 모든 하위 에이전트 작업이 실시간으로 기록되고 표시됩니다.
+* **접근 제어**: 프로젝트와 사용자 수준 분리로 적절한 경계 제공
+* **민감한 정보**: 에이전트 구성에 비밀이나 자격 증명을 포함하지 마세요.
+* **생산 환경**: 프로덕션 환경과 개발 환경을 위한 별도의 에이전트 고려
 
-## Limits
+## 제한
 
-The following soft warnings apply to Subagent configurations (no hard limits are enforced):
+하위 에이전트 구성에는 다음과 같은 소프트 경고가 적용됩니다(하드 제한은 적용되지 않음).
 
-- **Description Field**: A warning is shown for descriptions exceeding 1,000 characters
-- **System Prompt**: A warning is shown for system prompts exceeding 10,000 characters
+* **설명 필드**: 설명이 1,000자를 초과하면 경고가 표시됩니다.
+* **시스템 프롬프트**: 시스템 프롬프트가 10,000자를 초과하면 경고가 표시됩니다.

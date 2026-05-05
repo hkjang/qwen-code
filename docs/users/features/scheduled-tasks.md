@@ -1,64 +1,64 @@
-# Run Prompts on a Schedule
+# 일정에 따라 프롬프트 실행
 
-> Use `/loop` and the cron scheduling tools to run prompts repeatedly, poll for status, or set one-time reminders within a Qwen Code session.
+> 사용`/loop`프롬프트를 반복적으로 실행하고, 상태를 폴링하거나, Qwen Code 세션 내에서 일회성 알림을 설정하는 크론 예약 도구입니다.
 
-Scheduled tasks let Qwen Code re-run a prompt automatically on an interval. Use them to poll a deployment, babysit a PR, check back on a long-running build, or remind yourself to do something later in the session.
+예약된 작업을 통해 Qwen Code는 일정한 간격으로 프롬프트를 자동으로 다시 실행할 수 있습니다. 이를 사용하여 배포를 폴링하고, PR을 관리하고, 장기 실행 빌드를 다시 확인하거나, 세션 후반에 수행할 작업을 상기시켜 보세요.
 
-Tasks are session-scoped: they live in the current Qwen Code process and are gone when you exit. Nothing is written to disk.
+작업은 세션 범위입니다. 현재 Qwen Code 프로세스에 있으며 종료하면 사라집니다. 디스크에는 아무것도 기록되지 않습니다.
 
-> **Note:** Scheduled tasks are an experimental feature. Enable them with `experimental.cron: true` in your [settings](../configuration/settings.md), or set `QWEN_CODE_ENABLE_CRON=1` in your environment.
+> **메모:**&#xC608;약된 작업은 실험적인 기능입니다. 다음을 사용하여 활성화하세요.`experimental.cron: true`당신의[설정](../configuration/settings.md)또는 설정`QWEN_CODE_ENABLE_CRON=1`당신의 환경에서.
 
-## Schedule a recurring prompt with /loop
+## /loop를 사용하여 반복 프롬프트 예약
 
-The `/loop` [bundled skill](skills.md) is the quickest way to schedule a recurring prompt. Pass an optional interval and a prompt, and Qwen Code sets up a cron job that fires in the background while the session stays open.
+그만큼`/loop` [번들 스킬](skills.md)반복 프롬프트를 예약하는 가장 빠른 방법입니다. 선택적 간격과 프롬프트를 전달하면 Qwen Code는 세션이 열려 있는 동안 백그라운드에서 실행되는 크론 작업을 설정합니다.
 
 ```text
 /loop 5m check if the deployment finished and tell me what happened
 ```
 
-Qwen Code parses the interval, converts it to a cron expression, schedules the job, and confirms the cadence and job ID. It then immediately executes the prompt once — you don't have to wait for the first cron fire.
+Qwen Code는 간격을 구문 분석하고 이를 cron 표현식으로 변환하고 작업을 예약하고 케이던스와 작업 ID를 확인합니다. 그런 다음 즉시 프롬프트를 한 번 실행합니다. 첫 번째 크론 실행을 기다릴 필요가 없습니다.
 
-### Interval syntax
+### 간격 구문
 
-Intervals are optional. You can lead with them, trail with them, or leave them out entirely.
+간격은 선택사항입니다. 당신은 그들과 함께 이끌 수도 있고, 따라갈 수도 있고, 완전히 배제할 수도 있습니다.
 
-| Form                    | Example                               | Parsed interval              |
-| :---------------------- | :------------------------------------ | :--------------------------- |
-| Leading token           | `/loop 30m check the build`           | every 30 minutes             |
-| Trailing `every` clause | `/loop check the build every 2 hours` | every 2 hours                |
-| No interval             | `/loop check the build`               | defaults to every 10 minutes |
+| 형태            | 예                                     | 구문 분석된 간격      |
+| :------------ | :------------------------------------ | :------------- |
+| Leading token | `/loop 30m check the build`           | 30분마다          |
+| 후행`every`절    | `/loop check the build every 2 hours` | 2시간마다          |
+| 간격 없음         | `/loop check the build`               | 기본값은 10분마다입니다. |
 
-Supported units are `s` for seconds, `m` for minutes, `h` for hours, and `d` for days. Seconds are rounded up to the nearest minute since cron has one-minute granularity. Intervals that don't divide evenly into their unit, such as `7m` or `90m`, are rounded to the nearest clean interval and Qwen Code tells you what it picked.
+Supported units are `s` for seconds, `m`몇 분 동안,`h`몇 시간 동안 그리고`d`며칠 동안. cron에는 1분 단위가 있으므로 초는 가장 가까운 분으로 반올림됩니다. 다음과 같이 단위로 균등하게 나누어지지 않는 간격`7m`또는`90m`, 가장 가까운 깨끗한 간격으로 반올림되며 Qwen Code는 선택한 내용을 알려줍니다.
 
-### Loop over another command
+### 다른 명령을 반복합니다.
 
-The scheduled prompt can itself be a command or skill invocation. This is useful for re-running a workflow you've already packaged.
+예약된 프롬프트 자체는 명령 또는 기술 호출일 수 있습니다. 이는 이미 패키지한 워크플로를 다시 실행하는 데 유용합니다.
 
 ```text
 /loop 20m /review-pr 1234
 ```
 
-Each time the job fires, Qwen Code runs `/review-pr 1234` as if you had typed it.
+작업이 실행될 때마다 Qwen Code가 실행됩니다.`/review-pr 1234`마치 당신이 그것을 입력한 것처럼요.
 
-### Manage loops
+### 루프 관리
 
-`/loop` also supports two subcommands for managing existing jobs:
+`/loop`또한 기존 작업을 관리하기 위한 두 가지 하위 명령도 지원합니다.
 
 ```text
 /loop list
 ```
 
-Lists all scheduled jobs with their IDs and cron expressions.
+해당 ID 및 cron 표현식과 함께 예약된 모든 작업을 나열합니다.
 
 ```text
 /loop clear
 ```
 
-Cancels all scheduled jobs at once.
+예약된 모든 작업을 한 번에 취소합니다.
 
-## Set a one-time reminder
+## 일회성 알림 설정
 
-For one-shot reminders, describe what you want in natural language instead of using `/loop`. Qwen Code schedules a single-fire task that deletes itself after running.
+일회성 알림의 경우 다음을 사용하는 대신 자연어로 원하는 내용을 설명하세요.`/loop`. Qwen Code는 실행 후 자체적으로 삭제되는 단일 실행 작업을 예약합니다.
 
 ```text
 remind me at 3pm to push the release branch
@@ -68,11 +68,11 @@ remind me at 3pm to push the release branch
 in 45 minutes, check whether the integration tests passed
 ```
 
-Qwen Code pins the fire time to a specific minute and hour using a cron expression and confirms when it will fire.
+Qwen Code는 cron 표현식을 사용하여 발사 시간을 특정 분과 시간으로 고정하고 언제 발사되는지 확인합니다.
 
-## Manage scheduled tasks
+## 예약된 작업 관리
 
-Ask Qwen Code in natural language to list or cancel tasks, or reference the underlying tools directly.
+Qwen Code에 자연어로 요청하여 작업을 나열하거나 취소하거나 기본 도구를 직접 참조하세요.
 
 ```text
 what scheduled tasks do I have?
@@ -82,58 +82,58 @@ what scheduled tasks do I have?
 cancel the deploy check job
 ```
 
-Under the hood, Qwen Code uses these tools:
+내부적으로 Qwen Code는 다음 도구를 사용합니다.
 
-| Tool         | Purpose                                                                                                         |
-| :----------- | :-------------------------------------------------------------------------------------------------------------- |
-| `CronCreate` | Schedule a new task. Accepts a 5-field cron expression, the prompt to run, and whether it recurs or fires once. |
-| `CronList`   | List all scheduled tasks with their IDs, schedules, and prompts.                                                |
-| `CronDelete` | Cancel a task by ID.                                                                                            |
+| 도구           | 목적                                                        |
+| :----------- | :-------------------------------------------------------- |
+| `CronCreate` | 새 작업을 예약합니다. 5필드 크론 표현식, 실행 프롬프트, 반복 또는 한 번 실행 여부를 허용합니다. |
+| `CronList`   | ID, 일정 및 프롬프트와 함께 예약된 모든 작업을 나열합니다.                       |
+| `CronDelete` | ID로 작업을 취소합니다.                                            |
 
-Each scheduled task has an 8-character ID you can pass to `CronDelete`. A session can hold up to 50 scheduled tasks at once.
+예약된 각 작업에는 전달할 수 있는 8자 ID가 있습니다.`CronDelete`. 세션은 한 번에 최대 50개의 예약된 작업을 보유할 수 있습니다.
 
-## How scheduled tasks run
+## 예약된 작업이 실행되는 방법
 
-The scheduler checks every second for due tasks and enqueues them when the session is idle. A scheduled prompt fires between your turns, not while Qwen Code is mid-response. If Qwen Code is busy when a task comes due, the prompt waits until the current turn ends.
+스케줄러는 매초마다 예정된 작업을 확인하고 세션이 유휴 상태일 때 대기열에 추가합니다. Qwen Code가 응답하는 동안이 아니라 귀하의 턴 사이에 예약된 프롬프트가 실행됩니다. 작업 기한이 되었을 때 Qwen Code가 사용 중인 경우 프롬프트는 현재 턴이 끝날 때까지 기다립니다.
 
-All times are interpreted in your local timezone. A cron expression like `0 9 * * *` means 9am wherever you're running Qwen Code, not UTC.
+모든 시간은 현지 시간대로 해석됩니다. 다음과 같은 크론 표현`0 9 * * *`UTC가 아닌 Qwen Code를 실행하는 모든 곳에서 오전 9시를 의미합니다.
 
-### Jitter
+### 지터
 
-To avoid every session hitting the API at the same wall-clock moment, the scheduler adds a small deterministic offset to fire times:
+모든 세션이 동일한 벽시계 순간에 API에 도달하는 것을 방지하기 위해 스케줄러는 실행 시간에 작은 결정론적 오프셋을 추가합니다.
 
-- **Recurring tasks** fire up to 10% of their period late, capped at 15 minutes. An hourly job might fire anywhere from `:00` to `:06`.
-- **One-shot tasks** scheduled for the top or bottom of the hour (minute `:00` or `:30`) fire up to 90 seconds early.
+* **반복되는 작업**생리 시간의 최대 10%까지 늦게 발사하며 최대 15분으로 제한됩니다. 시간별 작업은 다음 중 어느 곳에서나 실행될 수 있습니다.`:00`에게`:06`.
+* **일회성 작업**정시 또는 하순으로 예약됨(분`:00`또는`:30`) 최대 90초 일찍 발사됩니다.
 
-The offset is derived from the task ID, so the same task always gets the same offset. If exact timing matters, pick a minute that is not `:00` or `:30`, for example `3 9 * * *` instead of `0 9 * * *`, and the one-shot jitter will not apply.
+오프셋은 작업 ID에서 파생되므로 동일한 작업은 항상 동일한 오프셋을 얻습니다. 정확한 시간이 중요하다면 그렇지 않은 시간을 선택하세요.`:00`또는`:30`, 예를 들어`3 9 * * *`대신에`0 9 * * *`, 원샷 지터는 적용되지 않습니다.
 
-### Three-day expiry
+### 3일 만료
 
-Recurring tasks automatically expire 3 days after creation. The task fires one final time, then deletes itself. This bounds how long a forgotten loop can run. If you need a recurring task to last longer, cancel and recreate it before it expires.
+반복 작업은 생성 후 3일이 지나면 자동으로 만료됩니다. 작업이 마지막으로 한 번 실행된 다음 자체적으로 삭제됩니다. 이는 잊혀진 루프가 실행될 수 있는 기간을 제한합니다. 반복 작업을 더 오래 지속해야 하는 경우 만료되기 전에 취소하고 다시 만드세요.
 
-One-shot tasks do not expire on a timer — they simply delete themselves after firing once.
+일회성 작업은 타이머에 따라 만료되지 않습니다. 한 번 실행된 후에는 단순히 스스로 삭제됩니다.
 
-## Cron expression reference
+## 크론 표현식 참조
 
-`CronCreate` accepts standard 5-field cron expressions: `minute hour day-of-month month day-of-week`. All fields support wildcards (`*`), single values (`5`), steps (`*/15`), ranges (`1-5`), and comma-separated lists (`1,15,30`).
+`CronCreate`표준 5필드 크론 표현식을 허용합니다.`minute hour day-of-month month day-of-week`. 모든 필드는 와일드카드(`*`), 단일 값(`5`), 단계(`*/15`), 범위(`1-5`) 및 쉼표로 구분된 목록(`1,15,30`).
 
-| Example        | Meaning                      |
-| :------------- | :--------------------------- |
-| `*/5 * * * *`  | Every 5 minutes              |
-| `0 * * * *`    | Every hour on the hour       |
-| `7 * * * *`    | Every hour at 7 minutes past |
-| `0 9 * * *`    | Every day at 9am local       |
-| `0 9 * * 1-5`  | Weekdays at 9am local        |
-| `30 14 15 3 *` | March 15 at 2:30pm local     |
+| 예              | 의미                      |
+| :------------- | :---------------------- |
+| `*/5 * * * *`  | 5분마다                    |
+| `0 * * * *`    | 매시 정각                   |
+| `7 * * * *`    | 매시간 7분 지나서              |
+| `0 9 * * *`    | 매일 오전 9시(현지 시간)         |
+| `0 9 * * 1-5`  | 평일 오전 9시 현지             |
+| `30 14 15 3 *` | 3월 15일 오후 2시 30분(현지 시간) |
 
-Day-of-week uses `0` or `7` for Sunday through `6` for Saturday. When both day-of-month and day-of-week are constrained (neither is `*`), a date matches if either field matches — this follows standard vixie-cron semantics.
+요일별 용도`0`또는`7`일요일부터`6`토요일에. 날짜와 요일이 모두 제한된 경우(둘 다 제한되지 않음)`*`), 두 필드 중 하나가 일치하면 날짜가 일치합니다. 이는 표준 vixie-cron 의미를 따릅니다.
 
-Extended syntax like `L`, `W`, `?`, and name aliases such as `MON` or `JAN` is not supported.
+다음과 같은 확장 구문`L`,`W`,`?`및 다음과 같은 별칭을 지정합니다.`MON`또는`JAN`지원되지 않습니다.
 
-## Limitations
+## 제한사항
 
-Session-scoped scheduling has inherent constraints:
+세션 범위 예약에는 고유한 제약이 있습니다.
 
-- Tasks only fire while Qwen Code is running and idle. Closing the terminal or letting the session exit cancels everything.
-- No catch-up for missed fires. If a task's scheduled time passes while Qwen Code is busy on a long-running request, it fires once when Qwen Code becomes idle, not once per missed interval.
-- No persistence across restarts. Restarting Qwen Code clears all session-scoped tasks.
+* 작업은 Qwen Code가 실행 중이거나 유휴 상태인 동안에만 실행됩니다. 터미널을 닫거나 세션을 종료하면 모든 것이 취소됩니다.
+* 놓친 화재를 따라잡을 수 없습니다. Qwen Code가 장기 실행 요청으로 바쁜 동안 작업의 예정된 시간이 지나면 누락된 간격당 한 번이 아니라 Qwen Code가 유휴 상태가 될 때 한 번 실행됩니다.
+* 다시 시작해도 지속성이 없습니다. Qwen 코드를 다시 시작하면 모든 세션 범위 작업이 지워집니다.

@@ -1,10 +1,10 @@
-# Qwen Code Hooks
+# Qwen 코드 후크
 
-## Overview
+## 개요
 
-Qwen Code hooks provide a powerful mechanism for extending and customizing the behavior of the Qwen Code application. Hooks allow users to execute custom scripts or programs at specific points in the application lifecycle, such as before tool execution, after tool execution, at session start/end, and during other key events.
+Qwen Code 후크는 Qwen Code 애플리케이션의 동작을 확장하고 사용자 정의하기 위한 강력한 메커니즘을 제공합니다. 후크를 사용하면 사용자는 도구 실행 전, 도구 실행 후, 세션 시작/종료 및 기타 주요 이벤트 도중과 같이 애플리케이션 수명주기의 특정 지점에서 사용자 정의 스크립트 또는 프로그램을 실행할 수 있습니다.
 
-Hooks are enabled by default. You can temporarily disable all hooks by setting `disableAllHooks` to `true` in your settings file (at the top level, alongside `hooks`):
+후크는 기본적으로 활성화되어 있습니다. 설정을 통해 일시적으로 모든 후크를 비활성화할 수 있습니다.`disableAllHooks`에게`true`설정 파일에서(최상위 수준에서`hooks`):
 
 ```json
 {
@@ -15,48 +15,48 @@ Hooks are enabled by default. You can temporarily disable all hooks by setting `
 }
 ```
 
-This disables all hooks without deleting their configurations.
+이렇게 하면 구성을 삭제하지 않고 모든 후크가 비활성화됩니다.
 
-## What are Hooks?
+## 후크란 무엇입니까?
 
-Hooks are user-defined scripts or programs that are automatically executed by Qwen Code at predefined points in the application flow. They allow users to:
+후크는 애플리케이션 흐름의 사전 정의된 지점에서 Qwen Code에 의해 자동으로 실행되는 사용자 정의 스크립트 또는 프로그램입니다. 이를 통해 사용자는 다음을 수행할 수 있습니다.
 
-- Monitor and audit tool usage
-- Enforce security policies
-- Inject additional context into conversations
-- Customize application behavior based on events
-- Integrate with external systems and services
-- Modify tool inputs or responses programmatically
+* 도구 사용 모니터링 및 감사
+* 보안 정책 시행
+* 대화에 추가 컨텍스트 삽입
+* 이벤트를 기반으로 애플리케이션 동작 사용자 정의
+* 외부 시스템 및 서비스와 통합
+* 프로그래밍 방식으로 도구 입력 또는 응답 수정
 
-## Hook Types
+## 후크 유형
 
-Qwen Code supports three hook executor types:
+Qwen Code는 세 가지 후크 실행기 유형을 지원합니다.
 
-| Type       | Description                                                                                    |
-| :--------- | :--------------------------------------------------------------------------------------------- |
-| `command`  | Execute a shell command. Receives JSON via `stdin`, returns results via `stdout`.              |
-| `http`     | Send JSON as a `POST` request body to a specified URL. Returns results via HTTP response body. |
-| `function` | Directly call a registered JavaScript function (session-level hooks only).                     |
+| 유형         | 설명                                                                      |
+| :--------- | :---------------------------------------------------------------------- |
+| `command`  | 쉘 명령을 실행합니다. 다음을 통해 JSON을 수신합니다.`stdin`, 다음을 통해 결과를 반환합니다.`stdout`.     |
+| `http`     | JSON을 다음과 같이 보냅니다.`POST`요청 본문을 지정된 URL로 보냅니다. HTTP 응답 본문을 통해 결과를 반환합니다. |
+| `function` | 등록된 JavaScript 함수를 직접 호출합니다(세션 수준 후크만 해당).                              |
 
-### Command Hooks
+### 명령 후크
 
-Command hooks execute commands via child processes. Input JSON is passed through stdin, and output is returned via stdout.
+명령 후크는 하위 프로세스를 통해 명령을 실행합니다. 입력 JSON은 stdin을 통해 전달되고 출력은 stdout을 통해 반환됩니다.
 
-**Configuration:**
+**구성:**
 
-| Field           | Type                     | Required | Description                                 |
-| :-------------- | :----------------------- | :------- | :------------------------------------------ |
-| `type`          | `"command"`              | Yes      | Hook type                                   |
-| `command`       | `string`                 | Yes      | Command to execute                          |
-| `name`          | `string`                 | No       | Hook name (for logging)                     |
-| `description`   | `string`                 | No       | Hook description                            |
-| `timeout`       | `number`                 | No       | Timeout in milliseconds, default 60000      |
-| `async`         | `boolean`                | No       | Whether to run asynchronously in background |
-| `env`           | `Record<string, string>` | No       | Environment variables                       |
-| `shell`         | `"bash" \| "powershell"` | No       | Shell to use                                |
-| `statusMessage` | `string`                 | No       | Status message displayed during execution   |
+| 필드              | 유형                       | 필수의 | 설명                     |
+| :-------------- | :----------------------- | :-- | :--------------------- |
+| `type`          | `"command"`              | 예   | 후크형                    |
+| `command`       | `string`                 | 예   | 실행할 명령                 |
+| `name`          | `string`                 | 아니요 | 후크 이름(로깅용)             |
+| `description`   | `string`                 | 아니요 | 후크 설명                  |
+| `timeout`       | `number`                 | 아니요 | 시간 초과(밀리초), 기본값은 60000 |
+| `async`         | `boolean`                | 아니요 | 백그라운드에서 비동기적으로 실행할지 여부 |
+| `env`           | `Record<string, string>` | 아니요 | 환경변수                   |
+| `shell`         | `"bash" \| "powershell"` | 아니요 | 사용할 쉘                  |
+| `statusMessage` | `string`                 | 아니요 | 실행 중 표시되는 상태 메시지       |
 
-**Example:**
+**예:**
 
 ```json
 {
@@ -78,31 +78,31 @@ Command hooks execute commands via child processes. Input JSON is passed through
 }
 ```
 
-### HTTP Hooks
+### HTTP 후크
 
-HTTP hooks send hook input as POST requests to specified URLs. They support URL whitelists, DNS-level SSRF protection, environment variable interpolation, and other security features.
+HTTP 후크는 지정된 URL에 대한 POST 요청으로 후크 입력을 보냅니다. URL 화이트리스트, DNS 수준 SSRF 보호, 환경 변수 보간 및 기타 보안 기능을 지원합니다.
 
-**Configuration:**
+**구성:**
 
-| Field            | Type                     | Required | Description                                               |
-| :--------------- | :----------------------- | :------- | :-------------------------------------------------------- |
-| `type`           | `"http"`                 | Yes      | Hook type                                                 |
-| `url`            | `string`                 | Yes      | Target URL                                                |
-| `headers`        | `Record<string, string>` | No       | Request headers (supports env var interpolation)          |
-| `allowedEnvVars` | `string[]`               | No       | Whitelist of environment variables allowed in URL/headers |
-| `timeout`        | `number`                 | No       | Timeout in seconds, default 600                           |
-| `name`           | `string`                 | No       | Hook name (for logging)                                   |
-| `statusMessage`  | `string`                 | No       | Status message displayed during execution                 |
-| `once`           | `boolean`                | No       | Execute only once per event per session (HTTP hooks only) |
+| 필드               | 유형                       | 필수의 | 설명                            |
+| :--------------- | :----------------------- | :-- | :---------------------------- |
+| `type`           | `"http"`                 | 예   | 후크형                           |
+| `url`            | `string`                 | 예   | 타겟 URL                        |
+| `headers`        | `Record<string, string>` | 아니요 | 요청 헤더(env var 보간 지원)          |
+| `allowedEnvVars` | `string[]`               | 아니요 | URL/헤더에 허용되는 환경 변수 화이트리스트     |
+| `timeout`        | `number`                 | 아니요 | 시간 초과(초), 기본값은 600            |
+| `name`           | `string`                 | 아니요 | 후크 이름(로깅용)                    |
+| `statusMessage`  | `string`                 | 아니요 | 실행 중 표시되는 상태 메시지              |
+| `once`           | `boolean`                | 아니요 | 세션당 이벤트당 한 번만 실행(HTTP 후크만 해당) |
 
-**Security Features:**
+**보안 기능:**
 
-- **URL Whitelist**: Configure allowed URL patterns via `allowedUrls`
-- **SSRF Protection**: Blocks private IPs (10.x.x.x, 172.16-31.x.x, 192.168.x.x, etc.) but allows loopback addresses (127.0.0.1, ::1)
-- **DNS Validation**: Validates domain resolution before requests to prevent DNS rebinding attacks
-- **Environment Variable Interpolation**: `${VAR}` syntax, only allows variables in `allowedEnvVars` whitelist
+* **URL 허용 목록**: 다음을 통해 허용된 URL 패턴을 구성합니다.`allowedUrls`
+* **SSRF 보호**: 개인 IP(10.x.x.x, 172.16-31.x.x, 192.168.x.x 등)는 차단하지만 루프백 주소(127.0.0.1, ::1)는 허용합니다.
+* **DNS 검증**: DNS 리바인딩 공격을 방지하기 위해 요청 전에 도메인 확인을 검증합니다.
+* **환경 변수 보간**:`${VAR}`구문에서는 변수만 허용합니다.`allowedEnvVars`화이트리스트
 
-**Example:**
+**예:**
 
 ```json
 {
@@ -128,52 +128,52 @@ HTTP hooks send hook input as POST requests to specified URLs. They support URL 
 }
 ```
 
-### Function Hooks
+### 함수 후크
 
-Function hooks directly call registered JavaScript/TypeScript functions. They are used internally by the Skill system and are not currently exposed as a public API for end users.
+함수 후크는 등록된 JavaScript/TypeScript 함수를 직접 호출합니다. 스킬 시스템에서 내부적으로 사용되며 현재 최종 사용자를 위한 공개 API로 노출되지 않습니다.
 
-**Note**: For most use cases, use **command hooks** or **HTTP hooks** instead, which can be configured in settings files.
+**메모**: 대부분의 사용 사례에서는 다음을 사용합니다.**명령 후크**또는**HTTP 후크**대신 설정 파일에서 구성할 수 있습니다.
 
-## Hook Events
+## 후크 이벤트
 
-Hooks fire at specific points during a Qwen Code session. Different events support different matchers to filter trigger conditions.
+Qwen Code 세션 중 특정 지점에서 후크가 실행됩니다. 다양한 이벤트는 트리거 조건을 필터링하기 위해 다양한 매처를 지원합니다.
 
-| Event                | Triggered When                            | Matcher Target                                            |
-| :------------------- | :---------------------------------------- | :-------------------------------------------------------- |
-| `PreToolUse`         | Before tool execution                     | Tool name (`WriteFile`, `ReadFile`, `Bash`, etc.)         |
-| `PostToolUse`        | After successful tool execution           | Tool name                                                 |
-| `PostToolUseFailure` | After tool execution fails                | Tool name                                                 |
-| `UserPromptSubmit`   | After user submits prompt                 | None (always fires)                                       |
-| `SessionStart`       | When session starts or resumes            | Source (`startup`, `resume`, `clear`, `compact`)          |
-| `SessionEnd`         | When session ends                         | Reason (`clear`, `logout`, `prompt_input_exit`, etc.)     |
-| `Stop`               | When Claude prepares to conclude response | None (always fires)                                       |
-| `SubagentStart`      | When subagent starts                      | Agent type (`Bash`, `Explorer`, `Plan`, etc.)             |
-| `SubagentStop`       | When subagent stops                       | Agent type                                                |
-| `PreCompact`         | Before conversation compaction            | Trigger (`manual`, `auto`)                                |
-| `Notification`       | When notifications are sent               | Type (`permission_prompt`, `idle_prompt`, `auth_success`) |
-| `PermissionRequest`  | When permission dialog is shown           | Tool name                                                 |
+| 이벤트                  | 트리거되는 시기              | 일치 대상                                                 |
+| :------------------- | :-------------------- | :---------------------------------------------------- |
+| `PreToolUse`         | 도구 실행 전               | 도구 이름(`WriteFile`,`ReadFile`,`Bash`, 등.)              |
+| `PostToolUse`        | 성공적인 도구 실행 후          | 도구 이름                                                 |
+| `PostToolUseFailure` | 도구 실행이 실패한 후          | 도구 이름                                                 |
+| `UserPromptSubmit`   | 사용자가 프롬프트를 제출한 후      | 없음(항상 발생)                                             |
+| `SessionStart`       | 세션이 시작되거나 재개될 때       | 원천 (`startup`,`resume`,`clear`,`compact`)             |
+| `SessionEnd`         | 세션이 종료되면              | 이유 (`clear`,`logout`,`prompt_input_exit`, 등.)         |
+| `Stop`               | 클로드가 답변을 마무리할 준비를 할 때 | 없음(항상 발생)                                             |
+| `SubagentStart`      | 하위 에이전트가 시작될 때        | 에이전트 유형(`Bash`,`Explorer`,`Plan`, 등.)                 |
+| `SubagentStop`       | 하위 에이전트가 중지되는 경우      | 에이전트 유형                                               |
+| `PreCompact`         | 대화 압축 전               | 방아쇠 (`manual`,`auto`)                                 |
+| `Notification`       | 알림이 전송되는 경우           | 유형 (`permission_prompt`,`idle_prompt`,`auth_success`) |
+| `PermissionRequest`  | 권한 대화 상자가 표시되는 경우     | 도구 이름                                                 |
 
-### Matcher Patterns
+### 일치하는 패턴
 
-`matcher` is a regular expression used to filter trigger conditions.
+`matcher`트리거 조건을 필터링하는 데 사용되는 정규식입니다.
 
-| Event Type          | Events                                                                 | Matcher Support | Matcher Target                                           |
-| :------------------ | :--------------------------------------------------------------------- | :-------------- | :------------------------------------------------------- |
-| Tool Events         | `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest` | ✅ Regex        | Tool name: `WriteFile`, `ReadFile`, `Bash`, etc.         |
-| Subagent Events     | `SubagentStart`, `SubagentStop`                                        | ✅ Regex        | Agent type: `Bash`, `Explorer`, etc.                     |
-| Session Events      | `SessionStart`                                                         | ✅ Regex        | Source: `startup`, `resume`, `clear`, `compact`          |
-| Session Events      | `SessionEnd`                                                           | ✅ Regex        | Reason: `clear`, `logout`, `prompt_input_exit`, etc.     |
-| Notification Events | `Notification`                                                         | ✅ Exact match  | Type: `permission_prompt`, `idle_prompt`, `auth_success` |
-| Compact Events      | `PreCompact`                                                           | ✅ Exact match  | Trigger: `manual`, `auto`                                |
-| Prompt Events       | `UserPromptSubmit`                                                     | ❌ No           | N/A                                                      |
-| Stop Events         | `Stop`                                                                 | ❌ No           | N/A                                                      |
+| 이벤트 유형      | 이벤트                                                                 | 일치자 지원   | 일치 대상                                               |
+| :---------- | :------------------------------------------------------------------ | :------- | :-------------------------------------------------- |
+| 도구 이벤트      | `PreToolUse`,`PostToolUse`,`PostToolUseFailure`,`PermissionRequest` | ✅ 정규식    | 도구 이름:`WriteFile`,`ReadFile`,`Bash`, 등.             |
+| 하위 에이전트 이벤트 | `SubagentStart`,`SubagentStop`                                      | ✅ 정규식    | 에이전트 유형:`Bash`,`Explorer`, 등.                       |
+| 세션 이벤트      | `SessionStart`                                                      | ✅ 정규식    | 원천:`startup`,`resume`,`clear`,`compact`             |
+| 세션 이벤트      | `SessionEnd`                                                        | ✅ 정규식    | 이유:`clear`,`logout`,`prompt_input_exit`, 등.         |
+| 알림 이벤트      | `Notification`                                                      | ✅ 정확히 일치 | 유형:`permission_prompt`,`idle_prompt`,`auth_success` |
+| 컴팩트 이벤트     | `PreCompact`                                                        | ✅ 정확히 일치 | 방아쇠:`manual`,`auto`                                 |
+| 프롬프트 이벤트    | `UserPromptSubmit`                                                  | ❌ 아니요    | 해당 없음                                               |
+| 이벤트 중지      | `Stop`                                                              | ❌ 아니요    | 해당 없음                                               |
 
-**Matcher Syntax:**
+**일치 구문:**
 
-- Empty string `""` or `"*"` matches all events of that type
-- Standard regex syntax supported (e.g., `^Bash$`, `Read.*`, `(WriteFile|Edit)`)
+* 빈 문자열`""`또는`"*"`해당 유형의 모든 이벤트와 일치합니다.
+* 표준 정규식 구문 지원(예:`^Bash$`,`Read.*`,`(WriteFile|Edit)`)
 
-**Examples:**
+**예:**
 
 ```json
 {
@@ -219,13 +219,13 @@ Hooks fire at specific points during a Qwen Code session. Different events suppo
 }
 ```
 
-## Input/Output Rules
+## 입력/출력 규칙
 
-### Hook Input Structure
+### 후크 입력 구조
 
-All hooks receive standardized input in JSON format through stdin (command) or POST body (http).
+모든 후크는 stdin(명령) 또는 POST 본문(http)을 통해 JSON 형식의 표준화된 입력을 받습니다.
 
-**Common Fields:**
+**공통 필드:**
 
 ```json
 {
@@ -237,27 +237,27 @@ All hooks receive standardized input in JSON format through stdin (command) or P
 }
 ```
 
-Event-specific fields are added based on the hook type. When running in a subagent, `agent_id` and `agent_type` are additionally included.
+후크 유형에 따라 이벤트별 필드가 추가됩니다. 하위 에이전트에서 실행하는 경우`agent_id`그리고`agent_type`추가적으로 포함되어 있습니다.
 
-### Hook Output Structure
+### 후크 출력 구조
 
-Hook output is returned via `stdout` (command) or HTTP response body (http) as JSON.
+후크 출력은 다음을 통해 반환됩니다.`stdout`(명령) 또는 HTTP 응답 본문(http)을 JSON으로 사용합니다.
 
-**Exit Code Behavior (Command Hooks):**
+**종료 코드 동작(명령 후크):**
 
-| Exit Code | Behavior                                                                              |
-| :-------- | :------------------------------------------------------------------------------------ |
-| `0`       | Success. Parse JSON in `stdout` to control behavior.                                  |
-| `2`       | **Blocking error**. Ignores `stdout`, passes `stderr` as error feedback to the model. |
-| Other     | Non-blocking error. `stderr` only shown in debug mode, execution continues.           |
+| 종료 코드 | 행동                                                |
+| :---- | :------------------------------------------------ |
+| `0`   | 성공. JSON을 구문 분석합니다.`stdout`행동을 통제하기 위해.           |
+| `2`   | **차단 오류**. 무시`stdout`, 통과`stderr`모델에 대한 오류 피드백으로. |
+| 다른    | 비차단 오류입니다.`stderr`디버그 모드에서만 표시되며 실행은 계속됩니다.       |
 
-**Output Structure:**
+**출력 구조:**
 
-Hook output supports three categories of fields:
+후크 출력은 세 가지 범주의 필드를 지원합니다.
 
-1. **Common Fields**: `continue`, `stopReason`, `suppressOutput`, `systemMessage`
-2. **Top-level Decision**: `decision`, `reason` (used by some events)
-3. **Event-specific Control**: `hookSpecificOutput` (must include `hookEventName`)
+1. **공통 필드**:`continue`,`stopReason`,`suppressOutput`,`systemMessage`
+2. **최상위 결정**:`decision`,`reason`(일부 이벤트에서 사용됨)
+3. **이벤트별 제어**:`hookSpecificOutput`(반드시 포함해야 함`hookEventName`)
 
 ```json
 {
@@ -271,13 +271,13 @@ Hook output supports three categories of fields:
 }
 ```
 
-### Individual Hook Event Details
+### 개별 후크 이벤트 세부정보
 
-#### PreToolUse
+#### PreTool사용
 
-**Purpose**: Executed before a tool is used to allow for permission checks, input validation, or context injection.
+**목적**: 권한 확인, 입력 유효성 검사 또는 컨텍스트 삽입을 허용하기 위해 도구를 사용하기 전에 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -288,16 +288,16 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.permissionDecision`: "allow", "deny", or "ask" (REQUIRED)
-- `hookSpecificOutput.permissionDecisionReason`: explanation for the decision (REQUIRED)
-- `hookSpecificOutput.updatedInput`: modified tool input parameters to use instead of original
-- `hookSpecificOutput.additionalContext`: additional context information
+* `hookSpecificOutput.permissionDecision`: "허용", "거부" 또는 "요청"(필수)
+* `hookSpecificOutput.permissionDecisionReason`: 결정에 대한 설명(필수)
+* `hookSpecificOutput.updatedInput`: 원본 대신 사용할 수정된 도구 입력 매개변수
+* `hookSpecificOutput.additionalContext`: 추가 컨텍스트 정보
 
-**Note**: While standard hook output fields like `decision` and `reason` are technically supported by the underlying class, the official interface expects the `hookSpecificOutput` with `permissionDecision` and `permissionDecisionReason`.
+**메모**: 표준 후크 출력 필드는 다음과 같습니다.`decision`그리고`reason`기본 클래스에서 기술적으로 지원되므로 공식 인터페이스에서는 다음을 기대합니다.`hookSpecificOutput`\~와 함께`permissionDecision`그리고`permissionDecisionReason`.
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -310,11 +310,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### PostToolUse
+#### PostTool사용
 
-**Purpose**: Executed after a tool completes successfully to process results, log outcomes, or inject additional context.
+**목적**: 결과를 처리하거나, 결과를 기록하거나, 추가 컨텍스트를 주입하기 위해 도구가 성공적으로 완료된 후에 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -326,13 +326,13 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `decision`: "allow", "deny", "block" (defaults to "allow" if not specified)
-- `reason`: reason for the decision
-- `hookSpecificOutput.additionalContext`: additional information to be included
+* `decision`: "허용", "거부", "차단"(지정되지 않은 경우 기본값은 "허용")
+* `reason`: 결정 이유
+* `hookSpecificOutput.additionalContext`: 포함할 추가 정보
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -344,11 +344,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### PostToolUseFailure
+#### PostToolUse실패
 
-**Purpose**: Executed when a tool execution fails to handle errors, send alerts, or record failures.
+**목적**: 도구 실행이 오류 처리, 경고 전송 또는 실패 기록에 실패할 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -361,12 +361,12 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.additionalContext`: error handling information
-- Standard hook output fields
+* `hookSpecificOutput.additionalContext`: 오류 처리 정보
+* 표준 후크 출력 필드
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -376,11 +376,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### UserPromptSubmit
+#### 사용자 프롬프트제출
 
-**Purpose**: Executed when the user submits a prompt to modify, validate, or enrich the input.
+**목적**: 사용자가 입력을 수정, 검증 또는 강화하라는 메시지를 제출할 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -388,15 +388,15 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `decision`: "allow", "deny", "block", or "ask"
-- `reason`: human-readable explanation for the decision
-- `hookSpecificOutput.additionalContext`: additional context to append to the prompt (optional)
+* `decision`: "허용", "거부", "차단" 또는 "요청"
+* `reason`: 사람이 읽을 수 있는 결정에 대한 설명
+* `hookSpecificOutput.additionalContext`: 프롬프트에 추가할 추가 컨텍스트(선택 사항)
 
-**Note**: Since UserPromptSubmitOutput extends HookOutput, all standard fields are available but only additionalContext in hookSpecificOutput is specifically defined for this event.
+**메모**: UserPromptSubmitOutput은 HookOutput을 확장하므로 모든 표준 필드를 사용할 수 있지만 HookSpecificOutput의 추가 컨텍스트만 이 이벤트에 대해 구체적으로 정의됩니다.
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -408,11 +408,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### SessionStart
+#### 세션 시작
 
-**Purpose**: Executed when a new session starts to perform initialization tasks.
+**목적**: 초기화 작업을 수행하기 위해 새 세션이 시작될 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -423,12 +423,12 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.additionalContext`: context to be available in the session
-- Standard hook output fields
+* `hookSpecificOutput.additionalContext`: 세션에서 사용할 수 있는 컨텍스트
+* 표준 후크 출력 필드
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -438,11 +438,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### SessionEnd
+#### 세션 종료
 
-**Purpose**: Executed when a session ends to perform cleanup tasks.
+**목적**: 정리 작업을 수행하기 위해 세션이 종료될 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -450,15 +450,15 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- Standard hook output fields (typically not used for blocking)
+* 표준 후크 출력 필드(일반적으로 차단에 사용되지 않음)
 
-#### Stop
+#### 멈추다
 
-**Purpose**: Executed before Qwen concludes its response to provide final feedback or summaries.
+**목적**: Qwen이 최종 피드백이나 요약을 제공하기 위해 응답을 마치기 전에 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -467,17 +467,17 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `decision`: "allow", "deny", "block", or "ask"
-- `reason`: human-readable explanation for the decision
-- `stopReason`: feedback to include in the stop response
-- `continue`: set to false to stop execution
-- `hookSpecificOutput.additionalContext`: additional context information
+* `decision`: "허용", "거부", "차단" 또는 "요청"
+* `reason`: 사람이 읽을 수 있는 결정에 대한 설명
+* `stopReason`: 중지 응답에 포함할 피드백
+* `continue`: 실행을 중지하려면 false로 설정하세요.
+* `hookSpecificOutput.additionalContext`: 추가 컨텍스트 정보
 
-**Note**: Since StopOutput extends HookOutput, all standard fields are available but the stopReason field is particularly relevant for this event.
+**메모**: StopOutput은 HookOutput을 확장하므로 모든 표준 필드를 사용할 수 있지만 stopReason 필드는 특히 이 이벤트와 관련이 있습니다.
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -486,11 +486,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### StopFailure
+#### 중지실패
 
-**Purpose**: Executed when the turn ends due to an API error (instead of Stop). This is a **fire-and-forget** event - hook output and exit codes are ignored.
+**목적**: API 오류로 인해 턴이 종료될 때 실행됩니다(Stop 대신). 이것은**실행하고 잊어버리세요**이벤트 - 후크 출력 및 종료 코드가 무시됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -500,19 +500,19 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Matcher**: Matches against the `error` field. For example, `"matcher": "rate_limit"` will only trigger for rate limit errors.
+**일치자**: 상대와의 경기`error`필드. 예를 들어,`"matcher": "rate_limit"`비율 제한 오류에 대해서만 트리거됩니다.
 
-**Output Options**:
+**출력 옵션**:
 
-- **None** - StopFailure is fire-and-forget. All hook output and exit codes are ignored.
+* **없음**- StopFailure는 실행 후 잊어버립니다. 모든 후크 출력 및 종료 코드는 무시됩니다.
 
-**Exit Code Handling**:
+**종료 코드 처리**:
 
-| Exit Code | Behavior                  |
-| --------- | ------------------------- |
-| Any       | Ignored (fire-and-forget) |
+| 종료 코드 | 행동              |
+| ----- | --------------- |
+| 어느    | 무시됨(실행 후 잊어버리기) |
 
-**Example Configuration**:
+**예시 구성**:
 
 ```json
 {
@@ -533,18 +533,18 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Use Cases**:
+**사용 사례**:
 
-- Rate limit monitoring and alerting
-- Authentication failure logging
-- Billing error notifications
-- Error statistics collection
+* 비율 제한 모니터링 및 알림
+* 인증 실패 로깅
+* 결제 오류 알림
+* 오류 통계 수집
 
-#### SubagentStart
+#### 하위 에이전트시작
 
-**Purpose**: Executed when a subagent (like the Task tool) is started to set up context or permissions.
+**목적**: 컨텍스트 또는 권한을 설정하기 위해 하위 에이전트(예: 작업 도구)가 시작될 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -554,12 +554,12 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.additionalContext`: initial context for the subagent
-- Standard hook output fields
+* `hookSpecificOutput.additionalContext`: 하위 에이전트에 대한 초기 컨텍스트
+* 표준 후크 출력 필드
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -569,11 +569,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### SubagentStop
+#### 하위 에이전트 중지
 
-**Purpose**: Executed when a subagent finishes to perform finalization tasks.
+**목적**: 하위 에이전트가 마무리 작업 수행을 완료하면 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -586,12 +586,12 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `decision`: "allow", "deny", "block", or "ask"
-- `reason`: human-readable explanation for the decision
+* `decision`: "허용", "거부", "차단" 또는 "요청"
+* `reason`: 사람이 읽을 수 있는 결정에 대한 설명
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -600,11 +600,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### PreCompact
+#### 프리컴팩트
 
-**Purpose**: Executed before conversation compaction to prepare or log the compaction.
+**목적**: 대화 압축 이전에 실행하여 압축을 준비하거나 기록합니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -613,12 +613,12 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.additionalContext`: context to include before compaction
-- Standard hook output fields
+* `hookSpecificOutput.additionalContext`: 압축하기 전에 포함할 컨텍스트
+* 표준 후크 출력 필드
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -628,11 +628,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### PostCompact
+#### 포스트콤팩트
 
-**Purpose**: Executed after conversation compaction completes to archive summaries or track usage.
+**목적**: 요약을 보관하거나 사용량을 추적하기 위해 대화 압축이 완료된 후 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -641,23 +641,23 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Matcher**: Matches against the `trigger` field. For example, `"matcher": "manual"` will only trigger for manual compaction via `/compact` command.
+**일치자**: 상대와의 경기`trigger`필드. 예를 들어,`"matcher": "manual"`다음을 통해서만 수동 압축이 실행됩니다.`/compact`명령.
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.additionalContext`: additional context (for logging only)
-- Standard hook output fields (for logging only)
+* `hookSpecificOutput.additionalContext`: 추가 컨텍스트(로깅에만 해당)
+* 표준 후크 출력 필드(로깅 전용)
 
-**Note**: PostCompact is **not** in the official decision mode supported events list. The `decision` field and other control fields do not produce any control effects - they are only used for logging purposes.
+**메모**: 포스트컴팩트&#xB294;**\~ 아니다**공식 결정 모드에서 지원되는 이벤트 목록. 그만큼`decision`필드 및 기타 제어 필드는 제어 효과를 생성하지 않으며 로깅 목적으로만 사용됩니다.
 
-**Exit Code Handling**:
+**종료 코드 처리**:
 
-| Exit Code | Behavior                                                  |
-| --------- | --------------------------------------------------------- |
-| 0         | Success - stdout shown to user in verbose mode            |
-| Other     | Non-blocking error - stderr shown to user in verbose mode |
+| 종료 코드 | 행동                                 |
+| ----- | ---------------------------------- |
+| 0     | 성공 - 상세 모드에서 사용자에게 stdout이 표시됨     |
+| 다른    | 비차단 오류 - 상세 모드에서 사용자에게 stderr이 표시됨 |
 
-**Example Configuration**:
+**예시 구성**:
 
 ```json
 {
@@ -678,18 +678,18 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Use Cases**:
+**사용 사례**:
 
-- Summary archiving to files or databases
-- Usage statistics tracking
-- Context change monitoring
-- Audit logging for compaction operations
+* 파일 또는 데이터베이스에 대한 요약 보관
+* 사용 통계 추적
+* 상황 변화 모니터링
+* 압축 작업에 대한 감사 로깅
 
-#### Notification
+#### 공고
 
-**Purpose**: Executed when notifications are sent to customize or intercept them.
+**목적**: 알림을 사용자 정의하거나 차단하기 위해 알림이 전송될 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -699,14 +699,14 @@ Hook output supports three categories of fields:
 }
 ```
 
-> **Note**: `elicitation_dialog` type is defined but not currently implemented.
+> **메모**:`elicitation_dialog`유형이 정의되었지만 현재 구현되지 않았습니다.
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.additionalContext`: additional information to include
-- Standard hook output fields
+* `hookSpecificOutput.additionalContext`: 포함할 추가 정보
+* 표준 후크 출력 필드
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -716,11 +716,11 @@ Hook output supports three categories of fields:
 }
 ```
 
-#### PermissionRequest
+#### 허가요청
 
-**Purpose**: Executed when permission dialogs are displayed to automate decisions or update permissions.
+**목적**: 결정을 자동화하거나 권한을 업데이트하기 위해 권한 대화 상자가 표시될 때 실행됩니다.
 
-**Event-specific fields**:
+**이벤트별 필드**:
 
 ```json
 {
@@ -731,16 +731,16 @@ Hook output supports three categories of fields:
 }
 ```
 
-**Output Options**:
+**출력 옵션**:
 
-- `hookSpecificOutput.decision`: structured object with permission decision details:
-  - `behavior`: "allow" or "deny"
-  - `updatedInput`: modified tool input (optional)
-  - `updatedPermissions`: modified permissions (optional)
-  - `message`: message to show to user (optional)
-  - `interrupt`: whether to interrupt the workflow (optional)
+* `hookSpecificOutput.decision`: 권한 결정 세부정보가 포함된 구조화된 객체:
+  * `behavior`: "허용" 또는 "거부"
+  * `updatedInput`: 수정된 도구 입력(선택 사항)
+  * `updatedPermissions`: 수정된 권한(선택 사항)
+  * `message`: 사용자에게 보여줄 메시지 (선택)
+  * `interrupt`: 작업 흐름을 중단할지 여부(선택 사항)
 
-**Example Output**:
+**예제 출력**:
 
 ```json
 {
@@ -754,9 +754,9 @@ Hook output supports three categories of fields:
 }
 ```
 
-## Hook Configuration
+## 후크 구성
 
-Hooks are configured in Qwen Code settings, typically in `.qwen/settings.json` or user configuration files:
+후크는 일반적으로 Qwen Code 설정에서 구성됩니다.`.qwen/settings.json`또는 사용자 구성 파일:
 
 ```json
 {
@@ -791,25 +791,25 @@ Hooks are configured in Qwen Code settings, typically in `.qwen/settings.json` o
 }
 ```
 
-## Hook Execution
+## 후크 실행
 
-### Parallel vs Sequential Execution
+### 병렬 실행과 순차 실행
 
-- By default, hooks execute in parallel for better performance
-- Use `sequential: true` in hook definition to enforce order-dependent execution
-- Sequential hooks can modify input for subsequent hooks in the chain
+* 기본적으로 후크는 더 나은 성능을 위해 병렬로 실행됩니다.
+* 사용`sequential: true`순서에 따른 실행을 강제하기 위한 후크 정의
+* 순차 후크는 체인의 후속 후크에 대한 입력을 수정할 수 있습니다.
 
-### Async Hooks
+### 비동기 후크
 
-Only `command` type supports asynchronous execution. Setting `"async": true` runs the hook in the background without blocking the main flow.
+오직`command`유형은 비동기 실행을 지원합니다. 환경`"async": true`메인 흐름을 차단하지 않고 백그라운드에서 후크를 실행합니다.
 
-**Features:**
+**특징:**
 
-- Cannot return decision control (operation has already occurred)
-- Results are injected in the next conversation turn via `systemMessage` or `additionalContext`
-- Suitable for auditing, logging, background testing, etc.
+* 결정 제어를 반환할 수 없습니다(작업이 이미 발생했습니다).
+* 결과는 다음 대화 차례에 주입됩니다.`systemMessage`또는`additionalContext`
+* 감사, 로깅, 백그라운드 테스트 등에 적합합니다.
 
-**Example:**
+**예:**
 
 ```json
 {
@@ -844,19 +844,19 @@ else
 fi
 ```
 
-### Security Model
+### 보안 모델
 
-- Hooks run in the user's environment with user privileges
-- Project-level hooks require trusted folder status
-- Timeouts prevent hanging hooks (default: 60 seconds)
+* Hook은 사용자 권한으로 사용자 환경에서 실행됩니다.
+* 프로젝트 수준 후크에는 신뢰할 수 있는 폴더 상태가 필요합니다.
+* 시간 초과로 후크 걸림 방지(기본값: 60초)
 
-## Best Practices
+## 모범 사례
 
-### Example 1: Security Validation Hook
+### 예 1: 보안 검증 후크
 
-A PreToolUse hook that logs and potentially blocks dangerous commands:
+위험한 명령을 기록하고 잠재적으로 차단하는 PreToolUse 후크:
 
-**security_check.sh**
+**security\_check.sh**
 
 ```bash
 #!/bin/bash
@@ -895,7 +895,7 @@ echo '{
 exit 0
 ```
 
-Configure in `.qwen/settings.json`:
+구성`.qwen/settings.json`:
 
 ```json
 {
@@ -917,9 +917,9 @@ Configure in `.qwen/settings.json`:
 }
 ```
 
-### Example 2: HTTP Audit Hook
+### 예 2: HTTP 감사 후크
 
-A PostToolUse HTTP hook that sends all tool execution records to a remote audit service:
+모든 도구 실행 기록을 원격 감사 서비스로 보내는 PostToolUse HTTP 후크:
 
 ```json
 {
@@ -946,11 +946,11 @@ A PostToolUse HTTP hook that sends all tool execution records to a remote audit 
 }
 ```
 
-### Example 3: User Prompt Validation Hook
+### 예 3: 사용자 프롬프트 유효성 검사 후크
 
-A UserPromptSubmit hook that validates user prompts for sensitive information and provides context for long prompts:
+민감한 정보에 대한 사용자 프롬프트의 유효성을 검사하고 긴 프롬프트에 대한 컨텍스트를 제공하는 UserPromptSubmit 후크:
 
-**prompt_validator.py**
+**프롬프트\_validator.py**
 
 ```python
 import json
@@ -998,11 +998,11 @@ if len(user_prompt) > 1000:
 exit(0)
 ```
 
-## Troubleshooting
+## 문제 해결
 
-- Check application logs for hook execution details
-- Verify hook script permissions and executability
-- Ensure proper JSON formatting in hook outputs
-- Use specific matcher patterns to avoid unintended hook execution
-- Use `--debug` mode to see detailed hook matching and execution information
-- Temporarily disable all hooks: add `"disableAllHooks": true` in settings
+* 후크 실행 세부정보는 애플리케이션 로그를 확인하세요.
+* 후크 스크립트 권한 및 실행 가능성 확인
+* 후크 출력에 적절한 JSON 형식이 있는지 확인하세요.
+* 의도하지 않은 후크 실행을 방지하려면 특정 일치자 패턴을 사용하세요.
+* 사용`--debug`자세한 Hook 매칭 및 실행 정보를 볼 수 있는 모드
+* 일시적으로 모든 후크를 비활성화합니다. 추가`"disableAllHooks": true`설정에서

@@ -1,25 +1,25 @@
-# Qwen Code Documentation
+# Qwen 코드 문서
 
-Welcome to the Qwen Code documentation. Qwen Code is an agentic coding tool that lives in your terminal and helps you turn ideas into code faster than ever before.
+Qwen Code 문서에 오신 것을 환영합니다. Qwen Code는 터미널에 존재하는 에이전트 코딩 도구로, 그 어느 때보다 빠르게 아이디어를 코드로 전환할 수 있도록 도와줍니다.
 
-## Documentation Sections
+## 문서 섹션
 
-### [User Guide](./users/overview)
+### [사용자 가이드](./users/overview)
 
-Learn how to use Qwen Code as an end user. This section covers:
+최종 사용자로서 Qwen Code를 사용하는 방법을 알아보세요. 이 섹션에서는 다음 내용을 다룹니다.
 
-- Basic installation and setup
-- Common usage patterns
-- Features and capabilities
-- Configuration options
-- Troubleshooting
+* 기본 설치 및 설정
+* 일반적인 사용 패턴
+* 특징 및 성능
+* 구성 옵션
+* 문제 해결
 
-### [Developer Guide](./developers/architecture)
+### [개발자 가이드](./developers/architecture)
 
-Learn how to contribute to and develop Qwen Code. This section covers:
+Qwen Code에 기여하고 개발하는 방법을 알아보세요. 이 섹션에서는 다음 내용을 다룹니다.
 
-- Architecture overview
-- Contributing guidelines
-- Core concepts and implementation details
-- Tools and development workflow
-- Extension and plugin development
+* 아키텍처 개요
+* 기여 지침
+* 핵심 개념 및 구현 세부정보
+* 도구 및 개발 워크플로우
+* 확장 및 플러그인 개발

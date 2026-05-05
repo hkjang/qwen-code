@@ -1,31 +1,33 @@
-# Qwen Code Companion Plugin: Interface Specification
+# Qwen 코드 도우미 플러그인: 인터페이스 사양
 
-> Last Updated: September 15, 2025
+> 최종 업데이트: 2025년 9월 15일
 
-This document defines the contract for building a companion plugin to enable Qwen Code's IDE mode. For VS Code, these features (native diffing, context awareness) are provided by the official extension ([marketplace](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion)). This specification is for contributors who wish to bring similar functionality to other editors like JetBrains IDEs, Sublime Text, etc.
+이 문서는 Qwen Code의 IDE 모드를 활성화하기 위한 동반 플러그인을 구축하기 위한 계약을 정의합니다. VS Code의 경우 이러한 기능(네이티브 비교, 컨텍스트 인식)은 공식 확장([시장](https://marketplace.visualstudio.com/items?itemName=qwenlm.qwen-code-vscode-ide-companion)). 이 사양은 JetBrains IDE, Sublime Text 등과 같은 다른 편집기에 유사한 기능을 제공하려는 기여자를 위한 것입니다.
 
-## I. The Communication Interface
+## I. 통신 인터페이스
 
-Qwen Code and the IDE plugin communicate through a local communication channel.
+Qwen Code와 IDE 플러그인은 로컬 통신 채널을 통해 통신합니다.
 
-### 1. Transport Layer: MCP over HTTP
+### 1. 전송 계층: HTTP를 통한 MCP
 
-The plugin **MUST** run a local HTTP server that implements the **Model Context Protocol (MCP)**.
+플러그인**해야 하다**구현하는 로컬 HTTP 서버를 실행합니다.**모델 컨텍스트 프로토콜(MCP)**.
 
-- **Protocol:** The server must be a valid MCP server. We recommend using an existing MCP SDK for your language of choice if available.
-- **Endpoint:** The server should expose a single endpoint (e.g., `/mcp`) for all MCP communication.
-- **Port:** The server **MUST** listen on a dynamically assigned port (i.e., listen on port `0`).
+* **규약:**&#xC11C;버는 유효한 MCP 서버여야 합니다. 가능한 경우 선택한 언어에 기존 MCP SDK를 사용하는 것이 좋습니다.
+* **끝점:**&#xC11C;버는 단일 엔드포인트를 노출해야 합니다(예:`/mcp`) 모든 MCP 통신에 사용됩니다.
+* **포트:**&#xC11C;버**해야 하다**동적으로 할당된 포트에서 수신 대기(즉, 포트에서 수신 대기)`0`).
 
-### 2. Discovery Mechanism: The Lock File
+### 2. 검색 메커니즘: 잠금 파일
 
-For Qwen Code to connect, it needs to discover what port your server is using. The plugin **MUST** facilitate this by creating a "lock file" and setting the port environment variable.
+Qwen Code를 연결하려면 서버가 어떤 포트를 사용하고 있는지 검색해야 합니다. 플러그인**해야 하다**"잠금 파일"을 만들고 포트 환경 변수를 설정하면 이를 쉽게 할 수 있습니다.
 
-- **How the CLI Finds the File:** The CLI reads the port from `QWEN_CODE_IDE_SERVER_PORT`, then reads `~/.qwen/ide/<PORT>.lock`. (Legacy fallbacks exist for older extensions; see note below.)
-- **File Location:** The file must be created in a specific directory: `~/.qwen/ide/`. Your plugin must create this directory if it doesn't exist.
-- **File Naming Convention:** The filename is critical and **MUST** follow the pattern:
-  `<PORT>.lock`
-  - `<PORT>`: The port your MCP server is listening on.
-- **File Content & Workspace Validation:** The file **MUST** contain a JSON object with the following structure:
+* **CLI가 파일을 찾는 방법:**&#x43;LI는 다음에서 포트를 읽습니다.`QWEN_CODE_IDE_SERVER_PORT`, 그런 다음 읽습니다.`~/.qwen/ide/<PORT>.lock`. (이전 확장에 대한 레거시 폴백이 존재합니다. 아래 참고를 참조하세요.)
+
+* **파일 위치:**&#xD30C;일은 특정 디렉터리에 생성되어야 합니다.`~/.qwen/ide/`. 플러그인이 존재하지 않는 경우 이 디렉터리를 생성해야 합니다.
+
+* **파일 명명 규칙:**&#xD30C;일 이름이 중요하며**해야 하다**다음 패턴을 따르세요:`<PORT>.lock`
+  * `<PORT>`: MCP 서버가 수신 대기 중인 포트입니다.
+
+* **파일 콘텐츠 및 작업공간 검증:**&#xD30C;일**해야 하다**다음 구조의 JSON 객체를 포함합니다.
 
   ```json
   {
@@ -36,29 +38,31 @@ For Qwen Code to connect, it needs to discover what port your server is using. T
     "ideName": "VS Code"
   }
   ```
-  - `port` (number, required): The port of the MCP server.
-  - `workspacePath` (string, required): A list of all open workspace root paths, delimited by the OS-specific path separator (`:` for Linux/macOS, `;` for Windows). The CLI uses this path to ensure it's running in the same project folder that's open in the IDE. If the CLI's current working directory is not a sub-directory of `workspacePath`, the connection will be rejected. Your plugin **MUST** provide the correct, absolute path(s) to the root of the open workspace(s).
-  - `authToken` (string, required): A secret token for securing the connection. The CLI will include this token in an `Authorization: Bearer <token>` header on all requests.
-  - `ppid` (number, required): The parent process ID of the IDE process.
-  - `ideName` (string, required): A user-friendly name for the IDE (e.g., `VS Code`, `JetBrains IDE`).
 
-- **Authentication:** To secure the connection, the plugin **MUST** generate a unique, secret token and include it in the discovery file. The CLI will then include this token in the `Authorization` header for all requests to the MCP server (e.g., `Authorization: Bearer a-very-secret-token`). Your server **MUST** validate this token on every request and reject any that are unauthorized.
-- **Environment Variables (Required):** Your plugin **MUST** set `QWEN_CODE_IDE_SERVER_PORT` in the integrated terminal so the CLI can locate the correct `<PORT>.lock` file.
+  * `port`(번호, 필수): MCP 서버의 포트입니다.
+  * `workspacePath`(문자열, 필수): OS별 경로 구분 기호(`:`리눅스/맥OS용,`;`Windows의 경우). CLI는 이 경로를 사용하여 IDE에 열려 있는 동일한 프로젝트 폴더에서 실행되고 있는지 확인합니다. CLI의 현재 작업 디렉터리가 다음의 하위 디렉터리가 아닌 경우`workspacePath`, 연결이 거부됩니다. 귀하의 플러그인**해야 하다**열려 있는 작업공간의 루트에 대한 올바른 절대 경로를 제공하십시오.
+  * `authToken`(문자열, 필수): 연결 보안을 위한 비밀 토큰입니다. CLI는 이 토큰을`Authorization: Bearer <token>`모든 요청의 헤더.
+  * `ppid`(숫자, 필수): IDE 프로세스의 상위 프로세스 ID입니다.
+  * `ideName`(문자열, 필수): 사용자에게 친숙한 IDE 이름(예:`VS Code`,`JetBrains IDE`).
 
-**Legacy note:** For extensions older than v0.5.1, Qwen Code may fall back to reading JSON files in the system temp directory named `qwen-code-ide-server-<PID>.json` or `qwen-code-ide-server-<PORT>.json`. New integrations should not rely on these legacy files.
+* **입증:**&#xC5F0;결을 보호하기 위해 플러그인**해야 하다**고유한 비밀 토큰을 생성하고 이를 검색 파일에 포함합니다. 그러면 CLI는 이 토큰을`Authorization`MCP 서버에 대한 모든 요청의 헤더(예:`Authorization: Bearer a-very-secret-token`). 귀하의 서버**해야 하다**모든 요청에서 이 토큰을 검증하고 승인되지 않은 토큰을 거부합니다.
 
-## II. The Context Interface
+* **환경 변수(필수):**&#xADC0;하의 플러그인**해야 하다**세트`QWEN_CODE_IDE_SERVER_PORT`CLI가 올바른 위치를 찾을 수 있도록 통합 터미널에서`<PORT>.lock`파일.
 
-To enable context awareness, the plugin **MAY** provide the CLI with real-time information about the user's activity in the IDE.
+**기존 참고사항:**&#x76;0.5.1 이전 확장의 경우 Qwen Code는 다음과 같은 시스템 임시 디렉터리에서 JSON 파일을 읽는 것으로 대체될 수 있습니다.`qwen-code-ide-server-<PID>.json`또는`qwen-code-ide-server-<PORT>.json`. 새로운 통합은 이러한 레거시 파일에 의존해서는 안 됩니다.
 
-### `ide/contextUpdate` Notification
+## II. 컨텍스트 인터페이스
 
-The plugin **MAY** send an `ide/contextUpdate` [notification](https://modelcontextprotocol.io/specification/2025-06-18/basic/index#notifications) to the CLI whenever the user's context changes.
+상황 인식을 활성화하려면 플러그인**5월**IDE에서의 사용자 활동에 대한 실시간 정보를 CLI에 제공합니다.
 
-- **Triggering Events:** This notification should be sent (with a recommended debounce of 50ms) when:
-  - A file is opened, closed, or focused.
-  - The user's cursor position or text selection changes in the active file.
-- **Payload (`IdeContext`):** The notification parameters **MUST** be an `IdeContext` object:
+### `ide/contextUpdate`공고
+
+플러그인**5월**보내다`ide/contextUpdate` [공고](https://modelcontextprotocol.io/specification/2025-06-18/basic/index#notifications)사용자의 컨텍스트가 변경될 때마다 CLI에
+
+* **트리거링 이벤트:**&#xC774; 알림은 다음과 같은 경우 전송되어야 합니다(권장 디바운스 50ms).
+  * 파일이 열리거나 닫히거나 초점이 맞춰집니다.
+  * 활성 파일에서 사용자의 커서 위치 또는 텍스트 선택이 변경됩니다.
+* **페이로드(`IdeContext`):**&#xC54C;림 매개변수**해야 하다**가 되다`IdeContext`물체:
 
   ```typescript
   interface IdeContext {
@@ -86,28 +90,29 @@ The plugin **MAY** send an `ide/contextUpdate` [notification](https://modelconte
   }
   ```
 
-  **Note:** The `openFiles` list should only include files that exist on disk. Virtual files (e.g., unsaved files without a path, editor settings pages) **MUST** be excluded.
+  **메모:**&#xADF8;만큼`openFiles`목록에는 디스크에 존재하는 파일만 포함되어야 합니다. 가상 파일(예: 경로 없이 저장되지 않은 파일, 편집기 설정 페이지)**해야 하다**제외됩니다.
 
-### How the CLI Uses This Context
+### CLI가 이 컨텍스트를 사용하는 방법
 
-After receiving the `IdeContext` object, the CLI performs several normalization and truncation steps before sending the information to the model.
+수신 후`IdeContext`객체에 대해 CLI는 정보를 모델에 보내기 전에 여러 정규화 및 자르기 단계를 수행합니다.
 
-- **File Ordering:** The CLI uses the `timestamp` field to determine the most recently used files. It sorts the `openFiles` list based on this value. Therefore, your plugin **MUST** provide an accurate Unix timestamp for when a file was last focused.
-- **Active File:** The CLI considers only the most recent file (after sorting) to be the "active" file. It will ignore the `isActive` flag on all other files and clear their `cursor` and `selectedText` fields. Your plugin should focus on setting `isActive: true` and providing cursor/selection details only for the currently focused file.
-- **Truncation:** To manage token limits, the CLI truncates both the file list (to 10 files) and the `selectedText` (to 16KB).
+* **파일 순서:**&#x43;LI는 다음을 사용합니다.`timestamp`필드를 사용하여 가장 최근에 사용한 파일을 확인합니다. 그것은 정렬`openFiles`이 값을 기준으로 목록을 작성합니다. 따라서 귀하의 플러그인은**해야 하다**파일이 마지막으로 집중된 시점에 대한 정확한 Unix 타임스탬프를 제공합니다.
+* **활성 파일:**&#x43;LI는 정렬 후 가장 최근 파일만 "활성" 파일로 간주합니다. 그것은 무시할 것입니다`isActive`다른 모든 파일에 플래그를 지정하고 해당 파일을 지웁니다.`cursor`그리고`selectedText`전지. 플러그인은 설정에 중점을 두어야 합니다.`isActive: true`현재 초점을 맞춘 파일에 대해서만 커서/선택 세부 정보를 제공합니다.
+* **잘림:**&#xD1A0;큰 제한을 관리하기 위해 CLI는 파일 목록(최대 10개 파일)과`selectedText`(16KB까지).
 
-While the CLI handles the final truncation, it is highly recommended that your plugin also limits the amount of context it sends.
+CLI가 최종 잘림을 처리하는 동안 플러그인이 전송하는 컨텍스트의 양도 제한하는 것이 좋습니다.
 
-## III. The Diffing Interface
+## III. 차이점 인터페이스
 
-To enable interactive code modifications, the plugin **MAY** expose a diffing interface. This allows the CLI to request that the IDE open a diff view, showing proposed changes to a file. The user can then review, edit, and ultimately accept or reject these changes directly within the IDE.
+대화형 코드 수정을 활성화하려면 플러그인**5월**차이점이 있는 인터페이스를 노출합니다. 이를 통해 CLI는 IDE가 diff 보기를 열어 파일에 제안된 변경 사항을 표시하도록 요청할 수 있습니다. 그런 다음 사용자는 IDE 내에서 직접 이러한 변경 사항을 검토, 편집하고 최종적으로 수락하거나 거부할 수 있습니다.
 
-### `openDiff` Tool
+### `openDiff`도구
 
-The plugin **MUST** register an `openDiff` tool on its MCP server.
+플러그인**해야 하다**등록하다`openDiff`MCP 서버의 도구입니다.
 
-- **Description:** This tool instructs the IDE to open a modifiable diff view for a specific file.
-- **Request (`OpenDiffRequest`):** The tool is invoked via a `tools/call` request. The `arguments` field within the request's `params` **MUST** be an `OpenDiffRequest` object.
+* **설명:**&#xC774; 도구는 IDE에 특정 파일에 대해 수정 가능한 diff 보기를 열도록 지시합니다.
+
+* **요구 (`OpenDiffRequest`):**&#xC774; 도구는 다음을 통해 호출됩니다.`tools/call`요구. 그만큼`arguments`요청 내의 필드`params` **해야 하다**가 되다`OpenDiffRequest`물체.
 
   ```typescript
   interface OpenDiffRequest {
@@ -118,18 +123,20 @@ The plugin **MUST** register an `openDiff` tool on its MCP server.
   }
   ```
 
-- **Response (`CallToolResult`):** The tool **MUST** immediately return a `CallToolResult` to acknowledge the request and report whether the diff view was successfully opened.
-  - On Success: If the diff view was opened successfully, the response **MUST** contain empty content (i.e., `content: []`).
-  - On Failure: If an error prevented the diff view from opening, the response **MUST** have `isError: true` and include a `TextContent` block in the `content` array describing the error.
+* **응답 (`CallToolResult`):**&#xB3C4;구**해야 하다**즉시 반환`CallToolResult`요청을 승인하고 diff 보기가 성공적으로 열렸는지 보고합니다.
 
-  The actual outcome of the diff (acceptance or rejection) is communicated asynchronously via notifications.
+  * 성공 시: diff 보기가 성공적으로 열리면 응답이 표시됩니다.**해야 하다**빈 콘텐츠(예:`content: []`).
+  * 실패 시: 오류로 인해 diff 보기가 열리지 않는 경우 응답은**해야 하다**가지다`isError: true`그리고`TextContent`에서 차단`content`오류를 설명하는 배열입니다.
 
-### `closeDiff` Tool
+  차이점(수락 또는 거부)의 실제 결과는 알림을 통해 비동기적으로 전달됩니다.
 
-The plugin **MUST** register a `closeDiff` tool on its MCP server.
+### `closeDiff`도구
 
-- **Description:** This tool instructs the IDE to close an open diff view for a specific file.
-- **Request (`CloseDiffRequest`):** The tool is invoked via a `tools/call` request. The `arguments` field within the request's `params` **MUST** be an `CloseDiffRequest` object.
+플러그인**해야 하다**등록하다`closeDiff`MCP 서버의 도구입니다.
+
+* **설명:**&#xC774; 도구는 IDE에 특정 파일에 대해 열려 있는 diff 보기를 닫도록 지시합니다.
+
+* **요구 (`CloseDiffRequest`):**&#xC774; 도구는 다음을 통해 호출됩니다.`tools/call`요구. 그만큼`arguments`요청 내의 필드`params` **해야 하다**가 되다`CloseDiffRequest` object.
 
   ```typescript
   interface CloseDiffRequest {
@@ -138,15 +145,15 @@ The plugin **MUST** register a `closeDiff` tool on its MCP server.
   }
   ```
 
-- **Response (`CallToolResult`):** The tool **MUST** return a `CallToolResult`.
-  - On Success: If the diff view was closed successfully, the response **MUST** include a single **TextContent** block in the content array containing the file's final content before closing.
-  - On Failure: If an error prevented the diff view from closing, the response **MUST** have `isError: true` and include a `TextContent` block in the `content` array describing the error.
+* **응답 (`CallToolResult`):**&#xB3C4;구**해야 하다**반환하다`CallToolResult`.
+  * 성공 시: diff 보기가 성공적으로 닫힌 경우 응답은 다음과 같습니다.**해야 하다**하나를 포함하다**텍스트 콘텐츠**닫기 전에 파일의 최종 내용을 포함하는 내용 배열을 차단합니다.
+  * 실패 시: 오류로 인해 diff 보기가 닫히지 못한 경우 응답은**해야 하다**가지다`isError: true`그리고`TextContent`에서 차단`content`오류를 설명하는 배열입니다.
 
-### `ide/diffAccepted` Notification
+### `ide/diffAccepted`공고
 
-When the user accepts the changes in a diff view (e.g., by clicking an "Apply" or "Save" button), the plugin **MUST** send an `ide/diffAccepted` notification to the CLI.
+When the user accepts the changes in a diff view (e.g., by clicking an "Apply" or "Save" button), the plugin **해야 하다**보내다`ide/diffAccepted`CLI에 알림.
 
-- **Payload:** The notification parameters **MUST** include the file path and the final content of the file. The content may differ from the original `newContent` if the user made manual edits in the diff view.
+* **유효 탑재량:**&#xC54C;림 매개변수**해야 하다**파일 경로와 파일의 최종 내용을 포함합니다. 내용은 원본과 다를 수 있습니다`newContent`사용자가 diff 보기에서 수동으로 편집한 경우.
 
   ```typescript
   {
@@ -157,11 +164,11 @@ When the user accepts the changes in a diff view (e.g., by clicking an "Apply" o
   }
   ```
 
-### `ide/diffRejected` Notification
+### `ide/diffRejected`공고
 
-When the user rejects the changes (e.g., by closing the diff view without accepting), the plugin **MUST** send an `ide/diffRejected` notification to the CLI.
+사용자가 변경 사항을 거부하면(예: 수락하지 않고 diff 보기를 닫음) 플러그인은**해야 하다**보내다`ide/diffRejected`CLI에 알림.
 
-- **Payload:** The notification parameters **MUST** include the file path of the rejected diff.
+* **유효 탑재량:**&#xC54C;림 매개변수**해야 하다**거부된 diff의 파일 경로를 포함합니다.
 
   ```typescript
   {
@@ -170,13 +177,13 @@ When the user rejects the changes (e.g., by closing the diff view without accept
   }
   ```
 
-## IV. The Lifecycle Interface
+## IV. 라이프사이클 인터페이스
 
-The plugin **MUST** manage its resources and the discovery file correctly based on the IDE's lifecycle.
+플러그인**해야 하다**IDE의 수명주기에 따라 리소스와 검색 파일을 올바르게 관리합니다.
 
-- **On Activation (IDE startup/plugin enabled):**
-  1.  Start the MCP server.
-  2.  Create the discovery file.
-- **On Deactivation (IDE shutdown/plugin disabled):**
-  1.  Stop the MCP server.
-  2.  Delete the discovery file.
+* **활성화 시(IDE 시작/플러그인 활성화):**
+  1. MCP 서버를 시작합니다.
+  2. 검색 파일을 만듭니다.
+* **비활성화 시(IDE 종료/플러그인 비활성화):**
+  1. MCP 서버를 중지합니다.
+  2. 검색 파일을 삭제합니다.

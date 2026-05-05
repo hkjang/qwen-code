@@ -1,74 +1,74 @@
-# Agent Skills
+# 에이전트 기술
 
-> Create, manage, and share Skills to extend Qwen Code's capabilities.
+> Qwen Code의 기능을 확장하기 위해 스킬을 생성, 관리 및 공유하세요.
 
-This guide shows you how to create, use, and manage Agent Skills in **Qwen Code**. Skills are modular capabilities that extend the model's effectiveness through organized folders containing instructions (and optionally scripts/resources).
+이 가이드는 상담원 기술을 생성, 사용 및 관리하는 방법을 보여줍니다.**퀀 코드**. 기술은 지침(및 선택적으로 스크립트/리소스)이 포함된 정리된 폴더를 통해 모델의 효율성을 확장하는 모듈식 기능입니다.
 
-## Prerequisites
+## 전제조건
 
-- Qwen Code (recent version)
-- Basic familiarity with Qwen Code ([Quickstart](../quickstart.md))
+* Qwen 코드(최신 버전)
+* Qwen Code에 대한 기본 지식([빠른 시작](../quickstart.md))
 
-## What are Agent Skills?
+## 에이전트 스킬이란 무엇입니까?
 
-Agent Skills package expertise into discoverable capabilities. Each Skill consists of a `SKILL.md` file with instructions that the model can load when relevant, plus optional supporting files like scripts and templates.
+상담원 기술은 전문 지식을 검색 가능한 기능으로 패키지화합니다. 각 스킬은 다음으로 구성됩니다.`SKILL.md`관련이 있는 경우 모델이 로드할 수 있는 지침과 스크립트 및 템플릿과 같은 선택적 지원 파일이 포함된 파일입니다.
 
-### How Skills are invoked
+### 스킬이 호출되는 방식
 
-Skills are **model-invoked** — the model autonomously decides when to use them based on your request and the Skill's description. This is different from slash commands, which are **user-invoked** (you explicitly type `/command`).
+스킬은**모델 호출**— 모델은 사용자의 요청과 스킬 설명에 따라 언제 사용할지 자동으로 결정합니다. 이는 슬래시 명령과 다릅니다.**사용자 호출**(명시적으로 입력`/command`).
 
-If you want to invoke a Skill explicitly, use the `/skills` slash command:
+스킬을 명시적으로 호출하려면`/skills`슬래시 명령:
 
 ```bash
 /skills <skill-name>
 ```
 
-Use autocomplete to browse available Skills and descriptions.
+자동 완성을 사용하여 사용 가능한 기술과 설명을 찾아보세요.
 
-### Benefits
+### 이익
 
-- Extend Qwen Code for your workflows
-- Share expertise across your team via git
-- Reduce repetitive prompting
-- Compose multiple Skills for complex tasks
+* 워크플로우를 위해 Qwen 코드 확장
+* Git을 통해 팀 전체에 전문 지식을 공유하세요
+* 반복적인 메시지 줄이기
+* 복잡한 작업을 위한 여러 기술 구성
 
-## Create a Skill
+## 스킬 생성
 
-Skills are stored as directories containing a `SKILL.md` file.
+스킬은 다음을 포함하는 디렉토리로 저장됩니다.`SKILL.md`파일.
 
-### Personal Skills
+### 개인 기술
 
-Personal Skills are available across all your projects. Store them in `~/.qwen/skills/`:
+개인 기술은 모든 프로젝트에서 사용할 수 있습니다. 다음에 저장하세요.`~/.qwen/skills/`:
 
 ```bash
 mkdir -p ~/.qwen/skills/my-skill-name
 ```
 
-Use personal Skills for:
+다음 용도로 개인 기술을 사용하십시오.
 
-- Your individual workflows and preferences
-- Skills you're developing
-- Personal productivity helpers
+* 귀하의 개별 작업 흐름 및 기본 설정
+* 개발 중인 기술
+* 개인 생산성 도우미
 
-### Project Skills
+### 프로젝트 기술
 
-Project Skills are shared with your team. Store them in `.qwen/skills/` within your project:
+프로젝트 기술은 팀과 공유됩니다. 다음에 저장하세요.`.qwen/skills/`프로젝트 내에서:
 
 ```bash
 mkdir -p .qwen/skills/my-skill-name
 ```
 
-Use project Skills for:
+다음 목적으로 프로젝트 기술을 사용하세요.
 
-- Team workflows and conventions
-- Project-specific expertise
-- Shared utilities and scripts
+* 팀 워크플로 및 규칙
+* 프로젝트별 전문성
+* 공유 유틸리티 및 스크립트
 
-Project Skills can be checked into git and automatically become available to teammates.
+프로젝트 기술은 git에 체크인하여 팀원이 자동으로 사용할 수 있게 됩니다.
 
-## Write `SKILL.md`
+## 쓰다`SKILL.md`
 
-Create a `SKILL.md` file with YAML frontmatter and Markdown content:
+만들기`SKILL.md`YAML 머리말과 마크다운 콘텐츠가 포함된 파일:
 
 ```yaml
 ---
@@ -85,21 +85,21 @@ Provide clear, step-by-step guidance for Qwen Code.
 Show concrete examples of using this Skill.
 ```
 
-### Field requirements
+### 현장 요구 사항
 
-Qwen Code currently validates that:
+Qwen Code는 현재 다음을 검증합니다.
 
-- `name` is a non-empty string matching `/^[\p{L}\p{N}_:.-]+$/u` — Unicode letters and digits (CJK / Cyrillic / accented Latin all OK), plus `_`, `:`, `.`, `-`. Whitespace, slashes, brackets and other structurally unsafe characters are rejected at parse time.
-- `description` is a non-empty string
+* `name`비어 있지 않은 문자열 일치입니다`/^[\p{L}\p{N}_:.-]+$/u`— 유니코드 문자 및 숫자(CJK/키릴 문자/악센트가 있는 라틴어 모두 가능)`_`,`:`,`.`,`-`. 공백, 슬래시, 대괄호 및 기타 구조적으로 안전하지 않은 문자는 구문 분석 시 거부됩니다.
+* `description`비어 있지 않은 문자열입니다
 
-Recommended conventions:
+권장 규칙:
 
-- Prefer lowercase ASCII with hyphens for shareable names (e.g. `tsx-helper`)
-- Make `description` specific: include both **what** the Skill does and **when** to use it (key words users will naturally mention)
+* 공유 가능한 이름에는 하이픈이 포함된 소문자 ASCII를 선호합니다(예:`tsx-helper`)
+* 만들다`description`구체적: 둘 다 포함**무엇**스킬은 그렇습니다.**언제**(사용자가 자연스럽게 언급하게 될 키워드)
 
-### Optional: gate a Skill on file paths (`paths:`)
+### 선택 사항: 파일 경로에 대한 스킬 게이트(`paths:`)
 
-For Skills that only matter to specific parts of a codebase, add a `paths:` list of glob patterns. The Skill stays out of the model's available-skills listing until a tool call touches a matching file:
+코드베이스의 특정 부분에만 중요한 기술의 경우`paths:`글로브 패턴 목록. 기술은 도구 호출이 일치하는 파일에 닿을 때까지 모델의 사용 가능한 기술 목록에서 제외됩니다.
 
 ```yaml
 ---
@@ -111,16 +111,16 @@ paths:
 ---
 ```
 
-Notes:
+참고:
 
-- Globs are matched relative to the project root with [picomatch](https://github.com/micromatch/picomatch); files outside the project root never trigger activation.
-- A path-gated Skill **stays activated for the rest of the session** once a matching file is touched. A new session, or a `refreshCache` triggered by editing any Skill file, resets activations.
-- `paths:` only gates **model** discovery, and only at the SkillTool listing level. You can always invoke a path-gated Skill yourself via `/<skill-name>` or the `/skills` picker — that user path runs the Skill body regardless of activation state. The model side, however, stays gated until a matching file is touched: a slash invocation does **not** unlock model-side activation, so if you want the model to chain off your invocation (call `Skill { skill: ... }` itself), also access a file matching the skill's `paths:` first.
-- Combining `paths:` with `disable-model-invocation: true` is allowed but the gate has no effect — the Skill is hidden from the model regardless, so path activation never advertises it.
+* Globs는 프로젝트 루트를 기준으로 일치됩니다.[피코매치](https://github.com/micromatch/picomatch); 프로젝트 루트 외부의 파일은 활성화를 트리거하지 않습니다.
+* 경로 제한 스킬**나머지 세션 동안 활성화 상태를 유지합니다.**&#xC77C;치하는 파일을 터치하면. 새 세션 또는`refreshCache`스킬 파일을 편집하면 트리거되고 활성화가 재설정됩니다.
+* `paths:`게이트만**모델**발견 및 SkillTool 목록 수준에서만 가능합니다. 다음을 통해 언제든지 경로 제한 스킬을 직접 호출할 수 있습니다.`/<skill-name>`또는`/skills`선택기 — 해당 사용자 경로는 활성화 상태에 관계없이 스킬 본문을 실행합니다. 그러나 모델 측은 일치하는 파일을 터치할 때까지 게이트 상태를 유지합니다. 슬래시 호출&#xC740;**\~ 아니다**모델 측 활성화를 잠금 해제하여 모델이 호출을 연결 해제하도록 하려면(호출`Skill { skill: ... }`자체), 또한 해당 스킬의 파일과 일치하는 파일에 액세스합니다.`paths:`첫 번째.
+* 결합`paths:`\~와 함께`disable-model-invocation: true`허용되지만 게이트는 효과가 없습니다. 스킬은 관계없이 모델에서 숨겨지므로 경로 활성화는 이를 알리지 않습니다.
 
-## Add supporting files
+## 지원 파일 추가
 
-Create additional files alongside `SKILL.md`:
+함께 추가 파일 만들기`SKILL.md`:
 
 ```text
 my-skill/
@@ -133,7 +133,7 @@ my-skill/
     └── template.txt (optional template)
 ```
 
-Reference these files from `SKILL.md`:
+다음 파일을 참조하세요.`SKILL.md`:
 
 ````markdown
 For advanced usage, see [reference.md](reference.md).
@@ -145,37 +145,37 @@ python scripts/helper.py input.txt
 ```
 ````
 
-## View available Skills
+## 사용 가능한 스킬 보기
 
-Qwen Code discovers Skills from:
+Qwen Code는 다음에서 기술을 발견합니다.
 
-- Personal Skills: `~/.qwen/skills/`
-- Project Skills: `.qwen/skills/`
-- Extension Skills: Skills provided by installed extensions
+* 개인 기술:`~/.qwen/skills/`
+* 프로젝트 기술:`.qwen/skills/`
+* 확장 스킬: 설치된 확장에서 제공하는 스킬
 
-### Extension Skills
+### 확장 기술
 
-Extensions can provide custom skills that become available when the extension is enabled. These skills are stored in the extension's `skills/` directory and follow the same format as personal and project skills.
+확장은 확장이 활성화되면 사용할 수 있는 사용자 지정 기술을 제공할 수 있습니다. 이러한 기술은 확장 프로그램의`skills/`개인 및 프로젝트 기술과 동일한 형식을 따릅니다.
 
-Extension skills are automatically discovered and loaded when the extension is installed and enabled.
+확장 기술은 확장이 설치되고 활성화되면 자동으로 검색되고 로드됩니다.
 
-To see which extensions provide skills, check the extension's `qwen-extension.json` file for a `skills` field.
+어떤 확장이 기술을 제공하는지 확인하려면 확장의`qwen-extension.json`파일을`skills`필드.
 
-To view available Skills, ask Qwen Code directly:
+사용 가능한 스킬을 보려면 Qwen Code에게 직접 문의하세요.
 
 ```text
 What Skills are available?
 ```
 
-> **Heads up — model vs. user view.** Asking the model only surfaces Skills the model can currently see. If a Skill uses `paths:` (see "Optional: gate a Skill on file paths" above), it stays out of that listing until a matching file has been touched. The full set is always visible to you via the `/skills` slash command and on disk.
+> **주의 사항 — 모델과 사용자 보기.**&#xBAA8;델에게 표면만 묻는 것은 모델이 현재 볼 수 있는 기술입니다. 스킬을 사용하는 경우`paths:`(위의 "선택 사항: 파일 경로에 대한 기술 게이트" 참조) 일치하는 파일을 터치할 때까지 해당 목록에서 제외됩니다. 전체 세트는 항상 다음을 통해 볼 수 있습니다.`/skills`슬래시 명령과 디스크에.
 
-Or browse the full list with the slash command (always shows every Skill, including path-gated ones that have not activated yet):
+또는 슬래시 명령을 사용하여 전체 목록을 탐색합니다(아직 활성화되지 않은 경로 게이트 기술을 포함하여 항상 모든 기술을 표시함).
 
 ```text
 /skills
 ```
 
-Or inspect the filesystem:
+또는 파일 시스템을 검사하십시오.
 
 ```bash
 # List personal Skills
@@ -188,40 +188,40 @@ ls .qwen/skills/
 cat ~/.qwen/skills/my-skill/SKILL.md
 ```
 
-## Test a Skill
+## 기술 테스트
 
-After creating a Skill, test it by asking questions that match your description.
+스킬을 만든 후 설명과 일치하는 질문을 통해 테스트해 보세요.
 
-Example: if your description mentions "PDF files":
+예: 설명에 "PDF 파일"이 언급된 경우:
 
 ```text
 Can you help me extract text from this PDF?
 ```
 
-The model autonomously decides to use your Skill if it matches the request — you don't need to explicitly invoke it.
+모델은 요청과 일치하는 경우 Skill을 사용하기로 자동으로 결정하므로 명시적으로 호출할 필요가 없습니다.
 
-## Debug a Skill
+## 스킬 디버그
 
-If Qwen Code doesn't use your Skill, check these common issues:
+Qwen Code가 스킬을 사용하지 않는 경우 다음과 같은 일반적인 문제를 확인하세요.
 
-### Make the description specific
+### 설명을 구체적으로 작성하세요
 
-Too vague:
+너무 모호함:
 
 ```yaml
 description: Helps with documents
 ```
 
-Specific:
+특정한:
 
 ```yaml
 description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDFs, forms, or document extraction.
 ```
 
-### Verify file path
+### 파일 경로 확인
 
-- Personal Skills: `~/.qwen/skills/<skill-name>/SKILL.md`
-- Project Skills: `.qwen/skills/<skill-name>/SKILL.md`
+* 개인 기술:`~/.qwen/skills/<skill-name>/SKILL.md`
+* 프로젝트 기술:`.qwen/skills/<skill-name>/SKILL.md`
 
 ```bash
 # Personal
@@ -231,35 +231,35 @@ ls ~/.qwen/skills/my-skill/SKILL.md
 ls .qwen/skills/my-skill/SKILL.md
 ```
 
-### Check YAML syntax
+### YAML 구문 확인
 
-Invalid YAML prevents the Skill metadata from loading correctly.
+잘못된 YAML로 인해 Skill 메타데이터가 올바르게 로드되지 않습니다.
 
 ```bash
 cat SKILL.md | head -n 15
 ```
 
-Ensure:
+보장하다:
 
-- Opening `---` on line 1
-- Closing `---` before Markdown content
-- Valid YAML syntax (no tabs, correct indentation)
+* 열기`---`라인 1에
+* 폐쇄`---`마크다운 콘텐츠 이전
+* 유효한 YAML 구문(탭 없음, 올바른 들여쓰기)
 
-### View errors
+### 오류 보기
 
-Run Qwen Code with debug mode to see Skill loading errors:
+스킬 로딩 오류를 확인하려면 디버그 모드로 Qwen 코드를 실행하세요.
 
 ```bash
 qwen --debug
 ```
 
-## Share Skills with your team
+## 팀과 기술 공유
 
-You can share Skills through project repositories:
+프로젝트 저장소를 통해 기술을 공유할 수 있습니다.
 
-1. Add the Skill under `.qwen/skills/`
-2. Commit and push
-3. Teammates pull the changes
+1. 아래에 스킬을 추가하세요.`.qwen/skills/`
+2. 커밋 및 푸시
+3. 팀원이 변경 사항을 가져옵니다.
 
 ```bash
 git add .qwen/skills/
@@ -267,9 +267,9 @@ git commit -m "Add team Skill for PDF processing"
 git push
 ```
 
-## Update a Skill
+## 스킬 업데이트
 
-Edit `SKILL.md` directly:
+편집하다`SKILL.md`곧장:
 
 ```bash
 # Personal Skill
@@ -279,11 +279,11 @@ code ~/.qwen/skills/my-skill/SKILL.md
 code .qwen/skills/my-skill/SKILL.md
 ```
 
-Changes take effect the next time you start Qwen Code. If Qwen Code is already running, restart it to load the updates.
+변경 사항은 다음에 Qwen Code를 시작할 때 적용됩니다. Qwen Code가 이미 실행 중인 경우 다시 시작하여 업데이트를 로드하세요.
 
-## Remove a Skill
+## 스킬 제거
 
-Delete the Skill directory:
+Skill 디렉터리를 삭제합니다.
 
 ```bash
 # Personal
@@ -294,25 +294,25 @@ rm -rf .qwen/skills/my-skill
 git commit -m "Remove unused Skill"
 ```
 
-## Best practices
+## 모범 사례
 
-### Keep Skills focused
+### 기술에 집중하세요
 
-One Skill should address one capability:
+하나의 기술은 하나의 기능을 다루어야 합니다.
 
-- Focused: "PDF form filling", "Excel analysis", "Git commit messages"
-- Too broad: "Document processing" (split into smaller Skills)
+* 초점: "PDF 양식 작성", "Excel 분석", "Git 커밋 메시지"
+* 너무 광범위함: '문서 처리'(더 작은 기술로 분할)
 
-### Write clear descriptions
+### 명확한 설명을 작성하세요
 
-Help the model discover when to use Skills by including specific triggers:
+특정 트리거를 포함하여 모델이 언제 스킬을 사용해야 하는지 발견하도록 돕습니다.
 
 ```yaml
 description: Analyze Excel spreadsheets, create pivot tables, and generate charts. Use when working with Excel files, spreadsheets, or .xlsx data.
 ```
 
-### Test with your team
+### 팀과 함께 테스트
 
-- Does the Skill activate when expected?
-- Are the instructions clear?
-- Are there missing examples or edge cases?
+* 스킬이 예상대로 활성화되나요?
+* 지침이 명확합니까?
+* 누락된 예시나 극단적인 경우가 있나요?

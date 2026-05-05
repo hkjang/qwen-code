@@ -1,42 +1,42 @@
-# Uninstall
+# 제거
 
-Your uninstall method depends on how you ran the CLI. Follow the instructions for either npx or a global npm installation.
+제거 방법은 CLI를 실행한 방법에 따라 다릅니다. npx 또는 글로벌 npm 설치 지침을 따르세요.
 
-## Method 1: Using npx
+## 방법 1: npx 사용
 
-npx runs packages from a temporary cache without a permanent installation. To "uninstall" the CLI, you must clear this cache, which will remove qwen-code and any other packages previously executed with npx.
+npx는 영구 설치 없이 임시 캐시에서 패키지를 실행합니다. CLI를 "제거"하려면 이 캐시를 지워야 하며, 그러면 이전에 npx로 실행된 qwen-code 및 기타 패키지가 제거됩니다.
 
-The npx cache is a directory named `_npx` inside your main npm cache folder. You can find your npm cache path by running `npm config get cache`.
+npx 캐시는 다음과 같은 디렉터리입니다.`_npx`기본 npm 캐시 폴더 안에 있습니다. 다음을 실행하여 npm 캐시 경로를 찾을 수 있습니다.`npm config get cache`.
 
-**For macOS / Linux**
+**macOS/리눅스의 경우**
 
 ```bash
 # The path is typically ~/.npm/_npx
 rm -rf "$(npm config get cache)/_npx"
 ```
 
-**For Windows**
+**윈도우의 경우**
 
-_Command Prompt_
+*명령 프롬프트*
 
 ```cmd
 :: The path is typically %LocalAppData%\npm-cache\_npx
 rmdir /s /q "%LocalAppData%\npm-cache\_npx"
 ```
 
-_PowerShell_
+*파워셸*
 
 ```powershell
 # The path is typically $env:LocalAppData\npm-cache\_npx
 Remove-Item -Path (Join-Path $env:LocalAppData "npm-cache\_npx") -Recurse -Force
 ```
 
-## Method 2: Using npm (Global Install)
+## 방법 2: npm 사용(전역 설치)
 
-If you installed the CLI globally (e.g. `npm install -g @qwen-code/qwen-code`), use the `npm uninstall` command with the `-g` flag to remove it.
+CLI를 전역적으로 설치한 경우(예:`npm install -g @qwen-code/qwen-code`),`npm uninstall`명령을 사용하여`-g`제거하려면 플래그를 지정하세요.
 
 ```bash
 npm uninstall -g @qwen-code/qwen-code
 ```
 
-This command completely removes the package from your system.
+이 명령은 시스템에서 패키지를 완전히 제거합니다.

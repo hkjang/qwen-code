@@ -1,101 +1,101 @@
-# Phase 2 技术设计文档：能力扩展
+# 2단계 기술 설계 문서: 기능 확장
 
-## 1. 设计目标与约束
+## 1. 설계 목표 및 제약
 
-### 1.1 目标
+### 1.1 목표
 
-- 将 13 个 built-in 命令的 `supportedModes` 扩展到包含 `non_interactive` 和/或 `acp`
-- 确保每个扩展命令在 ACP/non-interactive 路径下返回适合 IDE 消费的文本内容
-- 打通 prompt command 的模型调用通路（`SkillTool` 消费 `getModelInvocableCommands()`）
-- 实现 mid-input slash command 基础检测
+* 13개의 내장 명령을 다음으로 변환합니다.`supportedModes`포함하도록 확장`non_interactive`및/또는`acp`
+* ACP/비대화형 경로 아래의 각 확장 명령이 IDE 사용에 적합한 텍스트 콘텐츠를 반환하는지 확인하세요.
+* 프롬프트 명령의 모델 호출 경로를 엽니다(`SkillTool`소비`getModelInvocableCommands()`)
+* 중간 입력 슬래시 명령의 기본 감지 구현
 
-### 1.2 硬性约束
+### 1.2 하드 제약
 
-- **interactive 路径零退化**：所有扩展命令的现有 interactive 行为严格不变，只在 action 内部新增模式分支，不触碰 interactive 路径代码
-- **实现策略：模式分支，而非双注册**：13 个命令均采用在 `action` 内部增加 `executionMode` 判断的方式，不使用 Phase 1 设计文档 §10.2 描述的双注册模式（双注册仅在 interactive 和 non-interactive 逻辑差异极大时才有必要，本阶段命令复杂度不达到该门槛）
-- **ACP 消息格式**：ACP 路径返回的文本内容不含 ANSI 样式，以 Markdown 或纯文本为宜，面向 IDE 插件消费
-- **跳过环境相关副作用**：打开浏览器（`open()`）、操作剪贴板（`copyToClipboard()`）等依赖图形环境的操作，在 non-interactive/ACP 路径下必须跳过
+* **성능 저하가 전혀 없는 대화형 경로**: 모든 확장 명령의 기존 대화형 동작은 엄격하게 변경되지 않고 새 모드 분기만 작업 내부에 추가되며 대화형 경로 코드는 건드리지 않습니다.
+* **구현 전략: 이중 등록 대신 모드 분기**: 13개의 명령어가 모두 사용됩니다.`action`내부 증가`executionMode`판단 방법은 1단계 설계 문서 §10.2에 설명된 이중 등록 모드를 사용하지 않습니다. (이중 등록은 대화형과 비대화형 간의 논리 차이가 극도로 다르고 이 단계의 명령 복잡성이 이 임계값에 도달하지 않는 경우에만 필요합니다.)
+* **ACP 메시지 형식**: ACP 경로에서 반환된 텍스트 콘텐츠에는 ANSI 스타일이 포함되어 있지 않습니다. Markdown 또는 일반 텍스트가 적합하며 IDE 플러그인 사용을 위한 것입니다.
+* **환경 관련 부작용 건너뛰기**: 브라우저를 엽니다(`open()`), 클립보드를 조작합니다(`copyToClipboard()`) 및 그래픽 환경에 따른 기타 작업은 비대화형/ACP 경로에서 건너뛰어야 합니다.
 
----
+***
 
-## 2. Phase 1 完成后的基础状态
+## 2. 1단계 완료 후 기본상태
 
-Phase 1 结束后的架构要点（Phase 2 直接在此基础上扩展）：
+1단계 종료 후 아키텍처 하이라이트(2단계는 이를 기반으로 직접 확장):
 
-- `commandType` 字段已从 `SlashCommand` 接口中删除，所有命令改用显式 `supportedModes`
-- `getEffectiveSupportedModes()` 为两级推断：显式 `supportedModes` → `CommandKind` 兜底
-- `CommandService.getCommandsForMode(mode)` 取代原 `ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE` 白名单
-- `btw`、`bug`、`compress`、`context`、`init`、`summary` 已在 Phase 1 中扩展到全模式，**不在本阶段列表中**
-- `createNonInteractiveUI()` 中各方法均为 no-op：`addItem`、`clear`、`setDebugMessage`、`setPendingItem`、`reloadCommands` 均静默忽略调用
+* `commandType`필드가 다음에서 변경되었습니다.`SlashCommand`인터페이스에서 제거되었습니다. 모든 명령은 명시적 사용을 사용합니다.`supportedModes`
+* `getEffectiveSupportedModes()`2단계 추론의 경우: 명시적`supportedModes`→`CommandKind`모든 세부 사항을 공개
+* `CommandService.getCommandsForMode(mode)`원본 교체`ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE`화이트리스트
+* `btw`、`bug`、`compress`、`context`、`init`、`summary`1단계에서는 전체 모드로 확장되었으며,**이 단계 목록에 없음**
+* `createNonInteractiveUI()`모든 메소드는 작동하지 않습니다.`addItem`、`clear`、`setDebugMessage`、`setPendingItem`、`reloadCommands`전화는 자동으로 무시됩니다.
 
----
+***
 
-## 3. 变更范围总览
+## 3. 변경 범위 개요
 
-本阶段共涉及 13 个命令，按实现复杂度分为四类：
+이 단계에는 총 13개의 명령이 포함되며 구현 복잡성에 따라 4가지 범주로 나뉩니다.
 
-| 类别       | 命令                                         | 变更要点                                                                             |
-| ---------- | -------------------------------------------- | ------------------------------------------------------------------------------------ |
-| **A 类**   | `export`                                     | 只改 `supportedModes`，action 所有路径已返回合法类型                                 |
-| **仅交互** | `plan`、`statusline`                         | 设计决策：这两个命令语义上与交互界面紧密耦合，保持 `supportedModes: ['interactive']` |
-| **A+ 类**  | `language`                                   | 改 `supportedModes` + 少量 non-interactive 分支处理                                  |
-| **仅交互** | `copy`、`restore`                            | 设计决策：剥贴板和快照恢复本质上是交互操作，保持 `supportedModes: ['interactive']`   |
-| **A' 类**  | `model`、`approval-mode`                     | 有参数路径已返回 `message`，无参数路径需新增 non-interactive 分支（现触发 dialog）   |
-| **B 类**   | `about`、`stats`、`insight`、`docs`、`clear` | action 所有路径均无返回值或调用 `addItem`/`clear`，需新增完整 non-interactive 分支   |
+| 범주         | 주문하다                                     | 변화의 핵심 포인트                                                                      |
+| ---------- | ---------------------------------------- | ------------------------------------------------------------------------------- |
+| **클래스 A**  | `export`                                 | 변화만`supportedModes`, 모든 작업 경로가 올바른 유형을 반환했습니다.                                  |
+| **대화형 전용** | `plan`、`statusline`                      | 디자인 결정: 이 두 명령은 의미상 대화형 인터페이스와 밀접하게 결합되어 있습니다.`supportedModes: ['interactive']` |
+| **클래스 A+** | `language`                               | 변화`supportedModes`+ 소량의 비대화형 분기 처리                                              |
+| **대화형 전용** | `copy`、`restore`                         | 설계 결정: 스트리핑 및 스냅샷 복구는 본질적으로 대화형 작업이므로`supportedModes: ['interactive']`          |
+| **클래스 A'** | `model`、`approval-mode`                  | 매개변수 경로가 반환되었습니다.`message`, 비대화형 분기를 추가할 필요가 없는 매개변수 경로(이제 대화 상자가 트리거됨)         |
+| **카테고리 B** | `about`、`stats`、`insight`、`docs`、`clear` | 작업에 반환 값이 없거나 모든 경로에서 호출이 없습니다.`addItem`/`clear`, 완전한 비대화형 분기를 추가해야 합니다.        |
 
----
+***
 
-## 4. A 类：只改 `supportedModes`
+## 4. 카테고리 A: 수정만 가능`supportedModes`
 
-这三个命令的所有 `action` 路径已经返回 `message` 或 `submit_prompt`，完全无 UI 依赖，`handleCommandResult` 可直接处理。
+이 세 가지 명령 모두`action`경로가 반환되었습니다.`message`또는`submit_prompt`, UI 종속성이 전혀 없습니다.`handleCommandResult`직접 처리가 가능합니다.
 
-### 4.1 `/export`（及子命令）
+### 4.1 `/export`(및 하위 명령)
 
-**当前状态**：`supportedModes: ['interactive']`，所有子命令 action 均返回 `MessageActionReturn`。
+**현황**：`supportedModes: ['interactive']`, 모든 하위 명령 작업이 반환됩니다.`MessageActionReturn`。
 
-**变更**：将父命令及所有四个子命令（`md`、`html`、`json`、`jsonl`）的 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
+**변화**: 상위 명령과 네 가지 하위 명령을 모두 결합합니다(`md`、`html`、`json`、`jsonl`)의`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
 
-**ACP 消息内容**：action 现有返回内容已包含完整文件路径（如 `Session exported to markdown: qwen-export-2024-01-01T12-00-00.md`），对 IDE 消费友好，无需修改文本。
+**ACP 메시지 내용**:action 기존에 반환된 콘텐츠에는 이미 전체 파일 경로(예:`Session exported to markdown: qwen-export-2024-01-01T12-00-00.md`), IDE 사용에 친숙하므로 텍스트를 수정할 필요가 없습니다.
 
-> **注意**：`/export` 父命令本身没有 `action`，只有子命令。将父命令 `supportedModes` 改为全模式后，`parseSlashCommand` 能够匹配子命令路由，但若用户只输入 `/export` 不带子命令，`commandToExecute.action` 为 undefined，`handleSlashCommand` 返回 `no_command`，调用方会显示可用子命令提示。这是预期行为。
+> **알아채다**：`/export`상위 명령 자체에는 없습니다.`action`, 하위 명령만. 상위 명령`supportedModes`풀모드로 변경 후,`parseSlashCommand`하위 명령 경로를 일치시킬 수 있지만 사용자가 입력만 하는 경우`/export`하위 명령이 없으면`commandToExecute.action`为 정의되지 않음，`handleSlashCommand`반품`no_command`, 호출자에게 사용 가능한 하위 명령에 대한 프롬프트가 표시됩니다. 이는 예상된 동작입니다.
 
 ### 4.2 `/plan`
 
-**当前状态**：`supportedModes: ['interactive']`，action 所有路径返回 `MessageActionReturn` 或 `SubmitPromptActionReturn`。
+**현황**：`supportedModes: ['interactive']`, 작업은 모든 경로를 반환합니다.`MessageActionReturn`또는`SubmitPromptActionReturn`。
 
-**设计决策**：`/plan` 是引导用户进行多轮交互规划的命令，语义上与交互界面紧密耦合。经讨论决定保持 `supportedModes: ['interactive']`，不扩展至 non-interactive/acp 模式。
+**디자인 결정**：`/plan`이는 사용자가 여러 라운드의 대화형 계획을 수행하도록 안내하는 명령이며 의미상 대화형 인터페이스와 긴밀하게 결합됩니다. 논의 끝에 유지하기로 결정했습니다.`supportedModes: ['interactive']`, 비대화형/acp 모드로 확장되지 않습니다.
 
 ### 4.3 `/statusline`
 
-**当前状态**：`supportedModes: ['interactive']`，action 始终返回 `SubmitPromptActionReturn`（将 subagent 调用 prompt 提交给模型）。
+**현황**：`supportedModes: ['interactive']`, 작업은 항상 반환됩니다.`SubmitPromptActionReturn`(하위 에이전트 호출은 모델에 대한 프롬프트를 표시합니다).
 
-**设计决策**：`/statusline` 是触发 subagent 对当前状态进行总结的命令，语义上与交互界面紧密耦合。经讨论决定保持 `supportedModes: ['interactive']`，不扩展至 non-interactive/acp 模式。
+**디자인 결정**：`/statusline`현재 상태를 요약하기 위해 하위 에이전트를 트리거하는 명령이며 대화형 인터페이스와 의미상 긴밀하게 결합됩니다. 논의 끝에 유지하기로 결정했습니다.`supportedModes: ['interactive']`, 비대화형/acp 모드로 확장되지 않습니다.
 
----
+***
 
-## 5. A+ 类：少量 non-interactive 分支处理
+## 5. 카테고리 A+: 소량의 비대화형 분기 처리
 
 ### 5.1 `/language`
 
-**当前状态**：action 所有路径均返回 `MessageActionReturn`（读取/设置语言设置）。
+**현황**:action 모든 경로가 반환됩니다.`MessageActionReturn`(언어 설정 읽기/설정).
 
-**需要处理的副作用**：`setUiLanguage()` 内调用 `context.ui.reloadCommands()`，在非交互 UI 中已是 no-op，无需额外处理。
+**대처해야 할 부작용**：`setUiLanguage()`이내에 전화`context.ui.reloadCommands()`, 이미 비대화형 UI에서는 작동하지 않으므로 추가 처리가 필요하지 않습니다.
 
-**变更**：
+**변화**：
 
-- 将父命令及子命令（`ui`、`output`，以及 `SUPPORTED_LANGUAGES` 动态生成的子命令）的 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-- action 无需添加模式分支，现有返回文本已适合机器消费。
+* 상위 명령과 하위 명령 결합(`ui`、`output`,게다가`SUPPORTED_LANGUAGES`동적으로 생성된 하위 명령)`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+* 작업에 패턴 분기를 추가할 필요가 없으며 기존 반환 텍스트는 이미 기계 사용에 적합합니다.
 
-**ACP 语义说明**：在 non-interactive（单次调用）中执行 `/language ui zh-CN` 会修改持久化设置（写入 settings 文件），该变更对后续 session 生效，本次 session 内 i18n 也立即生效。这与用户预期一致。
+**ACP 의미론적 설명**: 비대화형(단일 호출)으로 실행됩니다.`/language ui zh-CN`지속성 설정이 수정됩니다(설정 파일에 기록됨). 변경 사항은 후속 세션에 적용되며, 이 세션의 i18n도 즉시 적용됩니다. 이는 사용자 기대와 일치합니다.
 
 ### 5.2 `/copy`
 
-**当前状态**：action 调用 `copyToClipboard()`，在 ACP/headless 环境中可能抛出异常或无声失败（clipboard 不可用）。
+**현황**:액션 호출`copyToClipboard()`, ACP/헤드리스 환경에서는 예외가 발생하거나 자동으로 실패할 수 있습니다(클립보드를 사용할 수 없음).
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 在 action 内新增模式分支：
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 작업 내에 새 패턴 분기를 추가합니다.
 
 ```typescript
 // 获取 last AI message（现有逻辑，可复用）
@@ -123,35 +123,35 @@ return {
 };
 ```
 
-**ACP 语义**：IDE 收到最后一条模型输出的原文，可自行决定是否写入剪贴板或展示给用户。
+**ACP 의미론**: IDE는 마지막 모델 출력의 원본 텍스트를 받아 클립보드에 쓸지 사용자에게 표시할지 결정할 수 있습니다.
 
 ### 5.3 `/restore`
 
-**当前状态**：`supportedModes: ['interactive']`。
+**현황**：`supportedModes: ['interactive']`。
 
-**设计决策**：快照恢复进一步会重新执行工具调用，语义上与交互界面紧密耦合。经讨论决定保持 `supportedModes: ['interactive']`，不扩展至 non-interactive/acp 模式。
+**디자인 결정**: 스냅샷 복구는 대화형 인터페이스와 의미상 긴밀하게 결합된 도구 호출을 추가로 다시 실행합니다. 논의 끝에 유지하기로 결정했습니다.`supportedModes: ['interactive']`, 비대화형/acp 모드로 확장되지 않습니다.
 
-**ACP 语义**：checkpoint 的 git 状态恢复和 gemini client history 设置均作为副作用执行；IDE 收到确认消息后可提示用户"状态已恢复"，工具重执行由 IDE 自行决定是否触发。
+**ACP 의미론**: Checkpoint의 git 상태 복원 및 gemini 클라이언트 기록 설정이 모두 부작용으로 실행됩니다. 확인 메시지를 받은 후 IDE는 사용자에게 "상태가 복원되었습니다"라는 메시지를 표시할 수 있으며 IDE의 재량에 따라 도구 재실행이 트리거됩니다.
 
----
+***
 
-## 6. A' 类：无参数 dialog 路径的 non-interactive 处理
+## 6. 클래스 A': 매개변수 없는 대화 경로의 비대화식 처리
 
 ### 6.1 `/model`
 
-**当前状态**：
+**현황**：
 
-| 输入                             | 当前行为                                                                         |
-| -------------------------------- | -------------------------------------------------------------------------------- |
-| `/model`（无参数）               | → `{ type: 'dialog', dialog: 'model' }`（non-interactive 下变 unsupported）      |
-| `/model <model-id>`              | 未实现（只有 `--fast` 分支）                                                     |
-| `/model --fast`（无 model name） | → `{ type: 'dialog', dialog: 'fast-model' }`（non-interactive 下变 unsupported） |
-| `/model --fast <model-id>`       | → `MessageActionReturn` ✅                                                       |
+| 입력하다                       | 현재 행동                                                        |
+| -------------------------- | ------------------------------------------------------------ |
+| `/model`(매개변수 없음)          | →`{ type: 'dialog', dialog: 'model' }`(비대화형 下变 지원되지 않음)      |
+| `/model <model-id>`        | 구현되지 않음(만`--fast`나뭇가지)                                       |
+| `/model --fast`(모델명 없음)    | →`{ type: 'dialog', dialog: 'fast-model' }`(비대화형 下变 지원되지 않음) |
+| `/model --fast <model-id>` | →`MessageActionReturn`✅                                      |
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 在 action 内各 dialog 路径前插入 non-interactive 分支：
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 작업의 각 대화 경로 앞에 비대화형 분기를 삽입합니다.
 
 ```typescript
 // 无参数路径（原返回 dialog: 'model'）
@@ -181,24 +181,24 @@ if (args.startsWith('--fast') && !modelName) {
 }
 ```
 
-**ACP 语义**：IDE 展示当前模型名称，供用户参考；切换模型通过带参数调用实现（`/model <model-id>`）。
+**ACP 의미론**: IDE는 사용자 참조를 위해 현재 모델 이름을 표시합니다. 모델 전환은 매개변수를 사용하여 호출하여 수행됩니다(`/model <model-id>`)。
 
-> **注意**：`/model <model-id>`（不带 `--fast`）目前没有实现设置当前 session 模型的逻辑，只有 `--fast <model-id>` 有。如果 Phase 2 要支持 ACP 下切换主模型，需要同步实现 `/model <model-id>` 的 set 逻辑。本设计预留此路径但标记为 Phase 2 可选项，优先保证"查看当前模型"的 read-only 路径。
+> **알아채다**：`/model <model-id>`(없이`--fast`) 현재 현재 세션 모델을 설정하기 위한 로직의 구현은 없습니다.`--fast <model-id>`가지다. 2단계에서 ACP 하의 기본 모델 전환을 지원하려면 동기식으로 구현해야 합니다.`/model <model-id>`논리를 설정합니다. 이 설계에서는 이 경로를 예약했지만 2단계 선택 사항으로 표시하여 "현재 모델 보기"의 읽기 전용 경로를 보장하는 데 우선순위를 부여합니다.
 
 ### 6.2 `/approval-mode`
 
-**当前状态**：
+**현황**：
 
-| 输入                       | 当前行为                                                                            |
-| -------------------------- | ----------------------------------------------------------------------------------- |
-| `/approval-mode`（无参数） | → `{ type: 'dialog', dialog: 'approval-mode' }`（non-interactive 下变 unsupported） |
-| `/approval-mode <mode>`    | → `MessageActionReturn` ✅                                                          |
-| `/approval-mode <invalid>` | → `MessageActionReturn`（error）✅                                                  |
+| 입력하다                       | 현재 행동                                                           |
+| -------------------------- | --------------------------------------------------------------- |
+| `/approval-mode`(매개변수 없음)  | →`{ type: 'dialog', dialog: 'approval-mode' }`(비대화형 下变 지원되지 않음) |
+| `/approval-mode <mode>`    | →`MessageActionReturn`✅                                         |
+| `/approval-mode <invalid>` | →`MessageActionReturn`（오류）✅                                     |
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 在无参数路径（`!args.trim()`）插入 non-interactive 分支：
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 매개변수 없는 경로(`!args.trim()`) 비대화형 분기에 삽입합니다.
 
 ```typescript
 if (!args.trim()) {
@@ -214,22 +214,22 @@ if (!args.trim()) {
 }
 ```
 
----
+***
 
-## 7. B 类：需要完整 non-interactive 分支
+## 7. 카테고리 B: 완전한 비대화형 분기가 필요합니다.
 
-这五个命令的 action 在 interactive 模式下通过 `context.ui.addItem()` 渲染 React 组件或调用 `context.ui.clear()`，返回值为 `void`。在 non-interactive 中，这些调用均为 no-op，导致 `handleSlashCommand` 将无返回值处理为 `"Command executed successfully."`，无实际内容输出。
+이 다섯 가지 명령의 작업은 대화형 모드로 전달됩니다.`context.ui.addItem()`React 구성요소 렌더링 또는 호출`context.ui.clear()`, 반환 값은 다음과 같습니다`void`. 비대화형에서는 이러한 호출이 작동하지 않으므로 다음과 같은 결과가 발생합니다.`handleSlashCommand`반환 값이 없는 것으로 처리`"Command executed successfully."`, 실제 콘텐츠가 출력되지 않습니다.
 
-**实现原则**：在 action **顶部**检查 `executionMode`，非 interactive 时 **提前 return** 包含实际内容的 `message`，interactive 路径代码完全不触碰。
+**실현원리**: 활동 중**맨 위**조사하다`executionMode`, 대화형이 아닐 때**미리 반납하다**실제 내용이 포함되어 있습니다.`message`, 대화형 경로 코드는 전혀 변경되지 않습니다.
 
-### 7.1 `/about`（altName: `status`）
+### 7.1 `/about`(대체이름:`status`)
 
-**数据来源**：`getExtendedSystemInfo(context)` 返回 `ExtendedSystemInfo`，包含：`cliVersion`、`osPlatform`、`osArch`、`osRelease`、`nodeVersion`、`modelVersion`、`selectedAuthType`、`ideClient`、`sessionId`、`memoryUsage`、`baseUrl`、`apiKeyEnvKey`、`gitCommit`、`fastModel`。所有字段在 non-interactive 中均可获取（context.services.config 和 settings 均已注入）。
+**데이터 소스**：`getExtendedSystemInfo(context)`반품`ExtendedSystemInfo`,포함하다:`cliVersion`、`osPlatform`、`osArch`、`osRelease`、`nodeVersion`、`modelVersion`、`selectedAuthType`、`ideClient`、`sessionId`、`memoryUsage`、`baseUrl`、`apiKeyEnvKey`、`gitCommit`、`fastModel`. 모든 필드는 비대화형으로 사용할 수 있습니다(context.services.config 및 설정이 삽입됨).
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 在 `getExtendedSystemInfo` 调用后，interactive 路径之前插入模式分支：
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 존재하다`getExtendedSystemInfo`호출 후 대화형 경로 앞에 스키마 분기를 삽입합니다.
 
 ```typescript
 action: async (context) => {
@@ -260,14 +260,14 @@ action: async (context) => {
 },
 ```
 
-### 7.2 `/stats`（及子命令 `model`、`tools`）
+### 7.2 `/stats`(및 하위 명령`model`、`tools`)
 
-**数据来源**：`context.session.stats`（`SessionStatsState`）包含 `sessionStartTime`、`metrics`（`SessionMetrics`：`models`、`tools`、`files`）、`promptCount`。在 non-interactive 中，`sessionStartTime` 为当前调用时刻，`metrics` 来自 `uiTelemetryService.getMetrics()`（本次调用的累积值，通常为零），`promptCount` 为 1。
+**데이터 소스**：`context.session.stats`（`SessionStatsState`)포함하다`sessionStartTime`、`metrics`（`SessionMetrics`：`models`、`tools`、`files`)、`promptCount`. 비대화형에서는`sessionStartTime`현재 통화 시간입니다.`metrics`\~에서`uiTelemetryService.getMetrics()`(이 호출의 누적 값은 일반적으로 0입니다.)`promptCount`1입니다.
 
-**变更**：
+**변화**：
 
-1. 将父命令 `stats` 及子命令 `model`、`tools` 的 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 父命令和每个子命令的 action 均插入模式分支，提前返回文本格式统计：
+1. 상위 명령`stats`및 하위 명령`model`、`tools`\~의`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 상위 명령과 각 하위 명령의 작업이 모드 분기에 삽입되고 텍스트 형식 통계가 미리 반환됩니다.
 
 ```typescript
 // /stats 主命令
@@ -305,21 +305,21 @@ action: (context) => {
 },
 ```
 
-子命令 `model` 和 `tools` 也各自插入模式分支，返回对应维度的文本统计（model 维度按 model name 列出 token 用量；tools 维度列出各 tool 调用次数）。
+하위 명령`model`그리고`tools`또한 모델 분기를 각각 삽입하고 해당 차원의 텍스트 통계를 반환합니다(모델 차원은 모델 이름별로 토큰 사용량을 나열하고 도구 차원은 각 도구의 호출 수를 나열합니다).
 
-**说明**：在 non-interactive 单次调用中，metrics 通常为零（新 session），但结构完整，不影响格式。ACP Session 中可能有累积值，有实际意义。
+**설명하다**: 비대화형 단일 호출에서 메트릭은 일반적으로 0(새 세션)이지만 구조는 그대로 유지되며 형식에 영향을 주지 않습니다. ACP 세션에는 실질적인 의미를 갖는 누적 값이 있을 수 있습니다.
 
 ### 7.3 `/insight`
 
-**当前状态**：action 返回 `void`，通过 `addItem` 展示进度和结果，最后调用 `open(outputPath)` 打开浏览器。核心逻辑是 `insightGenerator.generateStaticInsight()` 生成 HTML 文件。
+**현황**:액션 리턴`void`,통과하다`addItem`진행 상황과 결과를 보여주고 마지막으로 전화하세요.`open(outputPath)`브라우저를 엽니다. 핵심 논리는`insightGenerator.generateStaticInsight()`HTML 파일을 생성합니다.
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 按 `executionMode` 三路分叉：
-   - `non_interactive`：同步生成，忽略进度回调，不开浏览器，直接返回 `message`（文件路径）
-   - `acp`：异步启动生成，通过 `stream_messages` 将进度（`encodeInsightProgressMessage`）和完成（`encodeInsightReadyMessage`）推送给 IDE
-   - `interactive`：原有 `addItem` + `setPendingItem` + `open()` 逻辑不变
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. \~에 따르면`executionMode`3방향 포크:
+   * `non_interactive`: 동기적으로 생성, 진행 콜백 무시, 브라우저를 열지 않고 바로 반환`message`(파일 경로)
+   * `acp`: 다음을 통해 비동기식으로 생성을 시작합니다.`stream_messages`진행률 변경(`encodeInsightProgressMessage`) 및 완료(`encodeInsightReadyMessage`) IDE로 푸시됨
+   * `interactive`:원래의`addItem`+`setPendingItem`+`open()`논리는 변경되지 않습니다.
 
 ```typescript
 // non_interactive 路径
@@ -344,19 +344,19 @@ if (context.executionMode === 'acp') {
 // interactive 路径：原有实现不变
 ```
 
-**设计理由**：`non_interactive` 模式（CLI 管道）不支持 `stream_messages`，只能返回单条 `message`；ACP 模式（IDE 插件）能消费 `stream_messages` 并实时展示进度，因此为其保留 streaming 路径。
+**디자인 이유**：`non_interactive`모드(CLI 파이프라인)가 지원되지 않음`stream_messages`, 단일만 반환할 수 있습니다.`message`;ACP 모드(IDE 플러그인)는`stream_messages`진행 상황을 실시간으로 표시하므로 스트리밍 경로가 예약되어 있습니다.
 
-**ACP 消息格式**：`encodeInsightProgressMessage(stage, progress, detail?)` 产生 IDE 可解析的进度条消息；`encodeInsightReadyMessage(outputPath)` 通知 IDE 文件已就绪，由 IDE 决定如何展示链接。
+**ACP 메시지 형식**：`encodeInsightProgressMessage(stage, progress, detail?)`IDE에서 구문 분석할 수 있는 진행률 표시줄 메시지를 생성합니다.`encodeInsightReadyMessage(outputPath)`파일이 준비되었음을 IDE에 알리고 IDE는 링크를 표시하는 방법을 결정합니다.
 
 ### 7.4 `/docs`
 
-**当前状态**：action 返回 `void`，通过 `addItem` 显示消息并调用 `open(docsUrl)` 打开浏览器。有一个 `SANDBOX` 环境变量分支（沙盒下只 addItem，不开浏览器）。
+**현황**:액션 리턴`void`,통과하다`addItem`메시지 및 통화 표시`open(docsUrl)`브라우저를 엽니다. 하나 있다`SANDBOX`환경 변수 분기(브라우저를 열지 않고 샌드박스에서 addItem만)
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 修改 action 返回类型为 `Promise<void | MessageActionReturn>`。
-3. 在 action 开头插入 non-interactive 分支：
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 작업 반환 유형을 다음으로 수정합니다.`Promise<void | MessageActionReturn>`。
+3. 작업 시작 부분에 비대화형 분기를 삽입합니다.
 
 ```typescript
 action: async (context) => {
@@ -382,32 +382,32 @@ action: async (context) => {
 },
 ```
 
-### 7.5 `/clear`（altNames: `reset`、`new`）
+### 7.5 `/clear`(대체이름:`reset`、`new`)
 
-**当前状态**：action 执行以下操作并返回 `void`：
+**현황**:action은 다음 작업을 수행하고 반환합니다.`void`：
 
-1. `config.getHookSystem()?.fireSessionEndEvent()` — 触发 hook（有副作用）
-2. `config.startNewSession()` — 开始新 session ID（有副作用）
-3. `uiTelemetryService.reset()` — 重置 telemetry 计数器（有副作用）
-4. `skillTool.clearLoadedSkills()` — 清除 skill 缓存（有副作用）
-5. `context.ui.clear()` — 清空终端 UI（**UI 副作用，non-interactive 下为 no-op**）
-6. `geminiClient.resetChat()` — 重置 chat 历史（有副作用）
-7. `config.getHookSystem()?.fireSessionStartEvent()` — 触发 hook（有副作用）
+1. `config.getHookSystem()?.fireSessionEndEvent()`— 트리거 후크(부작용 있음)
+2. `config.startNewSession()`— 새 세션 ID를 시작합니다(부작용이 있음)
+3. `uiTelemetryService.reset()`— 원격 측정 카운터 재설정(부작용 있음)
+4. `skillTool.clearLoadedSkills()`— 스킬 캐시 지우기(부작용 있음)
+5. `context.ui.clear()`— 터미널 UI 지우기(**UI 부작용, 비대화형에서는 작동하지 않음**)
+6. `geminiClient.resetChat()`— 채팅 기록 재설정(부작용 있음)
+7. `config.getHookSystem()?.fireSessionStartEvent()`— 트리거 후크(부작용 있음)
 
-**non-interactive/ACP 语义分析**：
+**비대화형/ACP 의미 분석**：
 
-- `ui.clear()` 在 non-interactive 中已是 no-op，不需要处理
-- `geminiClient.resetChat()`：在 ACP Session 中是有意义的副作用（清空 chat 历史），应保留；在 non-interactive 单次调用中，每次调用都是全新 session，`resetChat` 语义重复但无害
-- `config.startNewSession()`：在 ACP 中有意义（开始新的 session ID）；在 non-interactive 单次调用中同样语义重复但无害
-- `fireSessionEndEvent` / `fireSessionStartEvent`：在 ACP 中有意义（触发 hook）
+* `ui.clear()`비대화형에서는 작동하지 않으며 처리할 필요가 없습니다.
+* `geminiClient.resetChat()`: ACP 세션에서는 의미 있는 부작용(채팅 기록 삭제)이므로 유지해야 합니다. 비대화형 단일 통화에서는 각 통화가 새로운 세션입니다.`resetChat`의미상 반복적이지만 무해함
+* `config.startNewSession()`: ACP에서 의미가 있습니다(새 세션 ID 시작). 비대화형 단일 호출에서는 동일한 의미가 반복되지만 무해합니다.
+* `fireSessionEndEvent` / `fireSessionStartEvent`: ACP(트리거 후크)에서 의미가 있습니다.
 
-**决策**：non-interactive/ACP 路径保留所有有意义的副作用（resetChat、startNewSession、hook events），仅跳过 `ui.clear()`（已是 no-op）并返回上下文边界标记 message。
+**의사결정**:비대화형/ACP 경로는 모든 의미 있는 부작용(resetChat, startNewSession, 후크 이벤트)을 유지하고 건너뜁니다.`ui.clear()`(이미 작동하지 않음) 컨텍스트 경계 토큰 메시지를 반환합니다.
 
-**变更**：
+**변화**：
 
-1. 将 `supportedModes` 改为 `['interactive', 'non_interactive', 'acp']`。
-2. 修改 action 返回类型为 `Promise<void | MessageActionReturn>`。
-3. 在 action 内，`context.ui.clear()` 调用后（或替代它）根据模式分支：
+1. 할 것이다`supportedModes`다음으로 변경`['interactive', 'non_interactive', 'acp']`。
+2. 작업 반환 유형을 다음으로 수정합니다.`Promise<void | MessageActionReturn>`。
+3. 행동 내에서,`context.ui.clear()`패턴에 따라 분기를 호출(또는 대체)한 후:
 
 ```typescript
 action: async (context, _args) => {
@@ -451,238 +451,238 @@ action: async (context, _args) => {
 },
 ```
 
-**ACP 语义**：IDE 收到上下文边界标记后，可将其作为 session 分隔符展示（如"新会话开始"提示），并清空本地 chat 历史缓存。
+**ACP 의미론**: IDE가 컨텍스트 경계 표시를 수신한 후 이를 세션 구분 기호(예: "새 세션 시작" 프롬프트)로 표시하고 로컬 채팅 기록 캐시를 지울 수 있습니다.
 
----
+***
 
-## 8. `handleCommandResult` 变更
+## 8. `handleCommandResult`변화
 
-**结论：无需修改。**
+**결론: 수정이 필요하지 않습니다.**
 
-Phase 2 所有命令变更后，non-interactive/ACP 路径的返回类型均为 `message` 或 `submit_prompt`，均已在 `handleCommandResult` 的 switch 中正确处理。
+2단계에서 모든 명령이 변경된 후 비대화형/ACP 경로의 반환 유형은 다음과 같습니다.`message`또는`submit_prompt`, 모두 이미 들어있습니다`handleCommandResult`스위치에서 올바르게 처리됩니다.
 
----
+***
 
-## 9. `createNonInteractiveUI()` 变更
+## 9. `createNonInteractiveUI()`변화
 
-**结论：无需修改。**
+**결론: 수정이 필요하지 않습니다.**
 
-当前 no-op 实现已足够。`addItem`、`clear`、`setPendingItem` 等 no-op 在 B 类命令的 non-interactive 路径中不会被调用（因为提前 return）；interactive 路径中不受影响。
+현재의 무작동 구현으로 충분합니다.`addItem`、`clear`、`setPendingItem`등. 클래스 B 명령의 비대화형 경로에서는 no-op가 호출되지 않습니다(조기 반환으로 인해). 대화형 경로는 영향을 받지 않습니다.
 
----
+***
 
-## 10. Phase 2.2：prompt command 模型调用打通
+## 10. 2.2단계: 프롬프트 명령 모델 호출이 열립니다.
 
-Phase 1 中 `CommandService.getModelInvocableCommands()` 已实现，`BundledSkillLoader`、`FileCommandLoader`（用户/项目命令）、`McpPromptLoader` 已设置 `modelInvocable: true`。
+1단계에서`CommandService.getModelInvocableCommands()`실현되었으며,`BundledSkillLoader`、`FileCommandLoader`(사용자/프로젝트 명령),`McpPromptLoader`이미 설정됨`modelInvocable: true`。
 
-Phase 2.2 的工作是将 `SkillTool` 从只消费 `SkillManager.listSkills()` 改为同时消费 `CommandService.getModelInvocableCommands()`，统一模型可调用命令的入口。
+2.2단계의 작업은 다음과 같습니다.`SkillTool`소비만 하다`SkillManager.listSkills()`동시소비로 변경`CommandService.getModelInvocableCommands()`, 통합 모델 호출 가능 명령의 입구입니다.
 
-**变更文件**：`packages/core/src/tools/SkillTool.ts`（或对应路径）
+**파일 변경**：`packages/core/src/tools/SkillTool.ts`(또는 해당 경로)
 
-**具体变更**：
+**구체적인 변경 사항**：
 
-1. `SkillTool` 在初始化时接收 `CommandService`（或其 `getModelInvocableCommands()` 的结果）作为依赖注入
-2. 在构建 tool description 时，合并 `listSkills()` 和 `getModelInvocableCommands()` 的结果
-3. 确保 built-in commands（`modelInvocable: false`）不出现在 tool description 中
+1. `SkillTool`초기화 시 수신됨`CommandService`(또는 그`getModelInvocableCommands()`결과) 종속성 주입으로
+2. 도구 설명 작성 시 병합`listSkills()`그리고`getModelInvocableCommands()`결과
+3. 내장 명령(`modelInvocable: false`)는 도구 설명에 표시되지 않습니다.
 
-> **注**：`SkillTool` 的具体实现依赖 `packages/core` 内部架构，详细设计在本文档中仅描述接口变更，实现细节需结合 core 包的现有结构确定。
+> **메모**：`SkillTool`구체적인 구현은 다음에 따라 달라집니다.`packages/core`내부 아키텍처 및 세부 설계는 이 문서에서 인터페이스 변경 사항만 설명하며, 구현 세부 사항은 핵심 패키지의 기존 구조와 함께 결정되어야 합니다.
 
----
+***
 
-## 11. Phase 2.3：mid-input slash command 检测（基础版）
+## 11. 2.3단계: 중간 입력 슬래시 명령 감지(기본 버전)
 
-在 `InputPrompt` 组件中检测光标附近的 slash token（不限于行首），触发补全菜单。
+존재하다`InputPrompt`구성 요소는 커서 근처(줄의 시작 부분으로 제한되지 않음) 근처의 슬래시 토큰을 감지하고 완성 메뉴를 트리거합니다.
 
-**检测规则**：
+**탐지 규칙**：
 
-- 当光标前存在以 `/` 开头、不含空格的 token 时，触发命令补全
-- 补全候选来自 `getCommandsForMode('interactive')` 的可见命令列表
-- 补全菜单展示命令名 + description（不含 argumentHint 等，Phase 3 补充）
+* 커서 앞에 문자가 있는 경우`/`공백이 포함되지 않은 토큰으로 시작하면 명령 완성이 트리거됩니다.
+* 수료 후보자는 다음에서 나옵니다.`getCommandsForMode('interactive')`보이는 명령 목록
+* 완성 메뉴에는 명령 이름 + 설명이 표시됩니다(3단계에서 추가된 인수 힌트 등 제외).
 
-> 本功能为 UI 层变更，属于 Phase 2.3 独立子任务，不影响其他 Phase 2.1/2.2 的实施。
+> 이 기능은 UI 레이어 변경이며 Phase 2.3의 독립적인 하위 작업입니다. 다른 Phase 2.1/2.2의 구현에는 영향을 미치지 않습니다.
 
----
+***
 
-## 12. 文件变更总览
+## 12. 파일 변경 개요
 
-### 12.1 命令文件变更（Phase 2.1）
+### 12.1 명령 파일 변경(2.1단계)
 
-| 文件                     | 变更类型 | 具体内容                                                                                                                             |
-| ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `exportCommand.ts`       | A 类     | 父命令 + 4 个子命令：`supportedModes` → all modes                                                                                    |
-| `planCommand.ts`         | 仅交互   | 设计决策：保持 `supportedModes: ['interactive']`，未变更                                                                             |
-| `statuslineCommand.ts`   | 仅交互   | 设计决策：保持 `supportedModes: ['interactive']`，未变更                                                                             |
-| `languageCommand.ts`     | A+ 类    | 父命令 + `ui`/`output` 子命令 + 动态 language 子命令：`supportedModes` → all modes                                                   |
-| `copyCommand.ts`         | 仅交互   | 设计决策：保持 `supportedModes: ['interactive']`，未变更                                                                             |
-| `restoreCommand.ts`      | 仅交互   | 设计决策：保持 `supportedModes: ['interactive']`，未变更                                                                             |
-| `modelCommand.ts`        | A' 类    | `supportedModes` → all modes + 无参数/无 fast model 路径新增非交互分支                                                               |
-| `approvalModeCommand.ts` | A' 类    | `supportedModes` → all modes + 无参数路径新增非交互分支                                                                              |
-| `aboutCommand.ts`        | B 类     | `supportedModes` → all modes + 非交互路径返回 `message`（版本/模型/环境摘要）                                                        |
-| `statsCommand.ts`        | B 类     | `supportedModes` → all modes + 非交互路径返回 `message`（stats 文本）；子命令同步处理                                                |
-| `insightCommand.ts`      | B 类     | `supportedModes` → all modes + `non_interactive` 路径同步生成返回 `message`（文件路径）；`acp` 路径返回 `stream_messages` 带进度推送 |
-| `docsCommand.ts`         | B 类     | `supportedModes` → all modes + 非交互路径返回 `message`（文档 URL），不打开浏览器                                                    |
-| `clearCommand.ts`        | B 类     | `supportedModes` → all modes + action 末尾根据模式返回 `message` 或 `void`                                                           |
+| 문서                       | 유형 변경  | 구체적 내용                                                                                                         |
+| ------------------------ | ------ | -------------------------------------------------------------------------------------------------------------- |
+| `exportCommand.ts`       | 클래스 A  | 상위 명령 + 4개 하위 명령:`supportedModes`→ 모든 모드                                                                       |
+| `planCommand.ts`         | 대화형 전용 | 디자인 결정: 유지`supportedModes: ['interactive']`, 변함 없음                                                             |
+| `statuslineCommand.ts`   | 대화형 전용 | 디자인 결정: 유지`supportedModes: ['interactive']`, 변함 없음                                                             |
+| `languageCommand.ts`     | 클래스 A+ | 아버지 명령 +`ui`/`output`하위 명령 + 동적 언어 하위 명령:`supportedModes`→ 모든 모드                                               |
+| `copyCommand.ts`         | 대화형 전용 | 디자인 결정: 유지`supportedModes: ['interactive']`, 변함 없음                                                             |
+| `restoreCommand.ts`      | 대화형 전용 | 디자인 결정: 유지`supportedModes: ['interactive']`, 변함 없음                                                             |
+| `modelCommand.ts`        | 클래스 A' | `supportedModes`→ 모든 모드 + 매개변수 없음/빠른 모델 경로 없음 비대화형 분기 추가                                                       |
+| `approvalModeCommand.ts` | 클래스 A' | `supportedModes`→ 모든 모드 + 매개변수 경로가 없는 새로운 비대화형 분기                                                              |
+| `aboutCommand.ts`        | 카테고리 B | `supportedModes`→ 모든 모드 + 비대화형 경로 복귀`message`(버전/모델/환경 요약)                                                     |
+| `statsCommand.ts`        | 카테고리 B | `supportedModes`→ 모든 모드 + 비대화형 경로 복귀`message`(통계 텍스트); 하위 명령 동기화 처리                                            |
+| `insightCommand.ts`      | 카테고리 B | `supportedModes`→ 모든 모드 +`non_interactive`경로 동기화 생성 반환`message`(파일 경로);`acp`경로 복귀`stream_messages`진행 상황에 따라 푸시 |
+| `docsCommand.ts`         | 카테고리 B | `supportedModes`→ 모든 모드 + 비대화형 경로 복귀`message`(문서 URL) 브라우저를 열지 않고                                              |
+| `clearCommand.ts`        | 카테고리 B | `supportedModes`→ 모든 모드 + 액션 종료 시 모드에 따라 복귀`message`또는`void`                                                   |
 
-### 12.2 其他文件变更
+### 12.2 기타 문서 변경 사항
 
-| 文件                                                | 变更内容                                                          |
-| --------------------------------------------------- | ----------------------------------------------------------------- |
-| `packages/core/src/tools/SkillTool.ts`              | Phase 2.2：接入 `getModelInvocableCommands()`（详细设计另行确定） |
-| `packages/cli/src/ui/InputPrompt.tsx`（或同等组件） | Phase 2.3：mid-input slash 检测逻辑                               |
+| 문서                                                  | 콘텐츠 변경                                                 |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| `packages/core/src/tools/SkillTool.ts`              | 2.2단계: 액세스`getModelInvocableCommands()`(세부 디자인은 별도 결정) |
+| `packages/cli/src/ui/InputPrompt.tsx`(또는 이에 상응하는 것) | 2.3단계: 중간 입력 슬래시 감지 논리                                 |
 
-### 12.3 不变的文件
+### 12.3 불변 파일
 
-- `packages/cli/src/nonInteractiveCliCommands.ts`（`handleCommandResult`、`handleSlashCommand` 无需修改）
-- `packages/cli/src/ui/noninteractive/nonInteractiveUi.ts`（stub UI 无需修改）
-- `packages/cli/src/services/commandUtils.ts`（`filterCommandsForMode`、`getEffectiveSupportedModes` 无需修改）
-- `packages/cli/src/services/CommandService.ts`（`getCommandsForMode`、`getModelInvocableCommands` 已在 Phase 1 实现）
+* `packages/cli/src/nonInteractiveCliCommands.ts`（`handleCommandResult`、`handleSlashCommand`수정이 필요하지 않습니다)
+* `packages/cli/src/ui/noninteractive/nonInteractiveUi.ts`(스텁 UI는 수정할 필요가 없습니다)
+* `packages/cli/src/services/commandUtils.ts`（`filterCommandsForMode`、`getEffectiveSupportedModes`수정이 필요하지 않습니다)
+* `packages/cli/src/services/CommandService.ts`（`getCommandsForMode`、`getModelInvocableCommands`이미 1단계에서 구현됨)
 
----
+***
 
-## 13. 测试策略
+## 13. 테스트 전략
 
-### 13.1 命令单元测试
+### 13.1 명령 단위 테스트
 
-为每个变更的命令在同目录下新增或更新测试文件（`*.test.ts`），覆盖以下 case：
+변경된 각 명령에 대해 동일한 디렉터리에 테스트 파일을 추가하거나 업데이트합니다(`*.test.ts`), 다음과 같은 경우를 다룹니다.
 
-**A/A+ 类命令**（`export`、`language`）：
+**A/A+ 클래스 명령**（`export`、`language`)：
 
-- `supportedModes` 正确包含 `non_interactive` 和 `acp`
-- 在 `executionMode: 'non_interactive'` 下，action 返回 `MessageActionReturn` 或 `SubmitPromptActionReturn`，不调用 `ui.addItem` 或 `ui.clear`
-- Interactive 路径行为与重构前完全一致（快照测试）
+* `supportedModes`올바른 포함`non_interactive`그리고`acp`
+* 존재하다`executionMode: 'non_interactive'`다음으로 액션이 반환됩니다.`MessageActionReturn`또는`SubmitPromptActionReturn`, 전화하지 마세요`ui.addItem`또는`ui.clear`
+* 대화형 경로 동작은 재구성 전과 정확히 동일합니다(스냅샷 테스트).
 
-**仅交互命令**（`plan`、`statusline`、`copy`、`restore`）：
+**대화형 명령만**（`plan`、`statusline`、`copy`、`restore`)：
 
-- `supportedModes` 为 `['interactive']`，这是设计决策
-- 验证 non-interactive 下执行时正确返回 `unsupported`
+* `supportedModes`\~을 위한`['interactive']`, 이는 디자인 결정입니다.
+* 비대화형 환경에서 실행될 때 올바르게 반환되는지 확인하세요.`unsupported`
 
-**A' 类命令**（`model`、`approval-mode`）：
+**A' 클래스 명령**（`model`、`approval-mode`)：
 
-- 无参数 + `executionMode: 'non_interactive'` → 返回当前状态 `message`，不返回 `dialog`
-- 有参数 + `executionMode: 'non_interactive'` → 原有 `message` 逻辑正常执行
-- Interactive 路径：无参数 → `dialog`，有参数 → `message`（不变）
+* 매개변수 없음 +`executionMode: 'non_interactive'`→ 현재 상태로 복귀`message`, 돌아오지 마세요`dialog`
+* 매개변수가 있습니다 +`executionMode: 'non_interactive'`→ 원본`message`로직이 정상적으로 실행됩니다.
+* 대화형 경로: 매개변수 없음 →`dialog`, 매개변수 있음 →`message`(끊임없는)
 
-**B 类命令**（`about`、`stats`、`insight`、`docs`、`clear`）：
+**클래스 B 명령**（`about`、`stats`、`insight`、`docs`、`clear`)：
 
-- `executionMode: 'non_interactive'` 下，action 返回 `MessageActionReturn`，不调用任何 `ui.*` 方法
-- 返回的 `content` 字符串包含预期的关键字段（版本号、模型名、URL 等）
-- Interactive 路径：`ui.addItem` 被调用，`action` 返回 `void`（不变）
+* `executionMode: 'non_interactive'`다음으로 액션이 반환됩니다.`MessageActionReturn`, 아무에게도 전화하지 않습니다`ui.*`방법
+* 반환`content`문자열에는 예상되는 키 필드(버전 번호, 모델 이름, URL 등)가 포함되어 있습니다.
+* 대화형 경로:`ui.addItem`라고,`action`반품`void`(끊임없는)
 
-**`clear` 的特殊 case**：
+**`clear`특별한 경우**：
 
-- `executionMode: 'non_interactive'` 下，`geminiClient.resetChat()` 仍被调用（副作用保留）
-- 返回上下文边界 `message`，内容为 `'Context cleared. Previous messages are no longer in context.'`
+* `executionMode: 'non_interactive'`아래에,`geminiClient.resetChat()`여전히 호출됨(부작용이 유지됨)
+* 컨텍스트 경계 반환`message`, 내용은`'Context cleared. Previous messages are no longer in context.'`
 
-### 13.2 集成测试（`handleSlashCommand`）
+### 13.2 통합 테스트(`handleSlashCommand`)
 
-在 `nonInteractiveCli.test.ts` 或新建的集成测试文件中：
+존재하다`nonInteractiveCli.test.ts`또는 새 통합 테스트 파일에서:
 
-- `handleSlashCommand('/about', ...)` 在 non-interactive 模式下返回 `{ type: 'message', content: 包含版本号 }`
-- `handleSlashCommand('/stats', ...)` 在 non-interactive 模式下返回 `{ type: 'message', content: 包含 'Session duration' }`
-- `handleSlashCommand('/docs', ...)` 在 non-interactive 模式下返回 `{ type: 'message', content: 包含 'qwenlm.github.io' }`
-- `handleSlashCommand('/clear', ...)` 在 non-interactive 模式下返回 `{ type: 'message', content: 'Context cleared.' }`
-- `handleSlashCommand('/plan', ...)` 在 non-interactive 模式下返回 `unsupported`（仅交互命令）
-- 现有 non-interactive 命令（`btw`、`bug` 等）行为无退化
+* `handleSlashCommand('/about', ...)`비대화형 모드로 복귀`{ type: 'message', content: 包含版本号 }`
+* `handleSlashCommand('/stats', ...)`비대화형 모드로 복귀`{ type: 'message', content: 包含 'Session duration' }`
+* `handleSlashCommand('/docs', ...)`비대화형 모드로 복귀`{ type: 'message', content: 包含 'qwenlm.github.io' }`
+* `handleSlashCommand('/clear', ...)`비대화형 모드로 복귀`{ type: 'message', content: 'Context cleared.' }`
+* `handleSlashCommand('/plan', ...)`비대화형 모드로 복귀`unsupported`(대화형 명령만 해당)
+* 기존의 비대화형 명령(`btw`、`bug`등) 저하 없는 동작
 
-### 13.3 `commandUtils` 测试
+### 13.3 `commandUtils`시험
 
-`commandUtils.test.ts` 中新增（或已有的测试继续覆盖）：
+`commandUtils.test.ts`새로운 항목을 추가하세요(또는 기존 테스트를 계속해서 다루세요):
 
-- 扩展后的命令（`export`、`language` 等）均能通过 `filterCommandsForMode(commands, 'non_interactive')` 和 `filterCommandsForMode(commands, 'acp')` 的过滤
-- 仅交互命令（`plan`、`statusline`、`copy`、`restore`）在 `filterCommandsForMode(commands, 'non_interactive')` 下被正确过滤掉
+* 확장된 명령(`export`、`language`등) 합격할 수 있다`filterCommandsForMode(commands, 'non_interactive')`그리고`filterCommandsForMode(commands, 'acp')`필터링
+* 대화형 명령(`plan`、`statusline`、`copy`、`restore`)존재하다`filterCommandsForMode(commands, 'non_interactive')`올바르게 필터링되었습니다.
 
----
+***
 
-## 14. 行为影响分析
+## 14. 행동 영향 분석
 
-| 场景                                         | Phase 2 前行为                                            | Phase 2 后行为                     | 性质               |
-| -------------------------------------------- | --------------------------------------------------------- | ---------------------------------- | ------------------ |
-| non-interactive 下执行 `/export md`          | ❌ unsupported（被过滤）                                  | ✅ 返回文件路径 message            | 能力扩展           |
-| non-interactive 下执行 `/plan <task>`        | ❌ unsupported                                            | ❌ unsupported（设计决策：仅交互） | 不变               |
-| non-interactive 下执行 `/statusline`         | ❌ unsupported                                            | ❌ unsupported（设计决策：仅交互） | 不变               |
-| non-interactive 下执行 `/language ui zh-CN`  | ❌ unsupported                                            | ✅ 设置语言，返回确认 message      | 能力扩展           |
-| non-interactive 下执行 `/copy`               | ❌ unsupported                                            | ❌ unsupported（设计决策：仅交互） | 不变               |
-| non-interactive 下执行 `/restore`（无参数）  | ❌ unsupported                                            | ❌ unsupported（设计决策：仅交互） | 不变               |
-| non-interactive 下执行 `/restore <id>`       | ❌ unsupported                                            | ❌ unsupported（设计决策：仅交互） | 不变               |
-| non-interactive 下执行 `/model`              | ❌ unsupported（dialog）                                  | ✅ 返回当前模型名称                | 能力扩展           |
-| non-interactive 下执行 `/model <id>`         | ❌ unsupported                                            | 🔄 Phase 2 可选：实现切换逻辑      | 能力扩展（可选）   |
-| non-interactive 下执行 `/approval-mode`      | ❌ unsupported（dialog）                                  | ✅ 返回当前审批模式                | 能力扩展           |
-| non-interactive 下执行 `/approval-mode yolo` | ❌ unsupported                                            | ✅ 设置模式，返回确认              | 能力扩展           |
-| non-interactive 下执行 `/about`              | ❌ 返回 "Command executed successfully."（addItem no-op） | ✅ 返回版本/模型/环境摘要          | Bug fix + 能力扩展 |
-| non-interactive 下执行 `/stats`              | ❌ 返回 "Command executed successfully."                  | ✅ 返回 session 统计文本           | Bug fix + 能力扩展 |
-| non-interactive 下执行 `/insight`            | ❌ 返回 "Command executed successfully."（生成但无输出）  | ✅ 生成并返回文件路径              | Bug fix + 能力扩展 |
-| non-interactive 下执行 `/docs`               | ❌ 返回 "Command executed successfully."                  | ✅ 返回文档 URL                    | Bug fix + 能力扩展 |
-| non-interactive 下执行 `/clear`              | ❌ 返回 "Command executed successfully."                  | ✅ 返回上下文边界 message          | Bug fix + 能力扩展 |
-| interactive 下执行任意以上命令               | ✅ 原有行为                                               | ✅ 原有行为（零退化）              | 不变               |
+| 장면                             | 2단계 예비 동작                                      | 2단계 사후 행동                   | 자연            |
+| ------------------------------ | ---------------------------------------------- | --------------------------- | ------------- |
+| 비대화형으로 실행`/export md`          | ❌ 지원되지 않음(필터링됨)                                | ✅ 파일 경로 메시지 반환              | 역량 확장         |
+| 비대화형으로 실행`/plan <task>`        | ❌ 지원되지 않음                                      | ❌ 지원되지 않음(디자인 결정: 대화형에만 해당) | 끊임없는          |
+| 비대화형으로 실행`/statusline`         | ❌ 지원되지 않음                                      | ❌ 지원되지 않음(디자인 결정: 대화형에만 해당) | 끊임없는          |
+| 비대화형으로 실행`/language ui zh-CN`  | ❌ 지원되지 않음                                      | ✅ 언어 설정 및 확인 메시지 반환         | 역량 확장         |
+| 비대화형으로 실행`/copy`               | ❌ 지원되지 않음                                      | ❌ 지원되지 않음(디자인 결정: 대화형에만 해당) | 끊임없는          |
+| 비대화형으로 실행`/restore`(매개변수 없음)   | ❌ 지원되지 않음                                      | ❌ 지원되지 않음(디자인 결정: 대화형에만 해당) | 끊임없는          |
+| 비대화형으로 실행`/restore <id>`       | ❌ 지원되지 않음                                      | ❌ 지원되지 않음(디자인 결정: 대화형에만 해당) | 끊임없는          |
+| 비대화형으로 실행`/model`              | ❌ 지원되지 않음(대화상자)                                | ✅ 현재 모델명을 반환합니다.            | 역량 확장         |
+| 비대화형으로 실행`/model <id>`         | ❌ 지원되지 않음                                      | 🔄 2단계 선택 사항: 전환 논리 구현      | 기능 확장(선택 사항)  |
+| 비대화형으로 실행`/approval-mode`      | ❌ 지원되지 않음(대화상자)                                | ✅ 현재 승인 모드로 돌아가기            | 역량 확장         |
+| 비대화형으로 실행`/approval-mode yolo` | ❌ 지원되지 않음                                      | ✅ 모드 설정, 확인을 위해 돌아가기        | 역량 확장         |
+| 비대화형으로 실행`/about`              | ❌ 返回 "명령이 성공적으로 실행되었습니다."(addItem no-op)       | ✅ 버전/모델/환경 요약으로 돌아가기        | 버그 수정 + 기능 확장 |
+| 비대화형으로 실행`/stats`              | ❌ 返回 "명령이 성공적으로 실행되었습니다."                      | ✅ 세션 통계 텍스트 반환              | 버그 수정 + 기능 확장 |
+| 비대화형으로 실행`/insight`            | ❌ "명령이 성공적으로 실행되었습니다."를 반환합니다. (생성되었지만 출력이 없음) | ✅ 파일 경로 생성 및 반환             | 버그 수정 + 기능 확장 |
+| 비대화형으로 실행`/docs`               | ❌ 返回 "명령이 성공적으로 실행되었습니다."                      | ✅ 문서 URL로 돌아가기              | 버그 수정 + 기능 확장 |
+| 비대화형으로 실행`/clear`              | ❌ 返回 "명령이 성공적으로 실행되었습니다."                      | ✅ 컨텍스트 경계 메시지 반환            | 버그 수정 + 기능 확장 |
+| 대화형에서 위 명령 중 하나를 실행합니다.        | ✅원래의 행동                                        | ✅ 원래 동작(성능 저하 없음)           | 끊임없는          |
 
----
+***
 
-## 15. 实施顺序
+## 15. 구현 순서
 
-建议按以下顺序实施，每组可独立 commit 和 review：
+다음 순서로 구현하는 것을 권장하며, 각 그룹은 독립적으로 커밋하고 검토할 수 있습니다.
 
-**Batch 1**（~30min）：A 类 — 只改 `supportedModes`
+**배치 1**(\~30분): 카테고리 A - 변경만 가능`supportedModes`
 
-修改 `exportCommand.ts`（及其子命令），验证测试通过。
+개정하다`exportCommand.ts`(및 해당 하위 명령) 테스트가 통과하는지 확인합니다.
 
-**Batch 2**（~45min）：A+ 类 — 少量分支
+**배치 2**(\~45분): 카테고리 A+ - 소수의 브랜치
 
-修改 `languageCommand.ts`，为有副作用的路径添加非交互分支，更新对应测试。（`copyCommand.ts` 和 `restoreCommand.ts` 经讨论保持仅交互。）
+개정하다`languageCommand.ts`, 부작용이 있는 경로에 대해 비대화형 분기를 추가하고 해당 테스트를 업데이트합니다. (`copyCommand.ts`그리고`restoreCommand.ts`토론 후에는 대화형으로만 유지하세요. )
 
-**Batch 3**（~45min）：A' 类 — dialog 路径
+**배치 3**(\~45분): 클래스 A' — 대화 경로
 
-修改 `modelCommand.ts`、`approvalModeCommand.ts`，为无参数路径添加非交互分支，更新对应测试。
+개정하다`modelCommand.ts`、`approvalModeCommand.ts`, 매개변수 없는 경로에 대한 비대화형 분기를 추가하고 해당 테스트를 업데이트합니다.
 
-**Batch 4**（~1.5h）：B 类 — 完整分支
+**배치 4**(\~1.5h): 카테고리 B — 전체 분기
 
-修改 `aboutCommand.ts`、`statsCommand.ts`（含子命令）、`docsCommand.ts`。
+개정하다`aboutCommand.ts`、`statsCommand.ts`(하위 명령 포함)`docsCommand.ts`。
 
-**Batch 5**（~1h）：B 类特殊 — `insightCommand.ts`、`clearCommand.ts`
+**배치 5**(\~1h): 클래스 B 특수 —`insightCommand.ts`、`clearCommand.ts`
 
-这两个命令副作用较多，单独一个 commit，更新对应测试和集成测试。
+이 두 명령에는 많은 부작용이 있습니다. 단일 커밋으로 해당 테스트와 통합 테스트가 업데이트됩니다.
 
-**Batch 6**（~2h）：Phase 2.2 — prompt command 模型调用打通
+**배치 6**(\~2h): 2.2단계 - 프롬프트 명령 모델 호출이 완료되었습니다.
 
-修改 `SkillTool`，接入 `getModelInvocableCommands()`，更新 SkillTool 测试。
+개정하다`SkillTool`, 입장`getModelInvocableCommands()`, SkillTool 테스트를 업데이트하세요.
 
-**Batch 7**（~2h）：Phase 2.3 — mid-input slash 检测
+**배치 7**(\~2h): 2.3단계 — 중간 입력 슬래시 감지
 
-修改 `InputPrompt` 组件，新增补全触发逻辑和 UI 测试。
+개정하다`InputPrompt`구성요소, 새로운 완료 트리거 로직 및 UI 테스트.
 
-**Batch 8**（~30min）：全量测试 + 类型检查
+**배치 8**(\~30분): 전체 테스트 + 유형 확인
 
-运行 `npm run typecheck`、`cd packages/cli && npx vitest run`，修复剩余问题。
+달리다`npm run typecheck`、`cd packages/cli && npx vitest run`, 남은 문제를 해결하세요.
 
----
+***
 
-## 16. 验收 Checklist
+## 16. 승인 체크리스트
 
-**Phase 2.1 命令扩展**
+**2.1단계 명령 확장**
 
-- [ ] A 类：`/export`（及子命令）、`/plan`、`/statusline` 在 non-interactive 和 acp 模式下可正常执行并返回有意义输出
-- [ ] A+ 类：`/language`（及子命令）在 non-interactive 下正常执行，设置持久化
-- [ ] A+ 类：`/copy` 在 non-interactive/acp 下返回最后 AI 输出文本（不操作剪贴板）
-- [ ] A+ 类：`/restore` 无参数时在 non-interactive 下返回 checkpoint 列表；有参数时恢复状态并返回确认 message（不返回 `type: 'tool'`）
-- [ ] A' 类：`/model` 无参数时在 non-interactive/acp 下返回当前模型名（不触发 dialog）；`/model --fast <id>` 正常设置
-- [ ] A' 类：`/approval-mode` 无参数时在 non-interactive/acp 下返回当前模式（不触发 dialog）；有参数时正常设置
-- [ ] B 类：`/about` 在 non-interactive/acp 下返回包含版本号、模型名的纯文本摘要
-- [ ] B 类：`/stats`（含子命令）在 non-interactive/acp 下返回纯文本统计数据
-- [ ] B 类：`/insight` 在 non-interactive/acp 下生成 insight 文件并返回文件路径（不打开浏览器）
-- [ ] B 类：`/docs` 在 non-interactive/acp 下返回文档 URL（不打开浏览器）
-- [ ] B 类：`/clear` 在 non-interactive/acp 下返回上下文边界标记 message，`geminiClient.resetChat()` 正常执行
-- [ ] 所有 13 个命令在 interactive 模式下行为与重构前完全一致（无退化）
-- [ ] TypeScript 编译无错误（`npm run typecheck`）
-- [ ] `npm run lint` 无新增错误
-- [ ] 所有现有测试通过（`cd packages/cli && npx vitest run`）
+* [ ] 카테고리 A:`/export`(및 하위 명령),`/plan`、`/statusline`비대화형 및 acp 모드에서 정상적으로 실행하고 의미 있는 출력을 반환합니다.
+* [ ] 카테고리 A+:`/language`(및 하위 명령)은 비대화형 및 지속성 설정에서 정상적으로 실행됩니다.
+* [ ] 카테고리 A+:`/copy`non-interactive/acp의 마지막 AI 출력 텍스트를 반환합니다(클립보드를 조작하지 않고).
+* [ ] 카테고리 A+:`/restore`매개변수가 없으면 체크포인트 목록이 비대화형으로 반환됩니다. 매개변수가 있는 경우 상태가 복원되고 확인 메시지가 반환됩니다(반환 없음).`type: 'tool'`)
+* [ ] 클래스 A':`/model`매개변수가 없으면 현재 모델 이름이 non-interactive/acp 아래에 반환됩니다(대화상자가 트리거되지 않음).`/model --fast <id>`일반 설정
+* [ ] 클래스 A':`/approval-mode`매개변수가 없으면 non-interactive/acp에서 현재 모드(대화 상자가 트리거되지 않음)로 돌아갑니다. 매개변수가 있는 경우에는 정상적으로 설정하십시오.
+* [ ] 카테고리 B:`/about`non-interactive/acp 아래의 버전 번호 및 모델 이름을 포함한 일반 텍스트 요약을 반환합니다.
+* [ ] 카테고리 B:`/stats`(하위 명령 사용) non-interactive/acp에서 일반 텍스트 통계를 반환합니다.
+* [ ] 카테고리 B:`/insight`non-interactive/acp에서 통찰력 파일을 생성하고 파일 경로를 반환합니다(브라우저를 열지 않고).
+* [ ] 카테고리 B:`/docs`non-interactive/acp에서 문서 URL 반환(브라우저를 열지 않음)
+* [ ] 카테고리 B:`/clear`non-interactive/acp에서 컨텍스트 경계 태그 메시지를 반환합니다.`geminiClient.resetChat()`정상적인 실행
+* [ ] 13개 명령 모두 리팩토링 전과 대화형 모드에서 정확히 동일하게 작동합니다(성능 저하 없음).
+* [ ] TypeScript는 오류 없이 컴파일됩니다(`npm run typecheck`)
+* [ ] `npm run lint`새로운 오류 없음
+* [ ] 기존의 모든 테스트를 통과했습니다(`cd packages/cli && npx vitest run`)
 
-**Phase 2.2 模型调用**
+**2.2단계 모델 호출**
 
-- [ ] 模型在对话中可以通过 `SkillTool` 调用 bundled skill、file command（用户/项目）、MCP prompt
-- [ ] 模型不可以调用 built-in commands
-- [ ] `SkillTool` 的 tool description 包含所有 `modelInvocable: true` 命令的名称和 description
+* [ ] 대화에서 모델을 전달할 수 있습니다.`SkillTool`번들 스킬 호출, 파일 명령(사용자/프로젝트), MCP 프롬프트
+* [ ] 모델은 내장 명령을 호출할 수 없습니다.
+* [ ] `SkillTool`도구 설명에는 다음이 모두 포함됩니다.`modelInvocable: true`명령의 이름과 설명
 
-**Phase 2.3 mid-input slash**
+**2.3단계 중간 입력 슬래시**
 
-- [ ] 在输入框正文中输入 `/` 后触发命令补全菜单（不限行首）
-- [ ] 补全菜单展示命令名 + description
-- [ ] 补全选中后正确填充到输入框
+* [ ] 입력창에 텍스트를 입력하세요.`/`명령 완성 메뉴를 실행한 후(줄의 시작 부분에 국한되지 않음)
+* [ ] 완성 메뉴에는 명령 이름 + 설명이 표시됩니다.
+* [ ] 완료를 선택하면 입력란에 정확하게 입력됩니다.

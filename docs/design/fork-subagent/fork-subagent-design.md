@@ -1,12 +1,12 @@
-# Fork Subagent Design
+# 포크 하위 에이전트 설계
 
-> Implicit fork subagent that inherits the parent's full conversation context and shares prompt cache for cost-efficient parallel task execution.
+> 상위의 전체 대화 컨텍스트를 상속하고 비용 효율적인 병렬 작업 실행을 위해 프롬프트 캐시를 공유하는 암시적 포크 하위 에이전트입니다.
 
-## Overview
+## 개요
 
-When the Agent tool is called without `subagent_type`, it triggers an implicit **fork** — a background subagent that inherits the parent's conversation history, system prompt, and tool definitions. The fork uses `CacheSafeParams` to ensure its API requests share the same prefix as the parent's, enabling DashScope prompt cache hits.
+에이전트 도구가 호출되지 않은 경우`subagent_type`, 이는 암시적인**포크**— 상위 대화 기록, 시스템 프롬프트 및 도구 정의를 상속하는 백그라운드 하위 에이전트입니다. 포크는`CacheSafeParams`API 요청이 상위 요청과 동일한 접두사를 공유하도록 보장하여 DashScope 프롬프트 캐시 적중을 활성화합니다.
 
-## Architecture
+## 건축학
 
 ```
 Parent conversation: [SystemPrompt | Tools | Msg1 | Msg2 | ... | MsgN (model)]
@@ -17,13 +17,13 @@ Fork B: [...MsgN | placeholder results | "Modify B"]    ← shared cache
 Fork C: [...MsgN | placeholder results | "Test C"]      ← shared cache
 ```
 
-## Key Components
+## 주요 구성 요소
 
-### 1. FORK_AGENT (`forkSubagent.ts`)
+### 1. FORK\_AGENT(`forkSubagent.ts`)
 
-Synthetic agent config, not registered in `builtInAgents`. Has a fallback `systemPrompt` but in practice uses the parent's rendered system prompt via `generationConfigOverride`.
+합성 에이전트 구성, 등록되지 않음`builtInAgents`. 대체 기능이 있음`systemPrompt`그러나 실제로는 다음을 통해 상위의 렌더링된 시스템 프롬프트를 사용합니다.`generationConfigOverride`.
 
-### 2. CacheSafeParams Integration (`agent.ts` + `forkedQuery.ts`)
+### 2. CacheSafeParams 통합(`agent.ts`+`forkedQuery.ts`)
 
 ```
 agent.ts (fork path)
@@ -53,27 +53,27 @@ agent.ts (fork path)
                           ↑ byte-identical to parent's config
 ```
 
-### 3. History Construction (`agent.ts` + `forkSubagent.ts`)
+### 3. 연혁 구축(`agent.ts`+`forkSubagent.ts`)
 
-The fork's `extraHistory` must end with a model message to maintain Gemini API's user/model alternation when `agent-headless` sends the `task_prompt`.
+포크는`extraHistory`Gemini API의 사용자/모델 교체를 유지하려면 모델 메시지로 끝나야 합니다.`agent-headless`보낸다`task_prompt`.
 
-Three cases:
+세 가지 경우:
 
-| Parent history ends with      | extraHistory construction                                              | task_prompt                    |
-| ----------------------------- | ---------------------------------------------------------------------- | ------------------------------ |
-| `model` (no function calls)   | `[...rawHistory]` (unchanged)                                          | `buildChildMessage(directive)` |
-| `model` (with function calls) | `[...rawHistory, model(clone), user(responses+directive), model(ack)]` | `'Begin.'`                     |
-| `user` (unusual)              | `rawHistory.slice(0, -1)` (drop trailing user)                         | `buildChildMessage(directive)` |
+| 상위 기록은 다음으로 끝납니다. | extraHistory 건설                                                        | 작업\_프롬프트                       |
+| ----------------- | ---------------------------------------------------------------------- | ------------------------------ |
+| `model`(함수 호출 없음) | `[...rawHistory]`(변하지 않은)                                              | `buildChildMessage(directive)` |
+| `model`(함수 호출 포함) | `[...rawHistory, model(clone), user(responses+directive), model(ack)]` | `'Begin.'`                     |
+| `user`(특이한)       | `rawHistory.slice(0, -1)`(후행 사용자 삭제)                                   | `buildChildMessage(directive)` |
 
-### 4. Recursive Fork Prevention (`forkSubagent.ts`)
+### 4. 재귀 포크 방지(`forkSubagent.ts`)
 
-`isInForkChild()` scans conversation history for the `<fork-boilerplate>` tag. If found, the fork attempt is rejected with an error message.
+`isInForkChild()`대화 기록을 검색합니다.`<fork-boilerplate>`꼬리표. 발견되면 오류 메시지와 함께 포크 시도가 거부됩니다.
 
-### 5. Background Execution (`agent.ts`)
+### 5. 백그라운드 실행(`agent.ts`)
 
-Fork uses `void executeSubagent()` (fire-and-forget) and returns `FORK_PLACEHOLDER_RESULT` immediately to the parent. Errors in the background task are caught, logged, and reflected in the display state.
+포크 용도`void executeSubagent()`(fire-and-forget) 및 반환`FORK_PLACEHOLDER_RESULT`즉시 부모에게. 백그라운드 작업의 오류가 포착되어 기록되고 표시 상태에 반영됩니다.
 
-## Data Flow
+## 데이터 흐름
 
 ```
 1. Model calls Agent tool (no subagent_type)
@@ -92,21 +92,21 @@ Fork uses `void executeSubagent()` (fire-and-forget) and returns `FORK_PLACEHOLD
    e. updateDisplay() with final status
 ```
 
-## Graceful Degradation
+## 우아한 저하
 
-If `getCacheSafeParams()` returns null (first turn, no history yet), the fork falls back to:
+만약에`getCacheSafeParams()`null을 반환하면(첫 번째 턴, 아직 기록이 없음) 포크는 다음으로 대체됩니다.
 
-- `FORK_AGENT.systemPrompt` for system instruction
-- `prepareTools()` for tool declarations
+* `FORK_AGENT.systemPrompt`시스템 지시를 위해
+* `prepareTools()`도구 선언용
 
-This ensures the fork always works, even without cache sharing.
+이렇게 하면 캐시 공유 없이도 포크가 항상 작동합니다.
 
-## Files
+## 파일
 
-| File                                                 | Role                                                                                  |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `packages/core/src/agents/runtime/forkSubagent.ts`   | FORK_AGENT config, buildForkedMessages(), isInForkChild(), buildChildMessage()        |
-| `packages/core/src/tools/agent.ts`                   | Fork path: CacheSafeParams retrieval, extraHistory construction, background execution |
-| `packages/core/src/agents/runtime/agent-headless.ts` | execute() options: generationConfigOverride, toolsOverride                            |
-| `packages/core/src/agents/runtime/agent-core.ts`     | CreateChatOptions.generationConfigOverride                                            |
-| `packages/core/src/followup/forkedQuery.ts`          | CacheSafeParams infrastructure (existing, no changes)                                 |
+| 파일                                                   | 역할                                                                          |
+| ---------------------------------------------------- | --------------------------------------------------------------------------- |
+| `packages/core/src/agents/runtime/forkSubagent.ts`   | FORK\_AGENT 구성, buildForkedMessages(), isInForkChild(), buildChildMessage() |
+| `packages/core/src/tools/agent.ts`                   | 포크 경로: CacheSafeParams 검색, extraHistory 생성, 백그라운드 실행                        |
+| `packages/core/src/agents/runtime/agent-headless.ts` | 실행() 옵션: GenerationConfigOverride, toolsOverride                            |
+| `packages/core/src/agents/runtime/agent-core.ts`     | CreateChat옵션. GenerationConfigOverride                                      |
+| `packages/core/src/followup/forkedQuery.ts`          | CacheSafeParams 인프라(기존, 변경 사항 없음)                                           |

@@ -1,122 +1,122 @@
-# Qwen Code Command 模块重构方案
+# Qwen 코드 명령 모듈 재구성 계획
 
-## 1. 目标定义
+## 1. 목표 정의
 
-本方案以以下原则为唯一前提：
+이 계획은 다음 원칙을 유일한 전제로 삼고 있습니다.
 
-- **代码架构可以不照搬 Claude Code**
-- **但命令系统的核心功能、使用体验、交互体验必须 95% 对齐 Claude Code**
+* **코드 구조는 클로드 코드를 복사할 필요가 없습니다.**
+* **단, 지휘 시스템의 핵심 기능, 사용 경험, 상호 작용 경험은 클로드 코드와 95% 일치해야 합니다.**
 
-这里的“对齐”指用户可直接感知的能力，包括：
+여기서 "정렬"은 다음을 포함하여 사용자가 직접 인식할 수 있는 기능을 의미합니다.
 
-1. 命令来源覆盖
-2. 命令帮助与发现性
-3. 命令补全与 mid-input slash command 体验
-4. ACP / non-interactive 可用性
-5. prompt command / skill 的模型调用能力
+1. 명령 소스 재정의
+2. 명령 도움말 및 검색 가능성
+3. 명령어 완성 및 중간입력 슬래시 명령어 체험
+4. ACP/비대화형 가용성
+5. 프롬프트 명령/스킬 호출 능력 모델
 
-本次重构不是补几个字段，也不是把现有 `SlashCommand` 小修小补，而是把 command 模块从“interactive UI 附属能力”升级为“跨 interactive / ACP / non-interactive / model 的统一命令平台”。
+이 리팩토링은 몇 가지 필드를 채우는 것도 아니고 기존 필드를 변환하는 것도 아닙니다.`SlashCommand`사소한 수리이지만 명령 모듈을 "대화형 UI 보조 기능"에서 "대화형/ACP/비대화형/모델 전반에 걸친 통합 명령 플랫폼"으로 업그레이드합니다.
 
----
+***
 
-## 2. 重写后的结论
+## 2. 재작성 후 결론
 
-Qwen 现有 command 系统的问题，不是完全没有能力，而是：
+Qwen의 기존 명령 시스템의 문제점은 완전히 불가능하다는 것이 아니라 다음과 같습니다.
 
-1. 只在 interactive 主路径上较完整
-2. 类型模型太薄，无法承载 Claude 级别的产品面
-3. ACP / non-interactive 依赖白名单，扩展性极差
-4. command 来源虽然存在，但没有形成对用户可见的统一心智
-5. prompt command 与模型 skill 暴露体系割裂
+1. 대화형 기본 경로에서만 완료됩니다.
+2. 유형 모델이 너무 얇아서 클로드 수준의 제품 표면을 운반할 수 없음
+3. ACP/비대화형은 화이트리스트에 의존하며 확장성이 매우 낮습니다.
+4. 명령 소스가 존재하더라도 사용자에게 보이는 통일된 정신을 형성하지는 않습니다.
+5. 프롬프트 명령 및 모델 기술로 시스템 단편화 노출
 
-因此新的方案必须同时解决四件事：
+따라서 새로운 솔루션은 다음 네 가지 사항을 동시에 해결해야 합니다.
 
-1. **补齐 Claude Code 的能力面**
-2. **保留 Qwen 统一 outcome 模型的工程优势**
-3. **建立统一 registry / resolver / executor / adapter 架构**
-4. **让帮助、补全、ACP available commands、文档共用同一套元数据**
+1. **클로드 코드의 역량을 완성하세요**
+2. **Qwen의 통합 결과 모델의 엔지니어링 이점 유지**
+3. **통합 레지스트리/리졸버/실행기/어댑터 아키텍처 구축**
+4. **도움말, 완료, ACP 사용 가능한 명령 및 문서가 동일한 메타데이터 세트를 공유하도록 합니다.**
 
----
+***
 
-## 3. 重构原则
+## 3. 재건 원리
 
-### 3.1 功能对齐优先于实现对齐
+### 3.1 기능 정렬이 구현 정렬보다 우선합니다.
 
-允许不同：
+다른 허용:
 
-- 内部类名
-- 模块拆分方式
-- 执行器实现
-- effect / outcome 结构
+* 내부 클래스 이름
+* 모듈 분할 방식
+* 실행자 구현
+* 효과/결과 구조
 
-不允许不同：
+차이점은 허용되지 않습니다.
 
-- 命令来源覆盖明显缩水
-- 命令帮助和补全体验明显缩水
-- ACP / non-interactive 可用性明显缩水
-- prompt command 与模型能力融合明显缩水
+* 명령 소스 범위가 크게 축소되었습니다.
+* 명령 도움말 및 완료 경험이 크게 감소했습니다.
+* ACP/비대화형 사용성이 크게 감소했습니다.
+* 프롬프트 명령과 모델 기능의 통합이 크게 축소되었습니다.
 
-如果出现取舍，优先级应为：
+상충관계가 발생하는 경우 우선순위는 다음과 같아야 합니다.
 
-1. 用户体验对齐
-2. 命令能力覆盖对齐
-3. 模式一致性对齐
-4. 内部实现简洁
+1. 사용자 경험 정렬
+2. 명령 능력 무시 정렬
+3. 스키마 일관성 정렬
+4. 간단한 내부 구현
 
-### 3.2 保留 Qwen 的统一 outcome 模型
+### 3.2 Qwen의 통합 결과 모델 보존
 
-不建议机械复制 Claude 的执行实现。
+Claude의 구현을 기계적으로 복사하는 것은 권장되지 않습니다.
 
-Qwen 当前统一结果模型仍然值得保留，因为它天然适合：
+Qwen의 현재 통합 결과 모델은 다음에 적합하기 때문에 여전히 유지할 가치가 있습니다.
 
-- UI 接管
-- 审批/确认
-- tool 调度
-- prompt 提交
-- 跨模式适配
+* UI가 대신함
+* 승인/확인
+* 도구 예약
+* 프롬프트 제출
+* 교차 모드 적응
 
-但它必须被升级为能够承载 Claude 级别的 command 能力，而不是继续作为简化版 UI 命令框架存在。
+그러나 UI 명령 프레임워크의 단순화된 버전으로 계속 존재하기보다는 Claude 수준 명령 기능을 수행할 수 있도록 업그레이드해야 합니다.
 
-### 3.3 类型、来源、模式、可见性必须彻底解耦
+### 3.3 유형, 소스, 모드 및 가시성은 완전히 분리되어야 합니다.
 
-新的 command 模型至少要把以下维度拆开：
+새로운 명령 모델은 최소한 다음 차원을 분석해야 합니다.
 
-1. **类型**：命令怎么执行
-2. **来源**：命令从哪里来
-3. **模式能力**：在哪些运行环境可用
-4. **可见性**：对用户可见还是对模型可见
+1. **유형**: 명령을 실행하는 방법
+2. **원천**: 명령의 출처
+3. **모델 능력**: 어떤 운영 환경에서 사용이 가능한가요?
+4. **시계**: 사용자에게 표시되거나 모델에게 표시됩니다.
 
----
+***
 
-## 4. 需要对齐的 Claude Code 能力面
+## 4. 클로드코드의 조화가 필요한 역량
 
-### 4.1 命令类型
+### 4.1 명령 유형
 
-Qwen 需要显式支持三类命令：
+Qwen은 세 가지 유형의 명령을 명시적으로 지원해야 합니다.
 
 1. `prompt`
 2. `local`
 3. `local-jsx`
 
-### 4.2 命令来源
+### 4.2 명령 소스
 
-Qwen 的 command schema 从第一阶段开始就必须覆盖以下来源：
+Qwen의 명령 스키마는 첫 번째 단계부터 다음 소스를 포함해야 합니다.
 
-1. built-in commands
-2. bundled skills
-3. skill dir commands
-4. workflow commands
-5. plugin commands
-6. plugin skills
-7. dynamic skills
-8. mcp prompts
-9. mcp skills
+1. 내장 명령
+2. 번들 스킬
+3. 스킬디렉터리 명령어
+4. 작업 흐름 명령
+5. 플러그인 명령
+6. 플러그인 기술
+7. 역동적인 기술
+8. mcp 프롬프트
+9. mcp 기술
 
-这里不能再退回到“先只支持当前已有那几类”。
+여기서는 더 이상 "기존 카테고리만 먼저 지원"으로 돌아갈 수 없습니다.
 
-### 4.3 命令元数据
+### 4.3 명령 메타데이터
 
-至少补齐以下字段：
+최소한 다음 필드를 완료하십시오.
 
 1. `argumentHint`
 2. `whenToUse`
@@ -131,27 +131,27 @@ Qwen 的 command schema 从第一阶段开始就必须覆盖以下来源：
 11. `supportedModes`
 12. `requiresUi`
 
-### 4.4 体验能力
+### 4.4 경험능력
 
-至少补齐以下体验：
+최소한 다음 경험을 완료하십시오.
 
-1. alias 命中补全
-2. source badge
-3. 参数提示
-4. recently used 排序
-5. mid-input slash command 检测与补全
-6. 命令目录式 Help
-7. ACP available commands 的完整表达
+1. 별칭 적중 완료
+2. 소스 배지
+3. 매개변수 프롬프트
+4. 최근에 사용한 정렬
+5. 중간 입력 슬래시 명령 감지 및 완료
+6. 명령 디렉토리 도움말
+7. ACP 사용 가능한 명령의 완전한 표현
 
----
+***
 
-## 5. 新 command 模型
+## 5. 새로운 명령 모델
 
-## 5.1 核心结构
+## 5.1 핵심 구조
 
-建议引入统一 `CommandDescriptor`，作为所有命令的注册格式。
+통일을 도입하는 것이 좋습니다`CommandDescriptor`, 모든 명령의 등록 형식입니다.
 
-它至少包含四部分：
+여기에는 최소한 네 부분이 포함됩니다.
 
 1. `identity`
 2. `metadata`
@@ -160,167 +160,167 @@ Qwen 的 command schema 从第一阶段开始就必须覆盖以下来源：
 
 ### `identity`
 
-- `id`
-- `name`
-- `altNames`
-- `canonicalPath`
+* `id`
+* `name`
+* `altNames`
+* `canonicalPath`
 
 ### `metadata`
 
-- `description`
-- `argumentHint`
-- `whenToUse`
-- `examples`
-- `group`
-- `source`
-- `sourceLabel`
-- `userFacingName`
-- `hidden`
+* `description`
+* `argumentHint`
+* `whenToUse`
+* `examples`
+* `group`
+* `source`
+* `sourceLabel`
+* `userFacingName`
+* `hidden`
 
 ### `capabilities`
 
-- `type`: `prompt | local | local-jsx`
-- `supportedModes`: `interactive | acp | non_interactive`
-- `requiresUi`
-- `supportsDialog`
-- `supportsStreaming`
-- `supportsToolInvocation`
-- `supportsConfirmation`
-- `remoteSafe`
-- `readOnly`
-- `immediate`
-- `isSensitive`
-- `userInvocable`
-- `modelInvocable`
+* `type`:`prompt | local | local-jsx`
+* `supportedModes`:`interactive | acp | non_interactive`
+* `requiresUi`
+* `supportsDialog`
+* `supportsStreaming`
+* `supportsToolInvocation`
+* `supportsConfirmation`
+* `remoteSafe`
+* `readOnly`
+* `immediate`
+* `isSensitive`
+* `userInvocable`
+* `modelInvocable`
 
 ### `handler`
 
-- `resolveArgs()`
-- `execute()`
-- `completion()`
-- `fallback()`
+* `resolveArgs()`
+* `execute()`
+* `completion()`
+* `fallback()`
 
----
+***
 
-## 5.2 三种命令类型的职责
+## 5.2 세 가지 명령 유형의 역할
 
 ### `prompt`
 
-用于：
+용도:
 
-- skills
-- file commands
-- workflow prompt commands
-- plugin skills
-- mcp prompt / skill
+* 기술
+* 파일 명령
+* 워크플로 프롬프트 명령
+* 플러그인 기술
+* mcp 프롬프트/스킬
 
-特点：
+특징:
 
-- 产生 prompt / skill 资产
-- 默认支持 interactive / ACP / non-interactive
-- 可以被用户调用，也可以被模型调用
+* 프롬프트/기술 자산 생성
+* 기본적으로 대화형/ACP/비대화형 지원
+* 사용자 또는 모델이 호출할 수 있음
 
 ### `local`
 
-用于：
+용도:
 
-- 查询类命令
-- 配置类命令
-- headless 可执行的状态类命令
-- 大多数 built-in commands 的核心执行入口
+* 쿼리 명령
+* 구성 명령
+* 헤드리스 실행 가능 상태 명령
+* 대부분의 내장 명령에 대한 핵심 실행 진입점
 
-特点：
+특징:
 
-- 不依赖 UI
-- 应成为 ACP / non-interactive 的主承载类型
+* UI에 의존하지 않음
+* ACP/비대화형의 기본 베어러 유형이어야 합니다.
 
 ### `local-jsx`
 
-用于：
+용도:
 
-- picker
-- 面板
-- wizard
-- interactive UI shell
+* 소매치기
+* 패널
+* 마법사
+* 대화형 UI 셸
 
-特点：
+특징:
 
-- 只处理 interactive UI
-- 不能再作为唯一执行入口
-- 必须提供 fallback 或对应 local 子命令
+* 대화형 UI만 처리
+* 더 이상 유일한 실행 항목으로 사용할 수 없습니다.
+* 대체 또는 해당 로컬 하위 명령을 제공해야 합니다.
 
----
+***
 
-## 6. 命令来源模型
+## 6. 명령 소스 모델
 
-## 6.1 外部来源模型
+## 6.1 외부 소스 모델
 
-这是给用户看的来源模型，必须和 Claude Code 的心智尽量一致：
+이는 사용자를 위한 소스 모델이며 Claude Code의 생각과 최대한 일치해야 합니다.
 
-- `builtin-command`
-- `bundled-skill`
-- `skill-dir-command`
-- `workflow-command`
-- `plugin-command`
-- `plugin-skill`
-- `dynamic-skill`
-- `builtin-plugin-skill`
-- `mcp-prompt`
-- `mcp-skill`
+* `builtin-command`
+* `bundled-skill`
+* `skill-dir-command`
+* `workflow-command`
+* `plugin-command`
+* `plugin-skill`
+* `dynamic-skill`
+* `builtin-plugin-skill`
+* `mcp-prompt`
+* `mcp-skill`
 
-这组字段将直接用于：
+이 필드 세트는 다음 용도로 직접 사용됩니다.
 
-- Help 分组
-- Completion source badge
-- ACP available commands
-- 文档导出
+* 도움말 그룹
+* 완료 소스 배지
+* ACP 사용 가능 명령
+* 문서 내보내기
 
-## 6.2 内部归一化模型
+## 6.2 내부 정규화 모델
 
-为了不被外部命名绑死，内部再补一层实现字段：
+외부 이름 지정에 얽매이지 않기 위해 구현 필드의 추가 계층이 내부적으로 추가됩니다.
 
-- `providerType`
-- `artifactType`
-- `activationMode`
-- `builtinProvided`
-- `originPath`
-- `namespace`
+* `providerType`
+* `artifactType`
+* `activationMode`
+* `builtinProvided`
+* `originPath`
+* `namespace`
 
-这样可以做到：
+이렇게 하면 다음과 같이 됩니다:
 
-- 外部体验按 Claude 对齐
-- 内部实现仍保持 Qwen 可维护性
+* Claude가 조정한 외부 경험
+* 내부 구현은 Qwen을 유지 관리할 수 있도록 유지됩니다.
 
-## 6.3 冲突策略
+## 6.3 갈등 전략
 
-统一按稳定 `id` 管理，展示名和输入名分离：
+안정된 프레스`id`관리, 표시 이름 및 입력 이름 분리:
 
-1. `id`：稳定唯一标识
-2. `name`：输入主名
-3. `userFacingName`：帮助/补全展示名
+1. `id`: 안정적인 고유 식별자
+2. `name`: 본명을 입력하세요.
+3. `userFacingName`: 도움말/전체 표시 이름
 
-冲突优先级建议：
+충돌하는 우선순위 제안:
 
-1. built-in
-2. bundled / skill-dir / workflow
-3. plugin / builtin-plugin
-4. dynamic
-5. mcp 独立 namespace
+1. 내장
+2. 번들/스킬-디렉터리/워크플로
+3. 플러그인 / 내장 플러그인
+4. 동적
+5. mcp 독립 네임스페이스
 
----
+***
 
-## 7. 统一执行架构
+## 7. 통합 실행 아키텍처
 
 ## 7.1 `CommandRegistry`
 
-职责：
+책임:
 
-1. 聚合所有 loader/provider
-2. 建立多维索引
-3. 输出帮助、补全、ACP、文档视图
-4. 提供用户可见命令和模型可见命令的独立视图
+1. 모든 로더/공급자를 집계합니다.
+2. 다차원 인덱스 생성
+3. 출력 도움말, 완성, ACP, 문서 보기
+4. 사용자에게 표시되는 명령과 모델에 표시되는 명령에 대한 별도의 보기 제공
 
-必须支持的 provider：
+지원해야 하는 공급자:
 
 1. `BuiltinCommandLoader`
 2. `BundledSkillLoader`
@@ -332,49 +332,49 @@ Qwen 的 command schema 从第一阶段开始就必须覆盖以下来源：
 8. `DynamicSkillProvider`
 9. `BuiltinPluginSkillLoader`
 
-即便部分 provider 首期未完全落地，schema 和 API 也必须先支持。
+일부 공급자가 첫 번째 단계에서 완전히 구현되지 않더라도 먼저 스키마와 API가 지원되어야 합니다.
 
 ## 7.2 `CommandResolver`
 
-职责：
+책임:
 
-1. 解析 slash command
-2. 解析 alias
-3. 解析 subcommand path
-4. 识别 mid-input slash token
-5. 输出 canonical resolved command
+1. 슬래시 명령 구문 분석
+2. 별칭 구문 분석
+3. Parse 하위 명령 경로
+4. 중간 입력 슬래시 토큰 식별
+5. 정식 해결 명령 출력
 
 ## 7.3 `CommandExecutor`
 
-职责：
+책임:
 
-1. 做 capability 检查
-2. 执行 `prompt | local | local-jsx`
-3. 统一产出 outcome
-4. 处理 fallback / unsupported
+1. 능력 점검을 하라
+2. 구현하다`prompt | local | local-jsx`
+3. 통합 출력 결과
+4. 대체 처리/지원되지 않음
 
 ## 7.4 `ModeAdapter`
 
-必须拆出三种 adapter：
+세 개의 어댑터를 제거해야 합니다.
 
 1. `InteractiveModeAdapter`
 2. `AcpModeAdapter`
 3. `NonInteractiveModeAdapter`
 
-这样三种模式才能共用同一套 command registry 和 executor，而不是各自硬编码。
+이러한 방식으로 세 가지 모드는 별도로 하드 코딩되는 대신 동일한 명령 레지스트리와 실행기를 공유할 수 있습니다.
 
----
+***
 
-## 8. UI 命令重构原则：核心命令与交互壳分离
+## 8. UI 명령 재구성 원리: 핵심 명령과 대화형 셸의 분리
 
-这是 ACP 和 non-interactive 真正可用的关键。
+이것이 ACP와 비대화형을 실제로 사용할 수 있게 만드는 핵심입니다.
 
-凡是当前本质为“打开 dialog”的命令，都必须改造成：
+현재 본질적으로 "대화 상자 열기"인 모든 명령은 다음으로 변환되어야 합니다.
 
-1. 一个 interactive shell
-2. 一组 local 子命令
+1. 대화형 쉘
+2. 로컬 하위 명령 세트
 
-### 第一批必须拆分的命令
+### 분할되어야 하는 명령의 첫 번째 배치
 
 1. `/model`
 2. `/permissions`
@@ -385,79 +385,79 @@ Qwen 的 command schema 从第一阶段开始就必须覆盖以下来源：
 7. `/agents`
 8. `/approval-mode`
 
-### 目标形态示例
+### 대상 모양 예
 
 #### `/model`
 
-- `/model`
-- `/model show`
-- `/model list`
-- `/model set <id>`
+* `/model`
+* `/model show`
+* `/model list`
+* `/model set <id>`
 
 #### `/permissions`
 
-- `/permissions`
-- `/permissions show`
-- `/permissions set <mode>`
-- `/permissions allow <tool>`
-- `/permissions deny <tool>`
+* `/permissions`
+* `/permissions show`
+* `/permissions set <mode>`
+* `/permissions allow <tool>`
+* `/permissions deny <tool>`
 
 #### `/mcp`
 
-- `/mcp`
-- `/mcp list`
-- `/mcp show <server>`
-- `/mcp enable <server>`
-- `/mcp disable <server>`
+* `/mcp`
+* `/mcp list`
+* `/mcp show <server>`
+* `/mcp enable <server>`
+* `/mcp disable <server>`
 
----
+***
 
-## 9. Prompt Command / Skill 统一设计
+## 9. 신속한 명령/스킬 일체형 디자인
 
-这是重构里的 P0，不是后补能力。
+이는 백업 능력이 아닌 재구성에서의 P0입니다.
 
-## 9.1 目标
+## 9.1 목표
 
-建立统一的 **Model-Invocable Prompt Command Registry**，把以下资产合并为一个模型可调用视图：
+통일을 이루다**모델 호출 가능 프롬프트 명령 레지스트리**, 다음 자산을 모델 호출 가능 보기로 결합합니다.
 
-1. bundled skills
-2. file commands
-3. workflow prompt commands
-4. plugin skills
-5. mcp prompts / mcp skills
+1. 번들 스킬
+2. 파일 명령
+3. 워크플로 프롬프트 명령
+4. 플러그인 기술
+5. mcp 프롬프트/mcp 기술
 
-## 9.2 关键字段
+## 9.2 주요 필드
 
-必须新增：
+추가해야 할 사항:
 
 1. `userInvocable`
 2. `modelInvocable`
 3. `allowedTools`
 4. `whenToUse`
-5. `argSchema` 或最小参数描述
+5. `argSchema`또는 최소 매개변수 설명
 6. `contextMode: inline | fork`
 7. `agent`
 8. `effort`
 
-## 9.3 与 `SkillTool` 的关系
+## 9.3 및`SkillTool`관계
 
-重构后不应再由 `SkillTool` 只消费狭义 skills。
+리팩토링 후에는 더 이상`SkillTool`좁은 스킬만 소모합니다.
 
-应改成：
+다음과 같이 변경되어야 합니다:
 
-1. `CommandRegistry.getModelInvocablePromptCommands()` 产出统一视图
-2. `SkillTool` 或未来统一 command tool 消费该视图
-3. 用户 slash command 与模型 skill invocation 共用同一套 prompt-command 资产池
+1. `CommandRegistry.getModelInvocablePromptCommands()`통합된 뷰 생성
+2. `SkillTool`또는 나중에 이 보기를 사용하려면 통합 명령 도구를 사용하세요.
+3. 사용자 슬래시 명령과 모델 기술 호출은 동일한 프롬프트 명령 자산 풀을 공유합니다.
 
-这样 Qwen 才能在体验上接近 Claude 对 `/review`、`/commit`、`/openspec-apply` 这类能力的处理方式。
+이런 식으로 Qwen은 경험 측면에서 Claude와 가까워질 수 있습니다.`/review`、`/commit`、`/openspec-apply`그러한 기능을 처리하는 방법.
 
----
+***
 
-## 10. Help / Completion / Discoverability 重做
+## 10. 도움말 / 완료 / 검색 가능성
 
-## 10.1 Completion
+## 10.1 완료
 
-补全项至少要展示：
+완료 내용은 최소한 다음과 같이 표시되어야 합니다.
 
 1. `label`
 2. `description`
@@ -467,105 +467,105 @@ Qwen 的 command schema 从第一阶段开始就必须覆盖以下来源：
 6. `aliasHit`
 7. `recentlyUsedScore`
 
-排序至少考虑：
+정렬에는 최소한 다음이 고려됩니다.
 
-1. 精确命中
-2. alias 命中
-3. 最近使用
-4. prefix 命中
-5. fuzzy 命中
+1. 정확한 타격
+2. 별칭 히트
+3. 최근에 사용됨
+4. 접두어 히트
+5. 퍼지 히트
 
-## 10.2 Mid-input slash command
+## 10.2 중간입력 슬래시 명령어
 
-必须补齐：
+완료해야 합니다:
 
 1. 光标附近 slash token 检测
-2. ghost text 提示
-3. Tab 完成
-4. 有效命令 token 高亮
+2. 유령 텍스트 프롬프트
+3. 탭 완료
+4. 유효한 명령 토큰이 강조 표시됨
 
-第一阶段先对齐输入体验；是否引入更强的“内嵌命令执行语义”可在后续迭代。
+첫 번째 단계에서는 입력 경험이 조정됩니다. 더 강력한 "내장형 명령 실행 의미론"을 도입할지 여부는 나중에 반복될 수 있습니다.
 
-## 10.3 Help
+## 10.3 도움말
 
-Help 不再是平铺列表，而是完整命令目录。
+도움말은 더 이상 타일 목록이 아니라 전체 명령 디렉터리입니다.
 
-至少分组为：
+최소한 그룹은 다음과 같습니다.
 
-1. Built-in Commands
-2. Bundled Skills
-3. Skill Dir Commands
-4. Workflow Commands
-5. Plugin Commands
-6. Plugin Skills
-7. Dynamic Skills
-8. Builtin Plugin Skills
-9. MCP Commands / MCP Skills
+1. 내장 명령
+2. 번들 스킬
+3. 스킬 디렉토리 명령
+4. 워크플로 명령
+5. 플러그인 명령
+6. 플러그인 스킬
+7. 다이나믹 스킬
+8. 내장 플러그인 스킬
+9. MCP 명령/MCP 기술
 
-每条命令至少展示：
+각 명령은 최소한 다음을 표시합니다.
 
-1. 名称
-2. 参数提示
-3. 描述
-4. 来源
-5. 支持模式
-6. 是否模型可调用
-7. 子命令摘要
+1. 이름
+2. 매개변수 프롬프트
+3. 설명하다
+4. 원천
+5. 지원 모드
+6. 모델이 호출 가능한지 여부
+7. 하위 명령 요약
 
----
+***
 
-## 11. ACP / Non-Interactive 重构
+## 11. ACP / 비대화형 리팩토링
 
-## 11.1 彻底废弃白名单思路
+## 11.1 화이트리스트 아이디어를 완전히 포기
 
-旧方案：
+기존 구성표:
 
-- built-in allowlist
-- FILE / SKILL 特判
-- 其它结果类型 unsupported
+* 내장된 허용 목록
+* FILE/SKILL 특별판정
+* 지원되지 않는 다른 결과 유형
 
-新方案：
+새로운 솔루션:
 
-- 每个命令自己声明 capability
-- registry 负责过滤
-- adapter 负责执行和 fallback
+* 각 명령은 자체 기능을 선언합니다.
+* 레지스트리는 필터링을 담당합니다.
+* 어댑터는 실행 및 대체를 담당합니다.
 
-## 11.2 outcome 支持目标
+## 11.2 결과 지원 목표
 
-### interactive
+### 대화형
 
-- `submit_prompt`
-- `message`
-- `stream_messages`
-- `tool`
-- `dialog`
-- `load_history`
-- `confirm_action`
-- `confirm_shell_commands`
+* `submit_prompt`
+* `message`
+* `stream_messages`
+* `tool`
+* `dialog`
+* `load_history`
+* `confirm_action`
+* `confirm_shell_commands`
 
 ### acp
 
-- `submit_prompt`
-- `message`
-- `stream_messages`
-- `tool`
-- `confirm_action`
-- `confirm_shell_commands`
-- `dialog fallback`
+* `submit_prompt`
+* `message`
+* `stream_messages`
+* `tool`
+* `confirm_action`
+* `confirm_shell_commands`
+* `dialog fallback`
 
-### non_interactive
+### 비대화형
 
-- `submit_prompt`
-- `message`
-- `stream_messages`
-- `tool`
-- `confirm_action`
-- `confirm_shell_commands`
-- `dialog fallback / structured failure`
+* `submit_prompt`
+* `message`
+* `stream_messages`
+* `tool`
+* `confirm_action`
+* `confirm_shell_commands`
+* `dialog fallback / structured failure`
 
-## 11.3 ACP available commands 输出
+## 11.3 ACP 사용 가능 명령 출력
 
-必须至少包含：
+최소한 다음을 포함해야 합니다:
 
 1. `name`
 2. `description`
@@ -577,40 +577,40 @@ Help 不再是平铺列表，而是完整命令目录。
 8. `subcommands`
 9. `modelInvocable`
 
----
+***
 
-## 12. 文档、帮助、补全共用同一份元数据
+## 12. 문서, 도움말 및 완성은 동일한 메타데이터를 공유합니다.
 
-重构后以下内容必须由同一个 registry 视图导出：
+리팩토링 후에는 동일한 레지스트리 보기로 다음을 내보내야 합니다.
 
-1. Help
-2. Completion
-3. ACP available commands
-4. 文档导出
+1. 돕다
+2. 완성
+3. ACP 사용 가능 명령
+4. 문서 내보내기
 
-这是为了解决当前“实现、帮助、文档三套命令面不一致”的问题。
+이는 "구현, 도움말 및 문서의 세 가지 명령 평면 세트 간의 불일치"라는 현재 문제를 해결하기 위한 것입니다.
 
----
+***
 
-## 13. 实施分期
+## 13. 스테이징 구현
 
-## Phase 1：底座重建
+## 1단계: 기지 재건
 
-交付：
+배달하다:
 
-1. 新 `CommandDescriptor`
-2. 完整来源 schema
-3. capability 模型
+1. 새로운`CommandDescriptor`
+2. 전체 소스 스키마
+3. 능력 모델
 4. `userInvocable / modelInvocable`
 5. `CommandRegistry`
 6. `CommandResolver`
 7. `CommandExecutor`
-8. 三种 `ModeAdapter`
+8. 세 종류`ModeAdapter`
 9. `getModelInvocablePromptCommands()`
 
-## Phase 2：核心命令迁移
+## 2단계: 핵심 명령 마이그레이션
 
-交付：
+배달하다:
 
 1. `/model`
 2. `/permissions`
@@ -621,51 +621,51 @@ Help 不再是平铺列表，而是完整命令目录。
 7. `/agents`
 8. `/approval-mode`
 
-这些命令都必须完成“interactive shell + local 子命令”重构。
+이러한 명령은 "대화형 쉘 + 로컬 하위 명령" 재구성을 완료해야 합니다.
 
-## Phase 3：模型能力打通
+## 3단계: 모델 기능 개방
 
-交付：
+배달하다:
 
-1. `SkillTool` 接入统一 registry 视图
-2. file command / bundled skill / mcp prompt / plugin skill 进入统一 model-invocable 集合
-3. prompt command 与 skill 资产彻底统一
+1. `SkillTool`통합 레지스트리 보기에 액세스
+2. 파일 명령/번들 기술/mcp 프롬프트/플러그인 기술을 통합 모델 호출 가능 컬렉션으로 변환
+3. 프롬프트 명령과 기술 자산이 완전히 통합되었습니다.
 
-## Phase 4：体验层对齐 Claude
+## 4단계: 레이어 정렬 경험 Claude
 
-交付：
+배달하다:
 
-1. recently used 排序
-2. source badge
-3. argument hint
-4. mode badge
-5. 完整 help 目录
-6. mid-input slash command 体验
-7. 文档自动导出或校验
+1. 최근에 사용한 정렬
+2. 소스 배지
+3. 인수 힌트
+4. 모드 배지
+5. 전체 도움말 디렉토리
+6. 중간 입력 슬래시 명령 경험
+7. 문서 자동 내보내기 또는 확인
 
----
+***
 
-## 14. 验收标准
+## 14. 합격 기준
 
-完成后至少满足：
+완료되면 최소한:
 
-1. 帮助、补全、ACP、文档都能表达完整来源模型
-2. 除纯 UI 壳命令外，大多数 built-in command 可在 ACP / non-interactive 使用
-3. prompt command 与模型 skill 调用使用同一套资产池
-4. 命令体验在帮助、补全、来源表达、参数提示、mid-input 体验上达到 Claude Code 95% 水平
-5. 不再依赖 built-in allowlist 维持 ACP / non-interactive 命令能力
+1. 도움말, 완성, ACP 및 문서는 모두 완전한 소스 모델을 표현할 수 있습니다.
+2. 순수 UI 셸 명령 외에도 대부분의 내장 명령은 ACP/비대화형에서 사용할 수 있습니다.
+3. 프롬프트 명령과 모델 스킬 호출은 동일한 자산 풀을 사용합니다.
+4. 명령 경험은 도움말, 완성, 소스 표현, 매개변수 프롬프트, 중간 입력 경험 측면에서 클로드 코드 수준의 95%에 도달합니다.
+5. ACP/비대화형 명령 기능을 유지하기 위해 더 이상 내장된 허용 목록에 의존하지 않습니다.
 
----
+***
 
-## 15. 最终判断
+## 15. 최종 판결
 
-这次重构的本质不是“给现有 SlashCommand 多加几个字段”，而是：
+이 리팩토링의 핵심은 "기존 SlashCommand에 몇 가지 필드를 추가하는 것"이 ​​아니라 다음을 수행하는 것입니다.
 
-- **用 Qwen 的内部架构风格，交付一个在外部体验上 95% 对齐 Claude Code 的 command 平台**
+* **Qwen의 내부 아키텍처 스타일을 사용하여 외부 경험 측면에서 Claude Code와 95% 일치하는 명령 플랫폼을 제공합니다.**
 
-如果必须二选一：
+하나를 선택해야 한다면:
 
-- 内部实现更像 Claude
-- 外部体验更像 Claude
+* 내부 구현은 Claude와 비슷합니다.
+* 외부 경험은 Claude와 비슷합니다.
 
-本方案明确选择后者。
+이 계획은 분명히 후자를 선택합니다.

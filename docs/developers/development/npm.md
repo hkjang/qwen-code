@@ -1,61 +1,61 @@
-# Package Overview
+# 패키지 개요
 
-This monorepo contains two main packages: `@qwen-code/qwen-code` and `@qwen-code/qwen-code-core`.
+이 모노레포에는 두 가지 주요 패키지가 포함되어 있습니다.`@qwen-code/qwen-code`그리고`@qwen-code/qwen-code-core`.
 
 ## `@qwen-code/qwen-code`
 
-This is the main package for Qwen Code. It is responsible for the user interface, command parsing, and all other user-facing functionality.
+Qwen Code의 메인 패키지입니다. 사용자 인터페이스, 명령 구문 분석 및 기타 모든 사용자 관련 기능을 담당합니다.
 
-When this package is published, it is bundled into a single executable file. This bundle includes all of the package's dependencies, including `@qwen-code/qwen-code-core`. This means that whether a user installs the package with `npm install -g @qwen-code/qwen-code` or runs it directly with `npx @qwen-code/qwen-code`, they are using this single, self-contained executable.
+이 패키지는 게시되면 단일 실행 파일로 번들됩니다. 이 번들은 다음을 포함하여 패키지의 모든 종속성을 포함합니다.`@qwen-code/qwen-code-core`. 이는 사용자가 다음을 사용하여 패키지를 설치하는지 여부를 의미합니다.`npm install -g @qwen-code/qwen-code`또는 직접 실행`npx @qwen-code/qwen-code`, 그들은 이 단일 독립 실행 파일을 사용하고 있습니다.
 
 ## `@qwen-code/qwen-code-core`
 
-This package contains the core logic for the CLI. It is responsible for making API requests to configured providers, handling authentication, and managing the local cache.
+이 패키지에는 CLI의 핵심 논리가 포함되어 있습니다. 구성된 공급자에 대한 API 요청, 인증 처리 및 로컬 캐시 관리를 담당합니다.
 
-This package is not bundled. When it is published, it is published as a standard Node.js package with its own dependencies. This allows it to be used as a standalone package in other projects, if needed. All transpiled js code in the `dist` folder is included in the package.
+이 패키지는 번들로 제공되지 않습니다. 게시되면 자체 종속성을 갖춘 표준 Node.js 패키지로 게시됩니다. 이를 통해 필요한 경우 다른 프로젝트에서 독립형 패키지로 사용할 수 있습니다. 트랜스파일된 모든 js 코드는`dist`폴더가 패키지에 포함되어 있습니다.
 
-# Release Process
+# 출시 프로세스
 
-This project follows a structured release process to ensure that all packages are versioned and published correctly. The process is designed to be as automated as possible.
+이 프로젝트는 모든 패키지의 버전이 올바르게 지정되고 게시되도록 구조화된 릴리스 프로세스를 따릅니다. 프로세스는 가능한 한 자동화되도록 설계되었습니다.
 
-## How To Release
+## 릴리스 방법
 
-Releases are managed through the [release.yml](https://github.com/QwenLM/qwen-code/actions/workflows/release.yml) GitHub Actions workflow. To perform a manual release for a patch or hotfix:
+릴리스는 다음을 통해 관리됩니다.[release.yml](https://github.com/QwenLM/qwen-code/actions/workflows/release.yml)GitHub Actions 워크플로. 패치 또는 핫픽스에 대한 수동 릴리스를 수행하려면 다음을 수행하십시오.
 
-1.  Navigate to the **Actions** tab of the repository.
-2.  Select the **Release** workflow from the list.
-3.  Click the **Run workflow** dropdown button.
-4.  Fill in the required inputs:
-    - **Version**: The exact version to release (e.g., `v0.2.1`).
-    - **Ref**: The branch or commit SHA to release from (defaults to `main`).
-    - **Dry Run**: Leave as `true` to test the workflow without publishing, or set to `false` to perform a live release.
-5.  Click **Run workflow**.
+1. Navigate to the **행위**저장소의 탭입니다.
+2. 선택**풀어 주다**목록에서 워크플로를 선택하세요.
+3. 다음을 클릭하세요.**워크플로 실행**드롭다운 버튼.
+4. 필수 입력 사항을 입력합니다.
+   * **버전**: 출시할 정확한 버전(예:`v0.2.1`).
+   * **참조**: 릴리스할 분기 또는 커밋 SHA(기본값:`main`).
+   * **드라이 런**: 다음으로 남겨주세요`true`게시하지 않고 워크플로를 테스트하려면 다음과 같이 설정하세요.`false`라이브 릴리스를 수행합니다.
+5. 딸깍 하는 소리**워크플로 실행**.
 
-## Release Types
+## 릴리스 유형
 
-The project supports multiple types of releases:
+이 프로젝트는 다양한 유형의 릴리스를 지원합니다.
 
-### Stable Releases
+### 안정적인 릴리스
 
-Regular stable releases for production use.
+프로덕션용으로 정기적인 안정 릴리스입니다.
 
-### Preview Releases
+### 미리보기 릴리스
 
-Weekly preview releases every Tuesday at 23:59 UTC for early access to upcoming features.
+매주 화요일 23시 59분(UTC)에 주간 미리 보기가 출시되어 예정된 기능에 미리 액세스할 수 있습니다.
 
-### Nightly Releases
+### 야간 릴리스
 
-Daily nightly releases at midnight UTC for bleeding-edge development testing.
+최첨단 개발 테스트를 위해 매일 밤 UTC 자정에 릴리스됩니다.
 
-## Automated Release Schedule
+## 자동 출시 일정
 
-- **Nightly**: Every day at midnight UTC
-- **Preview**: Every Tuesday at 23:59 UTC
-- **Stable**: Manual releases triggered by maintainers
+* **야간**: 매일 자정(UTC)
+* **시사**: 매주 화요일 23:59 UTC
+* **안정적인**: 관리자가 트리거하는 수동 릴리스
 
-### How to Use Different Release Types
+### 다양한 릴리스 유형을 사용하는 방법
 
-To install the latest version of each type:
+각 유형의 최신 버전을 설치하려면:
 
 ```bash
 # Stable (default)
@@ -68,180 +68,180 @@ npm install -g @qwen-code/qwen-code@preview
 npm install -g @qwen-code/qwen-code@nightly
 ```
 
-### Release Process Details
+### 릴리스 프로세스 세부정보
 
-Every scheduled or manual release follows these steps:
+모든 예약된 릴리스 또는 수동 릴리스는 다음 단계를 따릅니다.
 
-1.  Checks out the specified code (latest from `main` branch or specific commit).
-2.  Installs all dependencies.
-3.  Runs the full suite of `preflight` checks and integration tests.
-4.  If all tests succeed, it calculates the appropriate version number based on release type.
-5.  Builds and publishes the packages to npm with the appropriate dist-tag.
-6.  Creates a GitHub Release for the version.
+1. 지정된 코드(최신 코드)를 체크아웃합니다.`main`분기 또는 특정 커밋).
+2. 모든 종속성을 설치합니다.
+3. 전체 제품군을 실행합니다.`preflight`점검 및 통합 테스트.
+4. 모든 테스트가 성공하면 릴리스 유형에 따라 적절한 버전 번호를 계산합니다.
+5. 적절한 dist-tag를 사용하여 패키지를 npm에 빌드하고 게시합니다.
+6. 해당 버전에 대한 GitHub 릴리스를 생성합니다.
 
-### Failure Handling
+### 실패 처리
 
-If any step in the release workflow fails, it will automatically create a new issue in the repository with the labels `bug` and a type-specific failure label (e.g., `nightly-failure`, `preview-failure`). The issue will contain a link to the failed workflow run for easy debugging.
+릴리스 워크플로의 단계 중 하나라도 실패하면 저장소에 레이블이 있는 새 이슈가 자동으로 생성됩니다.`bug`유형별 오류 라벨(예:`nightly-failure`,`preview-failure`). 문제에는 쉽게 디버깅할 수 있도록 실패한 워크플로 실행에 대한 링크가 포함됩니다.
 
-## Release Validation
+## 릴리스 검증
 
-After pushing a new release smoke testing should be performed to ensure that the packages are working as expected. This can be done by installing the packages locally and running a set of tests to ensure that they are functioning correctly.
+새 릴리스를 푸시한 후에는 연기 테스트를 수행하여 패키지가 예상대로 작동하는지 확인해야 합니다. 패키지를 로컬에 설치하고 일련의 테스트를 실행하여 패키지가 올바르게 작동하는지 확인하면 됩니다.
 
-- `npx -y @qwen-code/qwen-code@latest --version` to validate the push worked as expected if you were not doing a rc or dev tag
-- `npx -y @qwen-code/qwen-code@<release tag> --version` to validate the tag pushed appropriately
-- _This is destructive locally_ `npm uninstall @qwen-code/qwen-code && npm uninstall -g @qwen-code/qwen-code && npm cache clean --force &&  npm install @qwen-code/qwen-code@<version>`
-- Smoke testing a basic run through of exercising a few llm commands and tools is recommended to ensure that the packages are working as expected. We'll codify this more in the future.
+* `npx -y @qwen-code/qwen-code@latest --version`rc 또는 dev 태그를 수행하지 않은 경우 푸시가 예상대로 작동했는지 확인하려면
+* `npx -y @qwen-code/qwen-code@<release tag> --version`적절하게 푸시된 태그를 확인하기 위해
+* *이는 지역적으로 파괴적입니다.* `npm uninstall @qwen-code/qwen-code && npm uninstall -g @qwen-code/qwen-code && npm cache clean --force &&  npm install @qwen-code/qwen-code@<version>`
+* 패키지가 예상대로 작동하는지 확인하려면 몇 가지 llm 명령과 도구를 실행하는 기본 실행을 스모크 테스트하는 것이 좋습니다. 우리는 앞으로 이것을 더 많이 성문화할 것입니다.
 
-## When to merge the version change, or not?
+## 버전 변경을 언제 병합해야 할까요?
 
-The above pattern for creating patch or hotfix releases from current or older commits leaves the repository in the following state:
+현재 또는 이전 커밋에서 패치 또는 핫픽스 릴리스를 생성하기 위한 위 패턴은 저장소를 다음 상태로 유지합니다.
 
-1.  The Tag (`vX.Y.Z-patch.1`): This tag correctly points to the original commit on main
-    that contains the stable code you intended to release. This is crucial. Anyone checking
-    out this tag gets the exact code that was published.
-2.  The Branch (`release-vX.Y.Z-patch.1`): This branch contains one new commit on top of the
-    tagged commit. That new commit only contains the version number change in package.json
-    (and other related files like package-lock.json).
+1. 태그(`vX.Y.Z-patch.1`): 이 태그는 기본 커밋의 원래 커밋을 올바르게 가리킵니다.&#x20;
+   릴리스하려는 안정적인 코드가 포함되어 있습니다. 이것은 매우 중요합니다. 누구든 확인해보세요&#x20;
+   이 태그는 게시된 정확한 코드를 가져옵니다.
+2. 지점 (`release-vX.Y.Z-patch.1`): 이 브랜치에는&#x20;
+   태그된 커밋. 해당 새 커밋에는 package.json의 버전 번호 변경만 포함됩니다.&#x20;
+   (그리고 package-lock.json과 같은 기타 관련 파일).
 
-This separation is good. It keeps your main branch history clean of release-specific
-version bumps until you decide to merge them.
+이런 이별은 좋은 것 같아요. 주요 분기 기록을 릴리스 관련 기록으로 깨끗하게 유지합니다.&#x20;
+병합하기로 결정할 때까지 버전이 충돌합니다.
 
-This is the critical decision, and it depends entirely on the nature of the release.
+이는 중요한 결정이며 전적으로 릴리스의 성격에 따라 달라집니다.
 
-### Merge Back for Stable Patches and Hotfixes
+### 안정적인 패치 및 핫픽스를 위해 다시 병합
 
-You almost always want to merge the `release-<tag>` branch back into `main` for any
-stable patch or hotfix release.
+당신은 거의 항상`release-<tag>`다시 분기하다`main`누구에게나&#x20;
+안정적인 패치 또는 핫픽스 릴리스.
 
-- Why? The primary reason is to update the version in main's package.json. If you release
-  v1.2.1 from an older commit but never merge the version bump back, your main branch's
-  package.json will still say "version": "1.2.0". The next developer who starts work for
-  the next feature release (v1.3.0) will be branching from a codebase that has an
-  incorrect, older version number. This leads to confusion and requires manual version
-  bumping later.
-- The Process: After the release-v1.2.1 branch is created and the package is successfully
-  published, you should open a pull request to merge release-v1.2.1 into main. This PR
-  will contain just one commit: "chore: bump version to v1.2.1". It's a clean, simple
-  integration that keeps your main branch in sync with the latest released version.
+* 왜? 주된 이유는 main의 package.json에서 버전을 업데이트하기 위한 것입니다. 출시하면&#x20;
+  이전 커밋의 v1.2.1이지만 버전을 다시 병합하지 마세요. 기본 브랜치의&#x20;
+  package.json은 여전히 "version": "1.2.0"으로 표시됩니다. 일을 시작하는 다음 개발자&#x20;
+  다음 기능 릴리스(v1.3.0)는&#x20;
+  잘못된 이전 버전 번호입니다. 이로 인해 혼란이 발생하고 수동 버전이 필요합니다.&#x20;
+  나중에 부딪히는 것.
+* 프로세스: release-v1.2.1 브랜치가 생성되고 패키지가 성공한 후&#x20;
+  게시된 경우 release-v1.2.1을 기본에 병합하기 위한 풀 요청을 열어야 합니다. 이번 PR&#x20;
+  "chore: v1.2.1 버전으로 변경"이라는 하나의 커밋만 포함됩니다. 깔끔하고 심플해요&#x20;
+  메인 브랜치를 최신 릴리스 버전과 동기화된 상태로 유지하는 통합입니다.
 
-### Do NOT Merge Back for Pre-Releases (RC, Beta, Dev)
+### 사전 출시 버전(RC, 베타, 개발)을 위해 다시 병합하지 마세요.
 
-You typically do not merge release branches for pre-releases back into `main`.
+일반적으로 사전 릴리스의 릴리스 분기를 다시 병합하지 않습니다.`main`.
 
-- Why? Pre-release versions (e.g., v1.3.0-rc.1, v1.3.0-rc.2) are, by definition, not
-  stable and are temporary. You don't want to pollute your main branch's history with a
-  series of version bumps for release candidates. The package.json in main should reflect
-  the latest stable release version, not an RC.
-- The Process: The release-v1.3.0-rc.1 branch is created, the npm publish --tag rc happens,
-  and then... the branch has served its purpose. You can simply delete it. The code for
-  the RC is already on main (or a feature branch), so no functional code is lost. The
-  release branch was just a temporary vehicle for the version number.
+* 왜? 시험판 버전(예: v1.3.0-rc.1, v1.3.0-rc.2)은 정의에 따라&#x20;
+  안정적이고 일시적입니다. 메인 브랜치의 기록을 다음과 같은 이유로 오염시키고 싶지는 않을 것입니다.&#x20;
+  릴리스 후보에 대한 일련의 버전 범프. 메인의 package.json은 다음을 반영해야 합니다.&#x20;
+  RC가 아닌 최신 안정 릴리스 버전입니다.
+* 프로세스: release-v1.3.0-rc.1 분기가 생성되고 npm 게시 --tag rc가 발생합니다.&#x20;
+  그리고... 지점은 그 목적을 달성했습니다. 간단히 삭제하시면 됩니다. 에 대한 코드&#x20;
+  RC는 이미 기본(또는 기능 분기)에 있으므로 기능 코드가 손실되지 않습니다. 는&#x20;
+  릴리스 브랜치는 버전 번호에 대한 임시 수단일 뿐입니다.
 
-## Local Testing and Validation: Changes to the Packaging and Publishing Process
+## 로컬 테스트 및 검증: 패키징 및 게시 프로세스 변경 사항
 
-If you need to test the release process without actually publishing to NPM or creating a public GitHub release, you can trigger the workflow manually from the GitHub UI.
+실제로 NPM에 게시하거나 공개 GitHub 릴리스를 생성하지 않고 릴리스 프로세스를 테스트해야 하는 경우 GitHub UI에서 워크플로를 수동으로 트리거할 수 있습니다.
 
-1.  Go to the [Actions tab](https://github.com/QwenLM/qwen-code/actions/workflows/release.yml) of the repository.
-2.  Click on the "Run workflow" dropdown.
-3.  Leave the `dry_run` option checked (`true`).
-4.  Click the "Run workflow" button.
+1. 로 이동[작업 탭](https://github.com/QwenLM/qwen-code/actions/workflows/release.yml)저장소의.
+2. "워크플로 실행" 드롭다운을 클릭합니다.
+3. 떠나`dry_run`옵션이 선택됨(`true`).
+4. "워크플로 실행" 버튼을 클릭합니다.
 
-This will run the entire release process but will skip the `npm publish` and `gh release create` steps. You can inspect the workflow logs to ensure everything is working as expected.
+그러면 전체 릴리스 프로세스가 실행되지만 다음 단계는 건너뜁니다.`npm publish`그리고`gh release create`단계. 워크플로 로그를 검사하여 모든 것이 예상대로 작동하는지 확인할 수 있습니다.
 
-It is crucial to test any changes to the packaging and publishing process locally before committing them. This ensures that the packages will be published correctly and that they will work as expected when installed by a user.
+패키징 및 게시 프로세스에 대한 변경 사항을 커밋하기 전에 로컬에서 테스트하는 것이 중요합니다. 이렇게 하면 패키지가 올바르게 게시되고 사용자가 설치할 때 예상대로 작동하게 됩니다.
 
-To validate your changes, you can perform a dry run of the publishing process. This will simulate the publishing process without actually publishing the packages to the npm registry.
+변경 사항을 확인하려면 게시 프로세스의 시험 실행을 수행하면 됩니다. 그러면 실제로 패키지를 npm 레지스트리에 게시하지 않고 게시 프로세스를 시뮬레이션합니다.
 
 ```bash
 npm_package_version=9.9.9 SANDBOX_IMAGE_REGISTRY="registry" SANDBOX_IMAGE_NAME="thename" npm run publish:npm --dry-run
 ```
 
-This command will do the following:
+이 명령은 다음을 수행합니다.
 
-1.  Build all the packages.
-2.  Run all the prepublish scripts.
-3.  Create the package tarballs that would be published to npm.
-4.  Print a summary of the packages that would be published.
+1. 모든 패키지를 빌드합니다.
+2. 모든 사전 게시 스크립트를 실행합니다.
+3. npm에 게시할 패키지 tarball을 만듭니다.
+4. 게시될 패키지의 요약을 인쇄합니다.
 
-You can then inspect the generated tarballs to ensure that they contain the correct files and that the `package.json` files have been updated correctly. The tarballs will be created in the root of each package's directory (e.g., `packages/cli/qwen-code-0.1.6.tgz`).
+그런 다음 생성된 타르볼을 검사하여 올바른 파일이 포함되어 있는지,`package.json`파일이 올바르게 업데이트되었습니다. tarball은 각 패키지 디렉토리의 루트에 생성됩니다(예:`packages/cli/qwen-code-0.1.6.tgz`).
 
-By performing a dry run, you can be confident that your changes to the packaging process are correct and that the packages will be published successfully.
+연습 실행을 수행하면 패키징 프로세스에 대한 변경 사항이 정확하고 패키지가 성공적으로 게시된다는 확신을 가질 수 있습니다.
 
-## Release Deep Dive
+## 릴리스 심층 분석
 
-The main goal of the release process is to take the source code from the packages/ directory, build it, and assemble a
-clean, self-contained package in a temporary `dist` directory at the root of the project. This `dist` directory is what
-actually gets published to NPM.
+릴리스 프로세스의 주요 목표는 packages/ 디렉터리에서 소스 코드를 가져와서 빌드하고
+깨끗하고 독립적인 패키지를 임시 보관함`dist`프로젝트 루트에 있는 디렉토리. 이것`dist`디렉토리가 뭐야?
+실제로 NPM에 게시됩니다.
 
-Here are the key stages:
+주요 단계는 다음과 같습니다.
 
-Stage 1: Pre-Release Sanity Checks and Versioning
+1단계: 출시 전 상태 검사 및 버전 관리
 
-- What happens: Before any files are moved, the process ensures the project is in a good state. This involves running tests,
-  linting, and type-checking (npm run preflight). The version number in the root package.json and packages/cli/package.json
-  is updated to the new release version.
-- Why: This guarantees that only high-quality, working code is released. Versioning is the first step to signify a new
-  release.
+* 일어나는 일: 파일을 이동하기 전에 프로세스는 프로젝트가 양호한 상태인지 확인합니다. 여기에는 테스트 실행이 포함됩니다.
+  Linting 및 유형 검사(npm run preflight). 루트 package.json 및 packages/cli/package.json의 버전 번호
+  새 릴리스 버전으로 업데이트되었습니다.
+* 이유: 이는 고품질의 작동 코드만 릴리스되도록 보장합니다. 버전 관리는 새로운 것을 의미하는 첫 번째 단계입니다.
+  릴리스.
 
-Stage 2: Building the Source Code
+2단계: 소스 코드 구축
 
-- What happens: The TypeScript source code in packages/core/src and packages/cli/src is compiled into JavaScript.
-- File movement:
-  - packages/core/src/\*_/_.ts -> compiled to -> packages/core/dist/
-  - packages/cli/src/\*_/_.ts -> compiled to -> packages/cli/dist/
-- Why: The TypeScript code written during development needs to be converted into plain JavaScript that can be run by
-  Node.js. The core package is built first as the cli package depends on it.
+* 무슨 일이 일어나는지: packages/core/src 및 packages/cli/src의 TypeScript 소스 코드가 JavaScript로 컴파일됩니다.
+* 파일 이동:
+  * 패키지/코어/src/\**/*.ts -> 컴파일 -> 패키지/코어/dist/
+  * 패키지/cli/src/\**/*.ts -> 컴파일 -> 패키지/cli/dist/
+* 이유: 개발 중에 작성된 TypeScript 코드는 다음에서 실행할 수 있는 일반 JavaScript로 변환해야 합니다.
+  Node.js. cli 패키지가 이에 의존하므로 핵심 패키지가 먼저 빌드됩니다.
 
-Stage 3: Bundling and Assembling the Final Publishable Package
+3단계: 최종 게시 가능한 패키지 묶음 및 조립
 
-This is the most critical stage where files are moved and transformed into their final state for publishing. The process uses modern bundling techniques to create the final package.
+이는 파일이 게시를 위한 최종 상태로 이동되고 변환되는 가장 중요한 단계입니다. 이 프로세스에서는 최신 번들링 기술을 사용하여 최종 패키지를 만듭니다.
 
-1.  Bundle Creation:
-    - What happens: The prepare-package.js script creates a clean distribution package in the `dist` directory.
-    - Key transformations:
-      - Copies README.md and LICENSE to dist/
-      - Copies locales folder for internationalization
-      - Creates a clean package.json for distribution with only necessary dependencies
-      - Keeps distribution dependencies minimal (no bundled runtime deps)
-      - Maintains optional dependencies for node-pty
+1. 번들 생성:
+   * 무슨 일이 일어나는지: prepare-package.js 스크립트는 다음 위치에 깨끗한 배포 패키지를 생성합니다.`dist`예배 규칙서.
+   * 주요 변환:
+     * README.md 및 LICENSE를 dist/에 복사합니다.
+     * 국제화를 위해 로케일 폴더를 복사합니다.
+     * 필요한 종속성만 포함된 배포용 깔끔한 package.json을 생성합니다.
+     * 배포 종속성을 최소화합니다(번들 런타임 deps 없음).
+     * node-pty에 대한 선택적 종속성을 유지합니다.
 
-2.  The JavaScript Bundle is Created:
-    - What happens: The built JavaScript from both packages/core/dist and packages/cli/dist are bundled into a single,
-      executable JavaScript file using esbuild.
-    - File location: dist/cli.js
-    - Why: This creates a single, optimized file that contains all the necessary application code. It simplifies the package
-      by removing the need for complex dependency resolution at install time.
+2. JavaScript 번들이 생성됩니다:
+   * 무슨 일이 일어나는가: packages/core/dist와 packages/cli/dist 모두에서 빌드된 JavaScript가 단일,
+     esbuild를 사용하여 실행 가능한 JavaScript 파일.
+   * 파일 위치: dist/cli.js
+   * 이유: 필요한 모든 애플리케이션 코드가 포함된 최적화된 단일 파일이 생성됩니다. 패키지를 단순화한다
+     설치 시 복잡한 종속성 해결이 필요하지 않습니다.
 
-3.  Static and Supporting Files are Copied:
-    - What happens: Essential files that are not part of the source code but are required for the package to work correctly
-      or be well-described are copied into the `dist` directory.
-    - File movement:
-      - README.md -> dist/README.md
-      - LICENSE -> dist/LICENSE
-      - locales/ -> dist/locales/
-      - Vendor files -> dist/vendor/
-    - Why:
-      - The README.md and LICENSE are standard files that should be included in any NPM package.
-      - Locales support internationalization features
-      - Vendor files contain necessary runtime dependencies
+3. 정적 및 지원 파일이 복사됩니다.
+   * 발생 상황: 소스 코드의 일부는 아니지만 패키지가 올바르게 작동하는 데 필요한 필수 파일
+     또는 잘 설명된 내용이`dist`예배 규칙서.
+   * 파일 이동:
+     * README.md -> dist/README.md
+     * 라이센스 -> dist/라이센스
+     * 로케일/ -> dist/로케일/
+     * 공급업체 파일 -> dist/vendor/
+   * 왜:
+     * README.md 및 LICENSE는 모든 NPM 패키지에 포함되어야 하는 표준 파일입니다.
+     * 로케일은 국제화 기능을 지원합니다.
+     * 공급업체 파일에는 필수 런타임 종속성이 포함되어 있습니다.
 
-Stage 4: Publishing to NPM
+4단계: NPM에 게시
 
-- What happens: The npm publish command is run from inside the root `dist` directory.
-- Why: By running npm publish from within the `dist` directory, only the files we carefully assembled in Stage 3 are uploaded
-  to the NPM registry. This prevents any source code, test files, or development configurations from being accidentally
-  published, resulting in a clean and minimal package for users.
+* 무슨 일이 일어나는지: npm 게시 명령은 루트 내부에서 실행됩니다.`dist`예배 규칙서.
+* 이유: npm 게시를 실행하여`dist`디렉터리에는 3단계에서 신중하게 조립한 파일만 업로드됩니다.
+  NPM 레지스트리에. 이렇게 하면 소스 코드, 테스트 파일 또는 개발 구성이 실수로 발생하는 것을 방지할 수 있습니다.
+  게시되어 사용자에게 깨끗하고 최소한의 패키지가 제공됩니다.
 
-This process ensures that the final published artifact is a purpose-built, clean, and efficient representation of the
-project, rather than a direct copy of the development workspace.
+이 프로세스를 통해 최종 게시된 아티팩트가 특정 목적에 맞게 제작되었으며 깨끗하고 효율적으로 표현되었는지 확인합니다.
+개발 작업공간을 직접 복사하는 것이 아니라 프로젝트입니다.
 
-## NPM Workspaces
+## NPM 작업공간
 
-This project uses [NPM Workspaces](https://docs.npmjs.com/cli/v10/using-npm/workspaces) to manage the packages within this monorepo. This simplifies development by allowing us to manage dependencies and run scripts across multiple packages from the root of the project.
+이 프로젝트에서는[NPM 작업공간](https://docs.npmjs.com/cli/v10/using-npm/workspaces)이 모노레포 내의 패키지를 관리합니다. 이를 통해 프로젝트 루트의 여러 패키지에 걸쳐 종속성을 관리하고 스크립트를 실행할 수 있으므로 개발이 단순화됩니다.
 
-### How it Works
+### 작동 방식
 
-The root `package.json` file defines the workspaces for this project:
+루트`package.json`파일은 이 프로젝트의 작업공간을 정의합니다.
 
 ```json
 {
@@ -249,10 +249,10 @@ The root `package.json` file defines the workspaces for this project:
 }
 ```
 
-This tells NPM that any folder inside the `packages` directory is a separate package that should be managed as part of the workspace.
+이는 NPM에게 그 안에 있는 모든 폴더가 있음을 알려줍니다.`packages`디렉토리는 작업공간의 일부로 관리되어야 하는 별도의 패키지입니다.
 
-### Benefits of Workspaces
+### 작업공간의 이점
 
-- **Simplified Dependency Management**: Running `npm install` from the root of the project will install all dependencies for all packages in the workspace and link them together. This means you don't need to run `npm install` in each package's directory.
-- **Automatic Linking**: Packages within the workspace can depend on each other. When you run `npm install`, NPM will automatically create symlinks between the packages. This means that when you make changes to one package, the changes are immediately available to other packages that depend on it.
-- **Simplified Script Execution**: You can run scripts in any package from the root of the project using the `--workspace` flag. For example, to run the `build` script in the `cli` package, you can run `npm run build --workspace @qwen-code/qwen-code`.
+* **단순화된 종속성 관리**: 달리기`npm install`프로젝트 루트에서 작업 공간의 모든 패키지에 대한 모든 종속성을 설치하고 함께 연결합니다. 즉, 실행할 필요가 없습니다.`npm install`각 패키지의 디렉토리에 있습니다.
+* **자동 연결**: 작업공간 내의 패키지는 서로 종속될 수 있습니다. 당신이 달릴 때`npm install`, NPM은 패키지 간에 심볼릭 링크를 자동으로 생성합니다. 이는 하나의 패키지를 변경하면 해당 패키지에 종속된 다른 패키지에서 변경 사항을 즉시 사용할 수 있음을 의미합니다.
+* **단순화된 스크립트 실행**: 다음을 사용하여 프로젝트 루트의 모든 패키지에서 스크립트를 실행할 수 있습니다.`--workspace`깃발. 예를 들어, 다음을 실행하려면`build`스크립트`cli`패키지, 실행할 수 있습니다`npm run build --workspace @qwen-code/qwen-code`.

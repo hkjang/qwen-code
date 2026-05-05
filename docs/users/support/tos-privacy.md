@@ -1,112 +1,112 @@
-# Qwen Code: Terms of Service and Privacy Notice
+# Qwen 코드: 서비스 약관 및 개인정보 보호정책
 
-Qwen Code is an open-source AI coding assistant tool maintained by the Qwen Code team. This document outlines the terms of service and privacy policies that apply when using Qwen Code's authentication methods and AI model services.
+Qwen Code는 Qwen Code 팀에서 관리하는 오픈 소스 AI 코딩 보조 도구입니다. 본 문서에서는 Qwen Code의 인증방식 및 AI 모델 서비스 이용 시 적용되는 이용약관 및 개인정보취급방침을 간략하게 설명합니다.
 
-## How to determine your authentication method
+## 인증 방법을 결정하는 방법
 
-Qwen Code supports three authentication methods to access AI models. Your authentication method determines which terms of service and privacy policies apply to your usage:
+Qwen Code는 AI 모델에 액세스하기 위해 세 가지 인증 방법을 지원합니다. 인증 방법에 따라 사용에 적용되는 서비스 약관 및 개인정보 보호정책이 결정됩니다.
 
-1. **Qwen OAuth** — Log in with your qwen.ai account (free tier discontinued 2026-04-15)
-2. **Alibaba Cloud Coding Plan** — Use an API key from Alibaba Cloud
-3. **API Key** — Bring your own API key
+1. **Qwen OAuth**— qwen.ai 계정으로 로그인하세요(무료 등급은 2026년 4월 15일에 중단됨)
+2. **Alibaba Cloud 코딩 계획**— Alibaba Cloud의 API 키를 사용하세요.
+3. **API 키**— 자체 API 키 가져오기
 
-For each authentication method, different Terms of Service and Privacy Notices may apply depending on the underlying service provider.
+각 인증 방법에는 기본 서비스 제공업체에 따라 다른 서비스 약관 및 개인정보 보호정책이 적용될 수 있습니다.
 
-| Authentication Method     | Provider          | Terms of Service                                                   | Privacy Notice                                                     |
-| :------------------------ | :---------------- | :----------------------------------------------------------------- | :----------------------------------------------------------------- |
-| Qwen OAuth                | Qwen AI           | [Qwen Terms of Service](https://qwen.ai/termsservice)              | [Qwen Privacy Policy](https://qwen.ai/privacypolicy)               |
-| Alibaba Cloud Coding Plan | Alibaba Cloud     | See [details below](#2-if-you-are-using-alibaba-cloud-coding-plan) | See [details below](#2-if-you-are-using-alibaba-cloud-coding-plan) |
-| API Key                   | Various Providers | Depends on your chosen API provider (OpenAI, Anthropic, etc.)      | Depends on your chosen API provider                                |
+| 인증 방법               | 공급자       | 서비스 약관                                                     | 개인정보 보호정책                                                  |
+| :------------------ | :-------- | :--------------------------------------------------------- | :--------------------------------------------------------- |
+| Qwen OAuth          | 퀀 AI      | [Qwen 서비스 약관](https://qwen.ai/termsservice)                | [Qwen 개인 정보 보호 정책](https://qwen.ai/privacypolicy)          |
+| Alibaba Cloud 코딩 계획 | 알리바바 클라우드 | 보다[아래 세부정보](#2-if-you-are-using-alibaba-cloud-coding-plan) | 보다[아래 세부정보](#2-if-you-are-using-alibaba-cloud-coding-plan) |
+| API 키               | 다양한 공급자   | 선택한 API 제공업체(OpenAI, Anthropic 등)에 따라 다릅니다.                | 선택한 API 제공업체에 따라 다름                                        |
 
-## 1. If you are using Qwen OAuth Authentication
+## 1. Qwen OAuth 인증을 사용하는 경우
 
-When you authenticate using your qwen.ai account, these Terms of Service and Privacy Notice documents apply:
+qwen.ai 계정을 사용하여 인증하면 다음 서비스 약관 및 개인정보 보호정책 문서가 적용됩니다.
 
-- **Terms of Service:** Your use is governed by the [Qwen Terms of Service](https://qwen.ai/termsservice).
-- **Privacy Notice:** The collection and use of your data is described in the [Qwen Privacy Policy](https://qwen.ai/privacypolicy).
+* **서비스 약관:**&#xADC0;하의 사용은 다음에 의해 규율됩니다.[Qwen 서비스 약관](https://qwen.ai/termsservice).
+* **개인정보 보호정책:**&#xADC0;하의 데이터 수집 및 사용은 다음에 설명되어 있습니다.[Qwen 개인 정보 보호 정책](https://qwen.ai/privacypolicy).
 
-For details about authentication setup, quotas, and supported features, see [Authentication Setup](../configuration/settings).
+인증 설정, 할당량, 지원되는 기능에 대한 자세한 내용은 다음을 참조하세요.[인증 설정](../configuration/settings).
 
-## 2. If you are using Alibaba Cloud Coding Plan
+## 2. 알리바바 클라우드 코딩 플랜을 사용하는 경우
 
 When you authenticate using an API key from Alibaba Cloud, the applicable Terms of Service and Privacy Notice from Alibaba Cloud apply.
 
-Alibaba Cloud Coding Plan is available in two regions:
+Alibaba Cloud Coding Plan은 두 지역에서 사용할 수 있습니다.
 
-- **阿里云百炼 (aliyun.com)** — [bailian.console.aliyun.com](https://bailian.console.aliyun.com)
-- **Alibaba Cloud (alibabacloud.com)** — [bailian.console.alibabacloud.com](https://bailian.console.alibabacloud.com)
+* **알리바바 클라우드 바이리안(aliyun.com)**—[bailian.console.aliyun.com](https://bailian.console.aliyun.com)
+* **알리바바 클라우드(alibabacloud.com)**—[bailian.console.alibabacloud.com](https://bailian.console.alibabacloud.com)
 
-> [!important]
+> \[!중요한]
 >
-> When using Alibaba Cloud Coding Plan, you are subject to Alibaba Cloud's terms and privacy policies. Please review their documentation for specific details about data usage, retention, and privacy practices.
+> Alibaba Cloud Coding Plan을 사용하면 Alibaba Cloud의 약관 및 개인 정보 보호 정책이 적용됩니다. 데이터 사용, 보관 및 개인정보 보호 관행에 대한 구체적인 세부정보는 해당 문서를 검토하세요.
 
-## 3. If you are using your own API Key
+## 3. 자체 API Key를 사용하는 경우
 
-When you authenticate using API keys from other providers, the applicable Terms of Service and Privacy Notice depend on your chosen provider.
+다른 공급자의 API 키를 사용하여 인증하는 경우 해당 서비스 약관 및 개인정보 보호정책은 선택한 공급자에 따라 다릅니다.
 
-> [!important]
+> \[!중요한]
 >
-> When using your own API key, you are subject to the terms and privacy policies of your chosen API provider, not Qwen Code's terms. Please review your provider's documentation for specific details about data usage, retention, and privacy practices.
+> 자신의 API 키를 사용하는 경우 Qwen Code의 약관이 아닌 선택한 API 제공업체의 약관 및 개인정보 보호정책이 적용됩니다. 데이터 사용, 보관 및 개인정보 보호 관행에 대한 구체적인 세부정보는 제공업체의 설명서를 검토하세요.
 
-Qwen Code supports various OpenAI-compatible providers. Please refer to your specific provider's terms of service and privacy policy for detailed information.
+Qwen Code는 다양한 OpenAI 호환 공급자를 지원합니다. 자세한 내용은 해당 제공업체의 서비스 약관 및 개인정보 보호정책을 참조하세요.
 
-## Usage Statistics and Telemetry
+## 사용 통계 및 원격 측정
 
-Qwen Code may collect anonymous usage statistics and [telemetry](../../developers/development/telemetry) data to improve the user experience and product quality. This data collection is optional and can be controlled through configuration settings.
+Qwen Code는 익명의 사용 통계를 수집할 수 있으며[원격 측정](../../developers/development/telemetry)사용자 경험과 제품 품질을 개선하기 위한 데이터입니다. 이 데이터 수집은 선택 사항이며 구성 설정을 통해 제어할 수 있습니다.
 
-### What Data is Collected
+### 수집되는 데이터
 
-When enabled, Qwen Code may collect:
+활성화되면 Qwen Code는 다음을 수집할 수 있습니다.
 
-- Anonymous usage statistics (commands run, performance metrics)
-- Error reports and crash data
-- Feature usage patterns
+* 익명 사용 통계(명령 실행, 성능 지표)
+* 오류 보고서 및 충돌 데이터
+* 기능 사용 패턴
 
-### Data Collection by Authentication Method
+### 인증방식에 따른 데이터 수집
 
-- **Qwen OAuth:** Usage statistics are governed by Qwen's privacy policy. You can opt-out through Qwen Code's configuration settings.
-- **Alibaba Cloud Coding Plan:** Usage statistics are governed by Alibaba Cloud's privacy policy. You can opt-out through Qwen Code's configuration settings.
-- **API Key:** No additional data is collected by Qwen Code beyond what your chosen API provider collects.
+* **Qwen OAuth:**&#xC0AC;용 통계는 Qwen의 개인 정보 보호 정책에 따라 관리됩니다. Qwen Code의 구성 설정을 통해 선택 해제할 수 있습니다.
+* **Alibaba 클라우드 코딩 계획:**&#xC0AC;용 통계는 Alibaba Cloud의 개인정보 보호정책에 따라 관리됩니다. Qwen Code의 구성 설정을 통해 선택 해제할 수 있습니다.
+* **API 키:**&#xADC0;하가 선택한 API 제공업체가 수집하는 것 이상으로 Qwen Code는 추가 데이터를 수집하지 않습니다.
 
-## Frequently Asked Questions (FAQ)
+## 자주 묻는 질문(FAQ)
 
-### 1. Is my code, including prompts and answers, used to train AI models?
+### 1. 프롬프트와 답변을 포함한 내 코드가 AI 모델을 훈련하는 데 사용됩니까?
 
-Whether your code, including prompts and answers, is used to train AI models depends on your authentication method and the specific AI service provider you use:
+프롬프트 및 답변을 포함한 코드가 AI 모델을 훈련하는 데 사용되는지 여부는 인증 방법과 사용하는 특정 AI 서비스 공급자에 따라 다릅니다.
 
-- **Qwen OAuth**: Data usage is governed by [Qwen's Privacy Policy](https://qwen.ai/privacy). Please refer to their policy for specific details about data collection and model training practices.
+* **Qwen OAuth**: 데이터 사용량은 다음에 따라 결정됩니다.[Qwen의 개인 정보 보호 정책](https://qwen.ai/privacy). 데이터 수집 및 모델 학습 관행에 대한 구체적인 세부정보는 해당 정책을 참조하세요.
 
-- **Alibaba Cloud Coding Plan**: Data usage is governed by Alibaba Cloud's privacy policy. Please refer to their policy for specific details about data collection and model training practices.
+* **Alibaba Cloud 코딩 계획**: 데이터 사용에는 Alibaba Cloud의 개인정보 보호정책이 적용됩니다. 데이터 수집 및 모델 학습 관행에 대한 구체적인 세부정보는 해당 정책을 참조하세요.
 
-- **API Key**: Data usage depends entirely on your chosen API provider. Each provider has their own data usage policies. Please review the privacy policy and terms of service of your specific provider.
+* **API 키**: 데이터 사용량은 전적으로 귀하가 선택한 API 제공업체에 따라 다릅니다. 각 제공업체에는 자체 데이터 사용 정책이 있습니다. 특정 제공업체의 개인정보 보호정책과 서비스 약관을 검토하세요.
 
-**Important**: Qwen Code itself does not use your prompts, code, or responses for model training. Any data usage for training purposes would be governed by the policies of the AI service provider you authenticate with.
+**중요한**: Qwen Code 자체는 모델 훈련을 위해 프롬프트, 코드 또는 응답을 사용하지 않습니다. 훈련 목적의 모든 데이터 사용에는 귀하가 인증한 AI 서비스 제공업체의 정책이 적용됩니다.
 
-### 2. What are Usage Statistics and what does the opt-out control?
+### 2. 사용 통계란 무엇이며 수신 거부는 무엇을 제어합니까?
 
-The **Usage Statistics** setting controls optional data collection by Qwen Code for improving the user experience and product quality.
+그만큼**사용 통계**설정은 사용자 경험과 제품 품질 개선을 위해 Qwen Code의 선택적 데이터 수집을 제어합니다.
 
-When enabled, Qwen Code may collect:
+활성화되면 Qwen Code는 다음을 수집할 수 있습니다.
 
-- Anonymous telemetry (commands run, performance metrics, feature usage)
-- Error reports and crash data
-- General usage patterns
+* 익명 원격 분석(명령 실행, 성능 지표, 기능 사용)
+* 오류 보고서 및 충돌 데이터
+* 일반적인 사용 패턴
 
-**What is NOT collected by Qwen Code:**
+**Qwen Code가 수집하지 않는 것:**
 
-- Your code content
-- Prompts sent to AI models
-- Responses from AI models
-- Personal information
+* 코드 내용
+* AI 모델로 전송되는 프롬프트
+* AI 모델의 응답
+* 개인정보
 
-The Usage Statistics setting only controls data collection by Qwen Code itself. It does not affect what data your chosen AI service provider (Qwen, OpenAI, etc.) may collect according to their own privacy policies.
+사용 통계 설정은 Qwen Code 자체의 데이터 수집만 제어합니다. 귀하가 선택한 AI 서비스 제공업체(Qwen, OpenAI 등)가 자체 개인정보 보호정책에 따라 수집할 수 있는 데이터에는 영향을 미치지 않습니다.
 
-### 3. How do I switch between authentication methods?
+### 3. 인증 방법을 어떻게 전환하나요?
 
-You can switch between Qwen OAuth, Alibaba Cloud Coding Plan, and your own API key at any time:
+언제든지 Qwen OAuth, Alibaba Cloud Coding Plan 및 자체 API 키 간에 전환할 수 있습니다.
 
-1. **During startup**: Choose your preferred authentication method when prompted
-2. **Within the CLI**: Use the `/auth` command to reconfigure your authentication method
-3. **Environment variables**: Set up `.env` files for automatic API key authentication
+1. **시작하는 동안**: 메시지가 표시되면 원하는 인증 방법을 선택하세요.
+2. **CLI 내에서**: 사용`/auth`인증 방법을 재구성하는 명령
+3. **환경변수**: 설정`.env`자동 API 키 인증을 위한 파일
 
-For detailed instructions, see the [Authentication Setup](../configuration/settings#environment-variables-for-api-access) documentation.
+자세한 지침은 다음을 참조하세요.[인증 설정](../configuration/settings#environment-variables-for-api-access)선적 서류 비치.

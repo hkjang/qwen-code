@@ -1,8 +1,8 @@
-# Code Review
+# 코드 검토
 
-> Review code changes for correctness, security, performance, and code quality using `/review`.
+> 다음을 사용하여 정확성, 보안, 성능 및 코드 품질에 대한 코드 변경 사항을 검토합니다.`/review`.
 
-## Quick Start
+## 빠른 시작
 
 ```bash
 # Review local uncommitted changes
@@ -19,11 +19,11 @@
 /review src/utils/auth.ts
 ```
 
-If there are no uncommitted changes, `/review` will let you know and stop — no agents are launched.
+커밋되지 않은 변경 사항이 없는 경우`/review`알려드리고 중지합니다. 에이전트가 실행되지 않습니다.
 
-## How It Works
+## 작동 방식
 
-The `/review` command runs a multi-stage pipeline:
+그만큼`/review`명령은 다단계 파이프라인을 실행합니다.
 
 ```
 Step 1:  Determine scope (local diff / PR worktree / file)
@@ -46,152 +46,152 @@ Step 10: Save report + incremental cache
 Step 11: Clean up (remove worktree + temp files)
 ```
 
-### Review Agents
+### 리뷰 에이전트
 
-| Agent                             | Focus                                                                                       |
-| --------------------------------- | ------------------------------------------------------------------------------------------- |
-| Agent 1: Correctness              | Logic errors, edge cases, null handling, race conditions, type safety                       |
-| Agent 2: Security                 | Injection, XSS, SSRF, auth bypass, sensitive data exposure                                  |
-| Agent 3: Code Quality             | Style consistency, naming, duplication, dead code                                           |
-| Agent 4: Performance & Efficiency | N+1 queries, memory leaks, unnecessary re-renders, bundle size                              |
-| Agent 5: Test Coverage            | Untested code paths in the diff, missing branch coverage, weak assertions                   |
-| Agent 6: Undirected Audit         | 3 parallel personas (attacker / 3am-oncall / maintainer) — catches cross-dimensional issues |
-| Agent 7: Build & Test             | Runs build and test commands, reports failures                                              |
+| 대리인              | 집중하다                                           |
+| ---------------- | ---------------------------------------------- |
+| 에이전트 1: 정확성      | 논리 오류, 엣지 케이스, 널 처리, 경쟁 조건, 유형 안전성             |
+| 에이전트 2: 보안       | 삽입, XSS, SSRF, 인증 우회, 민감한 데이터 노출               |
+| 에이전트 3: 코드 품질    | 스타일 일관성, 이름 지정, 중복, 데드 코드                      |
+| 에이전트 4: 성능 및 효율성 | N+1 쿼리, 메모리 누수, 불필요한 다시 렌더링, 번들 크기             |
+| 에이전트 5: 테스트 범위   | diff의 테스트되지 않은 코드 경로, 분기 적용 범위 누락, 약한 어설션      |
+| 에이전트 6: 무방향 감사   | 3개의 병렬 페르소나(공격자/오전 3시 통화/유지 관리자) - 교차 차원 문제 포착 |
+| 에이전트 7: 빌드 및 테스트 | 빌드 및 테스트 명령을 실행하고 실패를 보고합니다.                   |
 
-All agents run in parallel (Agent 6 launches 3 persona variants concurrently, totaling 9 parallel tasks for same-repo reviews). Findings from Agents 1-6 are verified in a **single batch verification pass** (one agent reviews all findings at once, keeping verification cost fixed regardless of finding count). After verification, **iterative reverse audit** runs 1-3 rounds of gap-finding — each round receives the cumulative finding list from prior rounds, so successive rounds focus on whatever's left undiscovered. The loop stops as soon as a round returns "No issues found", or after 3 rounds (hard cap). Reverse audit findings skip verification (the agent already has full context) and are included as high-confidence results.
+모든 에이전트는 병렬로 실행됩니다(에이전트 6은 3개의 페르소나 변형을 동시에 시작하여 동일한 저장소 검토에 대해 총 9개의 병렬 작업을 실행합니다). 에이전트 1-6의 결과는 다음에서 확인됩니다.**단일 배치 검증 통과**(한 에이전트가 모든 결과를 한 번에 검토하여 결과 수에 관계없이 확인 비용을 고정시킵니다.) 확인 후,**반복적인 역감사**1-3 라운드의 간격 찾기를 실행합니다. 각 라운드는 이전 라운드의 누적 발견 목록을 수신하므로 연속 라운드에서는 발견되지 않은 항목에 집중합니다. 라운드에서 "발견된 문제 없음"이 반환되는 즉시 또는 3라운드(하드 캡) 후에 루프가 중지됩니다. 역감사 결과는 확인을 건너뛰고(에이전트가 이미 전체 컨텍스트를 갖고 있음) 신뢰도가 높은 결과로 포함됩니다.
 
-## Deterministic Analysis
+## 결정론적 분석
 
-Before the LLM agents run, `/review` automatically runs your project's existing linters and type checkers:
+LLM 에이전트가 실행되기 전에,`/review`프로젝트의 기존 린터 및 유형 검사기를 자동으로 실행합니다.
 
-| Language              | Tools detected                                                   |
-| --------------------- | ---------------------------------------------------------------- |
-| TypeScript/JavaScript | `tsc --noEmit`, `npm run lint`, `eslint`                         |
-| Python                | `ruff`, `mypy`, `flake8`                                         |
-| Rust                  | `cargo clippy`                                                   |
-| Go                    | `go vet`, `golangci-lint`                                        |
-| Java                  | `mvn compile`, `checkstyle`, `spotbugs`, `pmd`                   |
-| C/C++                 | `clang-tidy` (if `compile_commands.json` available)              |
-| Other                 | Auto-discovered from CI config (`.github/workflows/*.yml`, etc.) |
+| 언어            | 도구가 감지되었습니다.                                  |
+| ------------- | --------------------------------------------- |
+| 타입스크립트/자바스크립트 | `tsc --noEmit`,`npm run lint`,`eslint`        |
+| 파이썬           | `ruff`,`mypy`,`flake8`                        |
+| 녹             | `cargo clippy`                                |
+| 가다            | `go vet`,`golangci-lint`                      |
+| 자바            | `mvn compile`,`checkstyle`,`spotbugs`,`pmd`   |
+| C/C++         | `clang-tidy`(만약에`compile_commands.json`사용 가능) |
+| 다른            | CI 구성에서 자동 검색(`.github/workflows/*.yml`, 등.)  |
 
-For projects that don't match standard patterns (e.g., OpenJDK), `/review` reads CI configuration files to discover what lint/check commands the project uses. No user configuration needed.
+표준 패턴(예: OpenJDK)과 일치하지 않는 프로젝트의 경우`/review`CI 구성 파일을 읽어 프로젝트에서 사용하는 lint/check 명령을 검색합니다. 사용자 구성이 필요하지 않습니다.
 
-Deterministic findings are tagged with `[linter]` or `[typecheck]` and skip LLM verification — they are ground truth.
+결정적 결과에는 다음과 같은 태그가 지정됩니다.`[linter]`또는`[typecheck]`LLM 확인을 건너뛰세요. 이는 실제 사실입니다.
 
-- **Errors** → Critical severity
-- **Warnings** → Nice to have (terminal only, not posted as PR comments)
+* **오류**→ 심각한 심각도
+* **경고**→ 있으면 좋음(단말기 전용, PR 댓글로 게시되지 않음)
 
-If a tool is not installed or times out, it is skipped with an informational note.
+도구가 설치되지 않았거나 시간 초과되면 정보 메모와 함께 건너뜁니다.
 
-## Severity Levels
+## 심각도 수준
 
-| Severity         | Meaning                                                             | Posted as PR comment?      |
-| ---------------- | ------------------------------------------------------------------- | -------------------------- |
-| **Critical**     | Must fix before merging (bugs, security, data loss, build failures) | Yes (high-confidence only) |
-| **Suggestion**   | Recommended improvement                                             | Yes (high-confidence only) |
-| **Nice to have** | Optional optimization                                               | No (terminal only)         |
+| 심각성            | 의미                                    | PR댓글로 게시되나요?    |
+| -------------- | ------------------------------------- | --------------- |
+| **비판적인**       | 병합하기 전에 수정해야 함(버그, 보안, 데이터 손실, 빌드 실패) | 예(신뢰도가 높은 경우에만) |
+| **제안**         | 권장 개선 사항                              | 예(신뢰도가 높은 경우에만) |
+| **가지고 있어서 좋다** | 선택적 최적화                               | 아니요(터미널에만 해당)   |
 
-Low-confidence findings appear in a separate "Needs Human Review" section in the terminal and are never posted as PR comments.
+신뢰도가 낮은 결과는 터미널의 별도 "사람의 검토 필요" 섹션에 표시되며 PR 댓글로 게시되지 않습니다.
 
-## Autofix
+## 자동수정
 
-After presenting findings, `/review` offers to auto-apply fixes for Critical and Suggestion findings that have clear solutions:
+연구 결과를 발표한 후,`/review`명확한 솔루션이 있는 중요 및 제안 결과에 대한 수정 사항을 자동 적용하는 기능을 제공합니다.
 
 ```
 Found 3 issues with auto-fixable suggestions. Apply auto-fixes? (y/n)
 ```
 
-- Fixes are applied using the `edit` tool (targeted replacements, not full-file rewrites)
-- Per-file linter checks run after fixes to verify they don't introduce new issues
-- For PR reviews, fixes are committed and pushed from the worktree automatically — your working tree stays clean
-- Nice to have and low-confidence findings are never auto-fixed
-- PR review submission always uses the **pre-fix verdict** (e.g., "Request changes") since the remote PR hasn't been updated until the autofix push completes
+* 수정 사항은 다음을 사용하여 적용됩니다.`edit`도구(전체 파일 다시 쓰기가 아닌 대상 교체)
+* 파일별 린터 검사는 수정 후 실행되어 새로운 문제가 발생하지 않는지 확인합니다.
+* PR 검토의 경우 수정 사항이 자동으로 작업 트리에서 커밋되고 푸시됩니다. 작업 트리는 깨끗하게 유지됩니다.
+* 있으면 좋고 신뢰도가 낮은 결과는 자동으로 수정되지 않습니다.
+* PR 리뷰 제출은 항상**사전 수정 평결**(예: "변경 요청") 자동 수정 푸시가 완료될 때까지 원격 PR이 업데이트되지 않았기 때문입니다.
 
-## Worktree Isolation
+## 작업 트리 격리
 
-When reviewing a PR, `/review` creates a temporary git worktree (`.qwen/tmp/review-pr-<number>`) instead of switching your current branch. This means:
+PR을 검토할 때,`/review`임시 git 작업 트리를 생성합니다(`.qwen/tmp/review-pr-<number>`) 현재 지점을 전환하는 대신. 이는 다음을 의미합니다.
 
-- Your working tree, staged changes, and current branch are **never touched**
-- Dependencies are installed in the worktree (`npm ci`, etc.) so linting and build/test work
-- Build and test commands run in isolation without polluting your local build cache
-- If anything goes wrong, your environment is unaffected — just delete the worktree
-- The worktree is automatically cleaned up after the review completes
-- If a review is interrupted (Ctrl+C, crash), the next `/review` of the same PR automatically cleans up the stale worktree before starting fresh
-- Review reports and cache are saved to the main project directory (not the worktree)
+* 작업 트리, 단계적 변경 사항 및 현재 분기는 다음과 같습니다.**한 번도 만져본 적이 없는**
+* 종속성은 작업 트리(`npm ci`등) 린팅 및 빌드/테스트 작업
+* 빌드 및 테스트 명령은 로컬 빌드 캐시를 오염시키지 않고 독립적으로 실행됩니다.
+* 문제가 발생하더라도 환경은 영향을 받지 않습니다. 작업 트리를 삭제하면 됩니다.
+* 검토가 완료된 후 작업 트리가 자동으로 정리됩니다.
+* 검토가 중단되면(Ctrl+C, 충돌) 다음`/review`동일한 PR이 새로 시작하기 전에 오래된 작업 트리를 자동으로 정리합니다.
+* 검토 보고서와 캐시는 기본 프로젝트 디렉터리(작업 트리 아님)에 저장됩니다.
 
-## Cross-repo PR Review
+## 교차 리포 PR 검토
 
-You can review PRs from other repositories by passing the full URL:
+전체 URL을 전달하여 다른 저장소의 PR을 검토할 수 있습니다.
 
 ```bash
 /review https://github.com/other-org/other-repo/pull/456
 ```
 
-This runs in **lightweight mode** — no worktree, no linter, no build/test, no autofix. The review is based on the diff text only (fetched via GitHub API). PR comments can still be posted if you have write access.
+이것은 실행됩니다**경량 모드**— 작업 트리 없음, 린터 없음, 빌드/테스트 없음, 자동 수정 없음. 리뷰는 diff 텍스트만을 기반으로 합니다(GitHub API를 통해 가져옴). 쓰기 권한이 있으면 PR 댓글을 계속 게시할 수 있습니다.
 
-| Capability                                       | Same-repo | Cross-repo                    |
-| ------------------------------------------------ | --------- | ----------------------------- |
-| LLM review (Agents 1-6 + verify + iterative reverse audit) | ✅        | ✅                            |
-| Agent 7: Build & test                                      | ✅        | ❌ (no local codebase)        |
-| Deterministic analysis (linter/typecheck)        | ✅        | ❌                            |
-| Cross-file impact analysis                       | ✅        | ❌                            |
-| Autofix                                          | ✅        | ❌                            |
-| PR inline comments                               | ✅        | ✅ (if you have write access) |
-| Incremental review cache                         | ✅        | ❌                            |
+| 능력                               | 동일한 저장소 | 교차 저장소           |
+| -------------------------------- | ------- | ---------------- |
+| LLM 검토(에이전트 1-6 + 확인 + 반복적인 역감사) | ✅       | ✅                |
+| 에이전트 7: 빌드 및 테스트                 | ✅       | ❌ (로컬 코드베이스 없음)  |
+| 결정론적 분석(linter/typecheck)        | ✅       | ❌                |
+| 파일 간 영향 분석                       | ✅       | ❌                |
+| 자동수정                             | ✅       | ❌                |
+| PR 인라인 댓글                        | ✅       | ✅ (쓰기 권한이 있는 경우) |
+| 증분 검토 캐시                         | ✅       | ❌                |
 
-## PR Inline Comments
+## PR 인라인 댓글
 
-Use `--comment` to post findings directly on the PR:
+사용`--comment`결과를 PR에 직접 게시하려면:
 
 ```bash
 /review 123 --comment
 ```
 
-Or, after running `/review 123`, type `post comments` to publish findings without re-running the review.
+아니면 실행한 후`/review 123`, 유형`post comments`검토를 다시 실행하지 않고 결과를 게시합니다.
 
-**What gets posted:**
+**게시되는 내용:**
 
-- High-confidence Critical and Suggestion findings as inline comments on specific lines
-- For Approve/Request changes verdicts: a review summary with the verdict
-- For Comment verdict with all inline comments posted: no separate summary (inline comments are sufficient)
-- Model attribution footer on each comment (e.g., _— qwen3-coder via Qwen Code /review_)
+* 특정 라인에 대한 인라인 주석으로 신뢰할 수 있는 중요 및 제안 결과
+* 변경 승인/요청 판정의 경우: 판정이 포함된 검토 요약
+* 모든 인라인 댓글이 게시된 댓글 결과: 별도의 요약 없음(인라인 댓글이면 충분함)
+* 각 댓글의 모델 저작자 표시 바닥글(예:*— Qwen Code /review를 통한 qwen3-coder*)
 
-**What stays terminal-only:**
+**터미널 전용으로 유지되는 것:**
 
-- Nice to have findings (including linter warnings)
-- Low-confidence findings
+* 결과가 있어서 좋습니다(린터 경고 포함).
+* 신뢰도가 낮은 결과
 
-**Self-authored PRs:** GitHub does not allow you to submit `APPROVE` or `REQUEST_CHANGES` reviews on your own pull request — both fail with HTTP 422. When `/review` detects that the PR author matches the current authenticated user, it automatically downgrades the API event to `COMMENT` regardless of verdict, so the submission still succeeds. The terminal still shows the honest verdict ("Approve" / "Request changes" / "Comment") — only the GitHub-side review event is neutralized. The actual findings still appear as inline comments on specific lines, so substantive feedback is unchanged.
+**직접 작성한 PR:**&#x47;itHub에서는 제출을 허용하지 않습니다.`APPROVE`또는`REQUEST_CHANGES`자신의 풀 요청에 대한 검토 — 둘 다 HTTP 422로 실패합니다.`/review`PR 작성자가 현재 인증된 사용자와 일치하는 것을 감지하면 자동으로 API 이벤트를 다음으로 다운그레이드합니다.`COMMENT`판결에 관계없이 제출은 여전히 ​​성공합니다. 터미널에는 여전히 정직한 결과("승인" / "변경 요청" / "댓글")가 표시됩니다. GitHub 측 검토 이벤트만 무효화됩니다. 실제 결과는 여전히 특정 줄에 인라인 주석으로 표시되므로 실질적인 피드백은 변경되지 않습니다.
 
-**Re-reviewing a PR with prior Qwen Code comments:** when `/review` runs on a PR that already has previous Qwen Code review comments, it classifies them before posting new ones. Only **same-line overlap** (an existing comment on the same `(path, line)` as a new finding) prompts you to confirm — that's the case where you'd see a visual duplicate on the same code line. Comments from older commits, replied-to comments (treated as resolved), and comments that simply don't overlap with any new finding are silently skipped, with a terminal log line so you know what was filtered.
+**이전 Qwen Code 의견을 사용하여 PR 재검토:**&#xC5B8;제`/review`이미 이전 Qwen Code 검토 댓글이 있는 PR에서 실행되면 새 댓글을 게시하기 전에 분류합니다. 오직**동일선 겹침**(같은 내용에 대한 기존 댓글`(path, line)`새로운 발견으로) 확인하라는 메시지가 표시됩니다. 이는 동일한 코드 줄에 시각적 중복이 표시되는 경우입니다. 이전 커밋의 댓글, 회신한 댓글(해결된 것으로 처리됨), 새로운 결과와 단순히 겹치지 않는 댓글은 자동으로 건너뛰고 터미널 로그 줄을 통해 무엇이 필터링되었는지 알 수 있습니다.
 
-**CI / build status check before APPROVE:** if the verdict is "Approve", `/review` queries the PR's check-runs and commit statuses before submitting. If any check has failed (or all checks are still pending), the API event is automatically downgraded from `APPROVE` to `COMMENT`, with the review body explaining why. Rationale: the LLM review reads code statically and cannot see runtime test failures; approving while CI is red would be misleading. The inline findings are still posted unchanged. If you want to approve anyway (e.g., a known-flaky CI failure), submit the GitHub approval manually after verifying.
+**승인 전 CI/빌드 상태 확인:**&#xACB0;과가 "승인"인 경우`/review`제출하기 전에 PR의 검사 실행 및 커밋 상태를 쿼리합니다. 검사가 실패하거나 모든 검사가 아직 보류 중인 경우 API 이벤트는 자동으로 다음에서 다운그레이드됩니다.`APPROVE`에게`COMMENT`, 리뷰 본문에서 이유를 설명합니다. 근거: LLM 검토는 코드를 정적으로 읽으며 런타임 테스트 실패를 볼 수 없습니다. CI가 빨간색인 동안 승인하는 것은 오해의 소지가 있습니다. 인라인 결과는 여전히 변경되지 않은 상태로 게시됩니다. 어쨌든 승인하려면(예: 알려진 불안정한 CI 오류) 확인한 후 GitHub 승인을 수동으로 제출하세요.
 
-## Follow-up Actions
+## 후속 조치
 
-After the review, context-aware tips appear as ghost text. Press Tab to accept:
+검토 후 상황 인식 팁은 고스트 텍스트로 표시됩니다. 수락하려면 Tab 키를 누르세요.
 
-| State after review                 | Tip                | What happens                            |
-| ---------------------------------- | ------------------ | --------------------------------------- |
-| Local review with unfixed findings | `fix these issues` | LLM interactively fixes each finding    |
-| PR review with findings            | `post comments`    | Posts PR inline comments (no re-review) |
-| PR review, zero findings           | `post comments`    | Approves the PR on GitHub (LGTM)        |
-| Local review, all clear            | `commit`           | Commits your changes                    |
+| 검토 후 상태               | 팁                  | 무슨 일이 일어나는가             |
+| --------------------- | ------------------ | ----------------------- |
+| 수정되지 않은 결과가 포함된 현지 검토 | `fix these issues` | LLM은 각 결과를 대화식으로 수정합니다. |
+| 결과를 포함한 PR 검토         | `post comments`    | PR 인라인 댓글 게시(재검토 없음)    |
+| PR 검토, 결과 없음          | `post comments`    | GitHub(LGTM) 홍보 승인      |
+| 현지 리뷰, 모두 클리어         | `commit`           | 변경 사항을 커밋합니다.           |
 
-Note: `fix these issues` is only available for local reviews. For PR reviews, use Autofix (Step 8) — the worktree is cleaned up after the review, so post-review interactive fixing is not possible.
+메모:`fix these issues`지역 리뷰에만 사용할 수 있습니다. PR 검토의 경우 Autofix(8단계)를 사용합니다. 검토 후 작업 트리가 정리되므로 검토 후 대화식 수정이 불가능합니다.
 
-## Project Review Rules
+## 프로젝트 검토 규칙
 
-You can customize review criteria per project. `/review` reads rules from these files (in order):
+프로젝트별로 검토 기준을 맞춤 설정할 수 있습니다.`/review`다음 파일에서 규칙을 순서대로 읽습니다.
 
-1. `.qwen/review-rules.md` (Qwen Code native)
-2. `.github/copilot-instructions.md` (preferred) or `copilot-instructions.md` (fallback — only one is loaded, not both)
-3. `AGENTS.md` — `## Code Review` section
-4. `QWEN.md` — `## Code Review` section
+1. `.qwen/review-rules.md`(Qwen 코드 네이티브)
+2. `.github/copilot-instructions.md`(선호) 또는`copilot-instructions.md`(대체 — 둘 다 로드되지 않고 하나만 로드됨)
+3. `AGENTS.md`—`## Code Review`부분
+4. `QWEN.md`—`## Code Review`부분
 
-Rules are injected into the LLM review agents (1-6) as additional criteria. For PR reviews, rules are read from the **base branch** to prevent a malicious PR from injecting bypass rules.
+규칙은 추가 기준으로 LLM 검토 에이전트(1-6)에 주입됩니다. PR 검토의 경우 규칙은 다음에서 읽습니다.**기본 지점**악의적인 PR이 우회 규칙을 주입하는 것을 방지합니다.
 
-Example `.qwen/review-rules.md`:
+예`.qwen/review-rules.md`:
 
 ```markdown
 # Review Rules
@@ -202,9 +202,9 @@ Example `.qwen/review-rules.md`:
 - Error messages must not expose internal paths
 ```
 
-## Incremental Review
+## 증분 검토
 
-When reviewing a PR that was previously reviewed, `/review` only examines changes since the last review:
+이전에 리뷰했던 PR을 리뷰할 ​​때,`/review`마지막 검토 이후의 변경 사항만 검사합니다.
 
 ```bash
 # First review — full review, cache created
@@ -214,9 +214,9 @@ When reviewing a PR that was previously reviewed, `/review` only examines change
 /review 123
 ```
 
-### Cross-model review
+### 모델 간 검토
 
-If you switch models (via `/model`) and re-review the same PR, `/review` detects the model change and runs a full review instead of skipping:
+모델을 전환하는 경우(`/model`) 동일한 PR을 다시 검토하고,`/review`모델 변경을 감지하고 건너뛰는 대신 전체 검토를 실행합니다.
 
 ```bash
 # Review with model A
@@ -230,62 +230,62 @@ If you switch models (via `/model`) and re-review the same PR, `/review` detects
 # → "Previous review used qwen3-coder. Running full review with gpt-4o for a second opinion."
 ```
 
-Cache is stored in `.qwen/review-cache/` and tracks both the commit SHA and model ID. Make sure this directory is in your `.gitignore` (a broader rule like `.qwen/*` also works). If the cached commit was rebased away, it falls back to a full review.
+캐시는 다음 위치에 저장됩니다.`.qwen/review-cache/`커밋 SHA와 모델 ID를 모두 추적합니다. 이 디렉토리가`.gitignore`(다음과 같은 더 넓은 규칙은`.qwen/*`또한 작동합니다). 캐시된 커밋이 리베이스된 경우 전체 검토로 돌아갑니다.
 
-## Review Reports
+## 보고서 검토
 
-For same-repo reviews, results are saved as a Markdown file in your project's `.qwen/reviews/` directory (cross-repo lightweight reviews skip report persistence):
+동일한 저장소 검토의 경우 결과는 프로젝트의 Markdown 파일로 저장됩니다.`.qwen/reviews/`디렉토리(교차 저장소 경량 검토는 보고서 지속성을 건너뜁니다):
 
 ```
 .qwen/reviews/2026-04-06-143022-pr-123.md
 .qwen/reviews/2026-04-06-150510-local.md
 ```
 
-Reports include: timestamp, diff stats, deterministic analysis results, all findings with verification status, and the verdict.
+보고서에는 타임스탬프, 차이점 통계, 결정론적 분석 결과, 확인 상태가 포함된 모든 결과 및 판정이 포함됩니다.
 
-## Cross-file Impact Analysis
+## 파일 간 영향 분석
 
-When code changes modify exported functions, classes, or interfaces, the review agents automatically search for all callers and check compatibility:
+코드 변경으로 인해 내보낸 함수, 클래스 또는 인터페이스가 수정되면 검토 에이전트는 자동으로 모든 호출자를 검색하고 호환성을 확인합니다.
 
-- Parameter count/type changes
-- Return type changes
-- Removed or renamed public methods
-- Breaking API changes
+* 매개변수 개수/유형 변경
+* 반환 유형 변경
+* 공개 메소드가 제거되거나 이름이 변경되었습니다.
+* 주요 API 변경 사항
 
-For large diffs (>10 modified symbols), analysis prioritizes functions with signature changes.
+큰 차이(>10개 수정된 기호)의 경우 분석에서는 서명 변경이 있는 기능의 우선순위를 지정합니다.
 
-## Token Efficiency
+## 토큰 효율성
 
-The review pipeline uses a bounded number of LLM calls regardless of how many findings are produced:
+검토 파이프라인은 생성된 결과 수에 관계없이 제한된 수의 LLM 호출을 사용합니다.
 
-| Stage                            | LLM calls         | Notes                                                |
-| -------------------------------- | ----------------- | ---------------------------------------------------- |
-| Deterministic analysis (Step 3)  | 0                 | Shell commands only                                  |
-| Review agents (Step 4)           | 9 (or 8)          | Run in parallel; Agent 7 skipped in cross-repo mode  |
-| Batch verification (Step 5)      | 1                 | Single agent verifies all findings at once           |
-| Iterative reverse audit (Step 6) | 1-3               | Loops until "No issues found" or 3-round cap         |
-| **Total**                        | **11-13 (10-12)** | Same-repo: 11-13; cross-repo: 10-12 (no Agent 7)     |
+| 단계           | LLM 통화            | 메모                                      |
+| ------------ | ----------------- | --------------------------------------- |
+| 결정론적 분석(3단계) | 0                 | 쉘 명령만                                   |
+| 상담원 검토(4단계)  | 9(또는 8)           | 병렬로 실행합니다. 교차 저장소 모드에서 에이전트 7을 건너뛰었습니다. |
+| 일괄 확인(5단계)   | 1                 | 단일 에이전트가 모든 결과를 한 번에 확인합니다.             |
+| 반복 역감사(6단계)  | 1-3               | "발견된 문제 없음" 또는 3라운드 한도까지 반복됩니다.         |
+| **총**        | **11-13 (10-12)** | 동일 저장소: 11-13; 교차 저장소: 10-12(에이전트 7 없음) |
 
-Most PRs converge to the lower end of the range (1 reverse audit round); the cap prevents runaway cost on pathological cases.
+대부분의 PR은 범위의 하단으로 수렴됩니다(1회 역감사 라운드). 캡은 병리학적 사례에 대한 비용 폭주를 방지합니다.
 
-## What's NOT Flagged
+## 플래그가 지정되지 않은 항목
 
-The review intentionally excludes:
+검토에서는 의도적으로 다음을 제외합니다.
 
-- Pre-existing issues in unchanged code (focus on the diff only)
-- Style/formatting/naming that matches your codebase conventions
-- Issues a linter or type checker would catch (handled by deterministic analysis)
-- Subjective "consider doing X" suggestions without a real problem
-- Minor refactoring that doesn't fix a bug or risk
-- Missing documentation unless the logic is genuinely confusing
-- Issues already discussed in existing PR comments (avoids duplicating human feedback)
+* 변경되지 않은 코드의 기존 문제(차이점에만 집중)
+* 코드베이스 규칙과 일치하는 스타일/형식/이름 지정
+* Linter 또는 유형 검사기가 포착할 수 있는 문제(결정론적 분석으로 처리)
+* 실제 문제가 없는 주관적인 "X를 고려해보세요" 제안
+* 버그나 위험을 수정하지 않는 사소한 리팩토링
+* 논리가 실제로 혼란스럽지 않은 경우 문서가 누락되었습니다.
+* 기존 PR 댓글에서 이미 논의된 문제(인적 피드백 중복 방지)
 
-## Design Philosophy
+## 디자인 철학
 
-> **Silence is better than noise.** Every comment should be worth the reader's time.
+> **소음보다 침묵이 낫습니다.**&#xBAA8;든 댓글은 독자의 시간을 투자할 가치가 있어야 합니다.
 
-- If unsure whether something is a problem → don't report it
-- Linter/typecheck issues are handled by tools, not LLM guesses
-- Same pattern across N files → aggregated into one finding
-- PR comments are high-confidence only
-- Style/formatting issues matching codebase conventions are excluded
+* 문제인지 확실하지 않은 경우 → 신고하지 마세요.
+* Linter/typecheck 문제는 LLM 추측이 아닌 도구로 처리됩니다.
+* N개 파일에서 동일한 패턴 → 하나의 결과로 집계됨
+* PR댓글은 신뢰도가 높은 댓글일 뿐입니다
+* 코드베이스 규칙과 일치하는 스타일/형식 문제는 제외됩니다.

@@ -1,45 +1,45 @@
-# Memory
+# 메모리
 
-Every Qwen Code session starts with a fresh context window. Two mechanisms carry knowledge across sessions so you don't have to re-explain yourself every time:
+모든 Qwen Code 세션은 새로운 컨텍스트 창으로 시작됩니다. 두 가지 메커니즘이 세션 전반에 걸쳐 지식을 전달하므로 매번 다시 설명할 필요가 없습니다.
 
-- **QWEN.md** — instructions _you_ write once and Qwen reads every session
-- **Auto-memory** — notes Qwen writes itself based on what it learns from you
+* **QWEN.md**- 지침*너*한 번 작성하면 Qwen이 모든 세션을 읽습니다.
+* **자동 기억**— Qwen은 당신에게서 배운 내용을 바탕으로 스스로 작성합니다.
 
----
+***
 
-## QWEN.md: your instructions to Qwen
+## QWEN.md: Qwen에 대한 지침
 
-QWEN.md is a plain text file where you write things Qwen should always know about your project or your preferences. Think of it as a permanent briefing that loads at the start of every conversation.
+QWEN.md는 Qwen이 프로젝트나 선호 사항에 대해 항상 알아야 할 사항을 작성하는 일반 텍스트 파일입니다. 모든 대화가 시작될 때마다 로드되는 영구 브리핑이라고 생각하세요.
 
-### What to put in QWEN.md
+### QWEN.md에 무엇을 넣어야 할까요?
 
-Add things you'd otherwise have to repeat every session:
+매 세션마다 반복해야 할 사항을 추가하세요.
 
-- Build and test commands (`npm run test`, `make build`)
-- Coding conventions your team follows ("all new files must have JSDoc comments")
-- Architectural decisions ("we use the repository pattern, never call the database directly from controllers")
-- Personal preferences ("always use pnpm, not npm")
+* 빌드 및 테스트 명령(`npm run test`,`make build`)
+* 팀이 따르는 코딩 규칙("모든 새 파일에는 JSDoc 주석이 있어야 합니다")
+* 아키텍처 결정("우리는 저장소 패턴을 사용하며 컨트롤러에서 직접 데이터베이스를 호출하지 않습니다.")
+* 개인 취향("항상 npm이 아닌 pnpm 사용")
 
-Don't include things Qwen can figure out by reading your code. QWEN.md works best when it's short and specific — the longer it gets, the less reliably Qwen follows it.
+Qwen이 코드를 읽어서 알아낼 수 있는 내용은 포함하지 마세요. QWEN.md는 짧고 구체적일 때 가장 잘 작동합니다. 길이가 길어질수록 Qwen이 따라가는 신뢰도가 떨어집니다.
 
-### Where to create QWEN.md
+### QWEN.md를 생성하는 위치
 
-| File                          | Who it applies to                             |
-| ----------------------------- | --------------------------------------------- |
-| `~/.qwen/QWEN.md`             | You, across all your projects                 |
-| `QWEN.md` in the project root | Your whole team (commit it to source control) |
+| 파일                 | 누구에게 적용되는가        |
+| ------------------ | ----------------- |
+| `~/.qwen/QWEN.md`  | 당신은 당신의 모든 프로젝트에서 |
+| `QWEN.md`프로젝트 루트에서 | 전체 팀(소스 제어에 커밋)   |
 
-You can have both. Qwen loads all QWEN.md files it finds when you start a session — your personal one plus any in the project.
+둘 다 가질 수 있습니다. Qwen은 세션을 시작할 때 찾은 모든 QWEN.md 파일(개인 파일과 프로젝트의 모든 파일)을 로드합니다.
 
-If your repository already has an `AGENTS.md` file for other AI tools, Qwen reads that too. No need to duplicate instructions.
+저장소에 이미`AGENTS.md`다른 AI 도구에 대한 파일이 있으면 Qwen도 그 파일을 읽습니다. 지침을 복제할 필요가 없습니다.
 
-### Generate one automatically with `/init`
+### 다음을 사용하여 자동으로 생성하십시오.`/init`
 
-Run `/init` and Qwen will analyze your codebase to create a starter QWEN.md with build commands, test instructions, and conventions it finds. If one already exists, it suggests additions instead of overwriting.
+달리다`/init`Qwen은 코드베이스를 분석하여 빌드 명령, 테스트 지침 및 찾은 규칙이 포함된 스타터 QWEN.md를 만듭니다. 이미 존재하는 경우 덮어쓰는 대신 추가를 제안합니다.
 
-### Reference other files
+### 다른 파일 참조
 
-You can point QWEN.md at other files so Qwen reads them too:
+QWEN.md를 다른 파일에 지정하여 Qwen도 해당 파일을 읽을 수 있도록 할 수 있습니다.
 
 ```markdown
 See @README.md for project overview.
@@ -49,46 +49,46 @@ See @README.md for project overview.
 - Git workflow: @docs/git-workflow.md
 ```
 
-Use `@path/to/file` anywhere in QWEN.md. Relative paths resolve from the QWEN.md file itself.
+사용`@path/to/file`QWEN.md의 어느 곳에서나 가능합니다. 상대 경로는 QWEN.md 파일 자체에서 확인됩니다.
 
----
+***
 
-## Auto-memory: what Qwen learns about you
+## 자동 기억: Qwen이 당신에 대해 알게 된 것
 
-Auto-memory runs in the background. After each of your conversations, Qwen quietly saves useful things it learned — your preferences, feedback you gave, project context — so it can use them in future sessions without you repeating yourself.
+자동 메모리는 백그라운드에서 실행됩니다. 각 대화가 끝난 후 Qwen은 사용자의 선호도, 사용자가 제공한 피드백, 프로젝트 컨텍스트 등 학습한 유용한 정보를 조용히 저장하므로 사용자가 반복하지 않고도 향후 세션에서 사용할 수 있습니다.
 
-This is different from QWEN.md: you don't write it, Qwen does.
+이것은 QWEN.md와 다릅니다. 직접 작성하는 것이 아니라 Qwen이 작성합니다.
 
-### What Qwen saves
+### Qwen이 저장하는 것
 
-Qwen looks for four kinds of things worth remembering:
+Qwen은 기억할 가치가 있는 네 가지 유형의 항목을 찾습니다.
 
-| What                    | Examples                                                 |
-| ----------------------- | -------------------------------------------------------- |
-| **About you**           | Your role, background, how you like to work              |
-| **Your feedback**       | Corrections you made, approaches you confirmed           |
-| **Project context**     | Ongoing work, decisions, goals not obvious from the code |
-| **External references** | Dashboards, ticket trackers, docs links you mentioned    |
+| 무엇            | 예                             |
+| ------------- | ----------------------------- |
+| **당신에 대해**    | 당신의 역할, 배경, 일하는 방식            |
+| **귀하의 의견**    | 귀하가 수정한 사항, 귀하가 확인한 접근 방식     |
+| **프로젝트 컨텍스트** | 코드에서 명확하지 않은 진행 중인 작업, 결정, 목표 |
+| **외부 참조**     | 언급한 대시보드, 티켓 추적기, 문서 링크       |
 
-Qwen doesn't save everything — only things that would actually be useful next time.
+Qwen은 모든 것을 저장하지 않습니다. 다음에 실제로 유용할 것만 저장합니다.
 
-### Where it's stored
+### 저장 위치
 
-Auto-memory files live at `~/.qwen/projects/<project>/memory/`. All branches and worktrees of the same repository share the same memory folder, so what Qwen learns in one branch is available in others.
+자동 메모리 파일은 다음 위치에 있습니다.`~/.qwen/projects/<project>/memory/`. 동일한 저장소의 모든 분기와 작업 트리는 동일한 메모리 폴더를 공유하므로 Qwen이 한 분기에서 학습한 내용을 다른 분기에서도 사용할 수 있습니다.
 
-Everything saved is plain markdown — you can open, edit, or delete any file at any time.
+저장된 모든 내용은 일반 마크다운이므로 언제든지 파일을 열거나 편집하거나 삭제할 수 있습니다.
 
-### Periodic cleanup
+### 주기적인 정리
 
-Qwen periodically goes through its saved memories to remove duplicates and clean up outdated entries. This runs automatically in the background once a day after enough sessions have accumulated. You can trigger it manually with `/dream` if you want it to run now.
+Qwen은 주기적으로 저장된 메모리를 검토하여 중복 항목을 제거하고 오래된 항목을 정리합니다. 충분한 세션이 누적되면 하루에 한 번 백그라운드에서 자동으로 실행됩니다. 다음을 사용하여 수동으로 트리거할 수 있습니다.`/dream`지금 실행하고 싶다면.
 
-While cleanup is running, **✦ dreaming** appears in the corner of the screen. Your session continues normally.
+정리가 진행되는 동안,**✦ 꿈을 꾸다**화면 모서리에 나타납니다. 세션이 정상적으로 계속됩니다.
 
-### Turning it on or off
+### 켜거나 끄기
 
-Auto-memory is on by default. To toggle it, open `/memory` and use the switches at the top. You can turn off just the automatic saving, just the periodic cleanup, or both.
+자동 메모리는 기본적으로 켜져 있습니다. 전환하려면 다음을 엽니다.`/memory`상단에 있는 스위치를 사용하세요. 자동 저장만 끄거나 주기적인 정리만 끄거나 둘 다를 끌 수 있습니다.
 
-You can also set them in `~/.qwen/settings.json` (applies to all projects) or `.qwen/settings.json` (this project only):
+당신은 또한 그들을 설정할 수 있습니다`~/.qwen/settings.json`(모든 프로젝트에 적용) 또는`.qwen/settings.json`(이 프로젝트에만 해당):
 
 ```json
 {
@@ -99,27 +99,27 @@ You can also set them in `~/.qwen/settings.json` (applies to all projects) or `.
 }
 ```
 
----
+***
 
-## Commands
+## 명령
 
 ### `/memory`
 
-Opens the Memory panel. From here you can:
+메모리 패널을 엽니다. 여기에서 다음을 수행할 수 있습니다.
 
-- Turn auto-memory saving on or off
-- Turn periodic cleanup (dream) on or off
-- Open your personal QWEN.md (`~/.qwen/QWEN.md`)
-- Open the project QWEN.md
-- Browse the auto-memory folder
+* 자동 메모리 절약 켜기 또는 끄기
+* 주기적 정리(드림) 켜기 또는 끄기
+* 개인 QWEN.md를 엽니다(`~/.qwen/QWEN.md`)
+* QWEN.md 프로젝트를 엽니다.
+* 자동 메모리 폴더 찾아보기
 
 ### `/init`
 
-Generates a starter QWEN.md for your project. Qwen reads your codebase and fills in build commands, test instructions, and conventions it discovers.
+프로젝트에 대한 스타터 QWEN.md를 생성합니다. Qwen은 코드베이스를 읽고 발견한 빌드 명령, 테스트 지침 및 규칙을 채웁니다.
 
 ### `/remember <text>`
 
-Immediately saves something to auto-memory without waiting for Qwen to pick it up automatically:
+Qwen이 자동으로 선택할 때까지 기다리지 않고 자동 메모리에 항목을 즉시 저장합니다.
 
 ```
 /remember always use snake_case for Python variable names
@@ -128,7 +128,7 @@ Immediately saves something to auto-memory without waiting for Qwen to pick it u
 
 ### `/forget <text>`
 
-Removes auto-memory entries that match your description:
+설명과 일치하는 자동 메모리 항목을 제거합니다.
 
 ```
 /forget old workaround for the login bug
@@ -136,33 +136,33 @@ Removes auto-memory entries that match your description:
 
 ### `/dream`
 
-Runs the memory cleanup now instead of waiting for the automatic schedule:
+자동 일정을 기다리는 대신 지금 메모리 정리를 실행합니다.
 
 ```
 /dream
 ```
 
----
+***
 
-## Troubleshooting
+## 문제 해결
 
-### Qwen isn't following my QWEN.md
+### Qwen이 내 QWEN.md를 팔로우하지 않습니다.
 
-Open `/memory` to see which files are loaded. If your file isn't listed, Qwen can't see it — make sure it's in the project root or `~/.qwen/`.
+열려 있는`/memory`어떤 파일이 로드되었는지 확인하세요. 파일이 목록에 없으면 Qwen에서 볼 수 없습니다. 파일이 프로젝트 루트에 있는지 확인하세요.`~/.qwen/`.
 
-Instructions work better when they're specific:
+지침은 구체적일 때 더 잘 작동합니다.
 
-- ✓ `Use 2-space indentation for TypeScript files`
-- ✗ `Format code nicely`
+* ✓`Use 2-space indentation for TypeScript files`
+* ✗`Format code nicely`
 
-If you have multiple QWEN.md files with conflicting instructions, Qwen may behave inconsistently. Review them and remove any contradictions.
+지침이 충돌하는 QWEN.md 파일이 여러 개 있는 경우 Qwen이 일관되지 않게 동작할 수 있습니다. 이를 검토하고 모순되는 부분을 제거하십시오.
 
-### I want to see what Qwen has saved
+### Qwen이 무엇을 저장했는지 보고 싶습니다.
 
-Run `/memory` and select **Open auto-memory folder**. All saved memories are readable markdown files you can browse, edit, or delete.
+달리다`/memory`그리고 선택**자동 메모리 폴더 열기**. 저장된 모든 메모리는 검색, 편집 또는 삭제할 수 있는 읽기 가능한 마크다운 파일입니다.
 
-### Qwen keeps forgetting things
+### 퀀은 자꾸 잊어버리는데
 
-If auto-memory is on but Qwen doesn't seem to remember things across sessions, try running `/dream` to force a cleanup pass. Also check `/memory` to confirm both toggles are enabled.
+자동 메모리가 켜져 있지만 Qwen이 세션 전반에 걸쳐 내용을 기억하지 못하는 것 같으면 다음을 실행해 보세요.`/dream`정리 패스를 강제합니다. 또한 확인`/memory`두 토글이 모두 활성화되어 있는지 확인하세요.
 
-For things you always want Qwen to remember, add them to QWEN.md instead — auto-memory is best-effort, QWEN.md is guaranteed.
+Qwen이 항상 기억하기를 원하는 사항은 대신 QWEN.md에 추가하세요. 자동 메모리가 최선이며 QWEN.md가 보장됩니다.

@@ -1,16 +1,16 @@
-## Customizing the sandbox environment (Docker/Podman)
+## 샌드박스 환경 사용자 정의(Docker/Podman)
 
-### Currently, the project does not support the use of the BUILD_SANDBOX function after installation through the npm package
+### 현재 프로젝트는 npm 패키지를 통해 설치 후 BUILD\_SANDBOX 기능 사용을 지원하지 않습니다.
 
-1. To build a custom sandbox, you need to access the build scripts (scripts/build_sandbox.js) in the source code repository.
-2. These build scripts are not included in the packages released by npm.
-3. The code contains hard-coded path checks that explicitly reject build requests from non-source code environments.
+1. 사용자 정의 샌드박스를 빌드하려면 소스 코드 저장소의 빌드 스크립트(scripts/build\_sandbox.js)에 액세스해야 합니다.
+2. 이러한 빌드 스크립트는 npm에서 출시한 패키지에 포함되어 있지 않습니다.
+3. 코드에는 소스 코드가 아닌 환경의 빌드 요청을 명시적으로 거부하는 하드 코딩된 경로 검사가 포함되어 있습니다.
 
-If you need extra tools inside the container (e.g., `git`, `python`, `rg`), create a custom Dockerfile, The specific operation is as follows
+컨테이너 내부에 추가 도구가 필요한 경우(예:`git`,`python`,`rg`), 사용자 정의 Dockerfile을 생성합니다. 구체적인 작업은 다음과 같습니다.
 
-#### 1、Clone qwen code project first, https://github.com/QwenLM/qwen-code.git
+#### 1、먼저 qwen 코드 프로젝트를 복제하고,<https://github.com/QwenLM/qwen-code.git>
 
-#### 2、Make sure you perform the following operation in the source code repository directory
+#### 2、소스 코드 저장소 디렉터리에서 다음 작업을 수행해야 합니다.
 
 ```bash
 # 1. First, install the dependencies of the project
@@ -41,11 +41,11 @@ qwen -v
 
 ```
 
-#### 3、Create your sandbox Dockerfile under the root directory of your own project
+#### 3、자신의 프로젝트 루트 디렉터리에 샌드박스 Dockerfile을 만듭니다.
 
-- Path: `.qwen/sandbox.Dockerfile`
+* 길:`.qwen/sandbox.Dockerfile`
 
-- Official mirror image address:https://github.com/QwenLM/qwen-code/pkgs/container/qwen-code
+* 공식 미러 이미지 주소:<https://github.com/QwenLM/qwen-code/pkgs/container/qwen-code>
 
 ```bash
 # Based on the official Qwen sandbox image (It is recommended to explicitly specify the version)
@@ -57,18 +57,18 @@ RUN apt-get update && apt-get install -y \
     ripgrep
 ```
 
-#### 4、Create the first sandbox image under the root directory of your project
+#### 4、프로젝트의 루트 디렉터리 아래에 첫 번째 샌드박스 이미지를 만듭니다.
 
 ```bash
 QWEN_SANDBOX=docker BUILD_SANDBOX=1 qwen -s
 # Observe whether the sandbox version of the tool you launched is consistent with the version of your custom image. If they are consistent, the startup will be successful
 ```
 
-This builds a project-specific image based on the default sandbox image.
+그러면 기본 샌드박스 이미지를 기반으로 프로젝트별 이미지가 빌드됩니다.
 
-#### Remove npm link
+#### npm 링크 제거
 
-- If you want to restore the official CLI of qwen, please remove the npm link
+* qwen의 공식 CLI를 복원하려면 npm 링크를 제거하세요.
 
 ```bash
 # Method 1: Unlink globally

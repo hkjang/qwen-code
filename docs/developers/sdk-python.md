@@ -1,29 +1,29 @@
-# Python SDK
+# 파이썬 SDK
 
 ## `qwen-code-sdk`
 
-`qwen-code-sdk` is an experimental Python SDK for Qwen Code. v1 targets the
-existing `stream-json` CLI protocol and keeps the transport surface small and
-testable.
+`qwen-code-sdk`Qwen Code용 실험용 Python SDK입니다. v1은&#x20;
+기존`stream-json`CLI 프로토콜을 사용하여 전송 표면을 작게 유지하고&#x20;
+테스트 가능.
 
-## Scope
+## 범위
 
-- Package name: `qwen-code-sdk`
-- Import path: `qwen_code_sdk`
-- Runtime requirement: Python `>=3.10`
-- CLI dependency: external `qwen` executable is required in v1
-- Transport scope: process transport only
-- Not included in v1: ACP transport, SDK-embedded MCP servers
+* 패키지 이름:`qwen-code-sdk`
+* 가져오기 경로:`qwen_code_sdk`
+* 런타임 요구 사항: Python`>=3.10`
+* CLI 종속성: 외부`qwen`v1에는 실행 파일이 필요합니다
+* 전송 범위: 프로세스 전송만
+* v1에 포함되지 않음: ACP 전송, SDK 내장 MCP 서버
 
-## Install
+## 설치하다
 
 ```bash
 pip install qwen-code-sdk
 ```
 
-If `qwen` is not on `PATH`, pass `path_to_qwen_executable` explicitly.
+만약에`qwen`켜져 있지 않습니다`PATH`, 통과하다`path_to_qwen_executable`명시적으로.
 
-## Quick Start
+## 빠른 시작
 
 ```python
 import asyncio
@@ -48,121 +48,119 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-## API Surface
+## API 표면
 
-### Top-level entry points
+### 최상위 진입점
 
-- `query(prompt, options=None) -> Query`
-- `query_sync(prompt, options=None) -> SyncQuery`
+* `query(prompt, options=None) -> Query`
+* `query_sync(prompt, options=None) -> SyncQuery`
 
-`prompt` supports either:
+`prompt`다음 중 하나를 지원합니다:
 
-- `str` for single-turn requests
-- `AsyncIterable[SDKUserMessage]` for multi-turn streams
+* `str`단일 회전 요청의 경우
+* `AsyncIterable[SDKUserMessage]`다중 턴 스트림용
 
 ### `Query`
 
-- Async iterable over SDK messages
-- `close()`
-- `interrupt()`
-- `set_model(model)`
-- `set_permission_mode(mode)`
-- `supported_commands()`
-- `mcp_server_status()`
-- `get_session_id()`
-- `is_closed()`
+* SDK 메시지를 통한 비동기 반복 가능
+* `close()`
+* `interrupt()`
+* `set_model(model)`
+* `set_permission_mode(mode)`
+* `supported_commands()`
+* `mcp_server_status()`
+* `get_session_id()`
+* `is_closed()`
 
 ### `QueryOptions`
 
-Supported options in v1:
+v1에서 지원되는 옵션:
 
-- `cwd`
-- `model`
-- `path_to_qwen_executable`
-- `permission_mode`
-- `can_use_tool`
-- `env`
-- `system_prompt`
-- `append_system_prompt`
-- `debug`
-- `max_session_turns`
-- `core_tools`
-- `exclude_tools`
-- `allowed_tools`
-- `auth_type`
-- `include_partial_messages`
-- `resume`
-- `continue_session`
-- `session_id`
-- `timeout`
-- `mcp_servers`
-- `stderr`
+* `cwd`
+* `model`
+* `path_to_qwen_executable`
+* `permission_mode`
+* `can_use_tool`
+* `env`
+* `system_prompt`
+* `append_system_prompt`
+* `debug`
+* `max_session_turns`
+* `core_tools`
+* `exclude_tools`
+* `allowed_tools`
+* `auth_type`
+* `include_partial_messages`
+* `resume`
+* `continue_session`
+* `session_id`
+* `timeout`
+* `mcp_servers`
+* `stderr`
 
-Session argument priority is fixed as:
+세션 인수 우선순위는 다음과 같이 고정됩니다.
 
 1. `resume`
 2. `continue_session`
 3. `session_id`
 
-## Permission Handling
+## 권한 처리
 
-When the CLI emits a `can_use_tool` control request, the SDK routes it through
-`can_use_tool(tool_name, tool_input, context)`.
+CLI가`can_use_tool`제어 요청이 있으면 SDK는 이를 통해 요청을 라우팅합니다.`can_use_tool(tool_name, tool_input, context)`.
 
-- Default behavior: deny
-- Default timeout: 60 seconds
-- Timeout fallback: deny
-- Callback exceptions: converted to deny with an error message
-- Callback context: `cancel_event`, `suggestions`, and `blocked_path`
-- Callback contract: `can_use_tool` must be async with 3 positional arguments;
-  `stderr` must accept 1 positional string argument
+* 기본 동작: 거부
+* 기본 시간 초과: 60초
+* 시간 초과 대체: 거부
+* 콜백 예외: 오류 메시지와 함께 거부로 변환됨
+* 콜백 컨텍스트:`cancel_event`,`suggestions`, 그리고`blocked_path`
+* 콜백 계약:`can_use_tool`3개의 위치 인수를 사용하여 비동기식이어야 합니다.`stderr`위치 문자열 인수 1개를 허용해야 합니다.
 
-## Error Model
+## 오류 모델
 
-- `ValidationError`: invalid options, invalid UUIDs, unsupported combinations
-- `ControlRequestTimeoutError`: initialize, interrupt, or other control request
-  timed out
-- `ProcessExitError`: CLI exited non-zero
-- `AbortError`: control request or session was cancelled
+* `ValidationError`: 잘못된 옵션, 잘못된 UUID, 지원되지 않는 조합
+* `ControlRequestTimeoutError`: 초기화, 인터럽트, 기타 제어 요청&#x20;
+  시간 초과
+* `ProcessExitError`: CLI가 0이 아닌 값으로 종료되었습니다.
+* `AbortError`: 제어 요청 또는 세션이 취소되었습니다.
 
-## Troubleshooting
+## 문제 해결
 
-If the SDK cannot start the CLI:
+SDK가 CLI를 시작할 수 없는 경우:
 
-- Verify `qwen --version` works in the target environment
-- Pass `path_to_qwen_executable` if your shell uses `nvm`, `pyenv`, or other
-  non-standard PATH setup
-- Use `debug=True` or `stderr=print` to surface CLI stderr while debugging
+* 확인하다`qwen --version`대상 환경에서 작동
+* 통과하다`path_to_qwen_executable`쉘이 사용하는 경우`nvm`,`pyenv`, 또는 기타
+  비표준 PATH 설정
+* 사용`debug=True`또는`stderr=print`디버깅하는 동안 CLI 표준 오류를 표시하려면
 
-If session control calls time out:
+세션 제어 호출 시간이 초과된 경우:
 
-- Check that the target `qwen` version supports `--input-format stream-json`
-- Increase `timeout.control_request`
-- Verify that no wrapper script is swallowing stdout/stderr
+* 대상이 맞는지 확인하세요`qwen`버전 지원`--input-format stream-json`
+* 증가하다`timeout.control_request`
+* stdout/stderr을 삼키는 래퍼 스크립트가 없는지 확인하세요.
 
-## Repository Integration
+## 저장소 통합
 
-Repository-level helper commands:
+저장소 수준 도우미 명령:
 
-- `npm run test:sdk:python`
-- `npm run lint:sdk:python`
-- `npm run typecheck:sdk:python`
-- `npm run smoke:sdk:python -- --qwen qwen`
+* `npm run test:sdk:python`
+* `npm run lint:sdk:python`
+* `npm run typecheck:sdk:python`
+* `npm run smoke:sdk:python -- --qwen qwen`
 
-## Real E2E Smoke
+## 실제 E2E 연기
 
-For a real runtime check (actual `qwen` process + real model call), run from
-the repository root. The npm helper uses `python3`, so ensure it resolves to a
-Python `>=3.10` interpreter:
+실제 런타임 확인을 위해(실제`qwen`프로세스 + 실제 모델 호출), 다음에서 실행
+저장소 루트. npm 도우미는 다음을 사용합니다.`python3`이므로 다음과 같이 해결되는지 확인하세요.
+파이썬`>=3.10`통역사:
 
 ```bash
 npm run smoke:sdk:python -- --qwen qwen
 ```
 
-This script runs:
+이 스크립트는 다음과 같이 실행됩니다.
 
-- async single-turn query
-- async control flow (`supported_commands`, permission mode updates)
-- sync `query_sync` query
+* 비동기 단일 회전 쿼리
+* 비동기 제어 흐름(`supported_commands`, 권한 모드 업데이트)
+* 동조`query_sync`질문
 
-It prints JSON and returns non-zero on failure.
+JSON을 인쇄하고 실패 시 0이 아닌 값을 반환합니다.

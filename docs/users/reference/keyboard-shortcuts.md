@@ -1,72 +1,72 @@
-# Qwen Code Keyboard Shortcuts
+# Qwen 코드 키보드 단축키
 
-This document lists the available keyboard shortcuts in Qwen Code.
+이 문서에는 Qwen Code에서 사용 가능한 키보드 단축키가 나열되어 있습니다.
 
-## General
+## 일반적인
 
-| Shortcut                       | Description                                                                                                           |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `Esc`                          | Close dialogs and suggestions.                                                                                        |
-| `Ctrl+C`                       | Cancel the ongoing request and clear the input. Press twice to exit the application.                                  |
-| `Ctrl+D`                       | Exit the application if the input is empty. Press twice to confirm.                                                   |
-| `Ctrl+L`                       | Clear the screen.                                                                                                     |
-| `Ctrl+O`                       | Toggle compact mode (hide/show tool output and thinking).                                                             |
-| `Ctrl+S`                       | Allows long responses to print fully, disabling truncation. Use your terminal's scrollback to view the entire output. |
-| `Ctrl+T`                       | Toggle the display of tool descriptions.                                                                              |
-| `Shift+Tab` (`Tab` on Windows) | Cycle approval modes (`plan` → `default` → `auto-edit` → `yolo`)                                                      |
+| 지름길                           | 설명                                                        |
+| ----------------------------- | --------------------------------------------------------- |
+| `Esc`                         | 대화상자 및 제안을 닫습니다.                                          |
+| `Ctrl+C`                      | 진행 중인 요청을 취소하고 입력을 지웁니다. 응용프로그램을 종료하려면 두 번 누르세요.          |
+| `Ctrl+D`                      | 입력이 비어 있으면 애플리케이션을 종료합니다. 확인하려면 두 번 누르세요.                 |
+| `Ctrl+L`                      | 화면을 지웁니다.                                                 |
+| `Ctrl+O`                      | 압축 모드를 전환합니다(도구 출력 및 생각 숨기기/표시).                          |
+| `Ctrl+S`                      | 긴 응답을 완전히 인쇄하고 잘림을 비활성화합니다. 전체 출력을 보려면 터미널의 스크롤백을 사용하십시오. |
+| `Ctrl+T`                      | 도구 설명 표시를 전환합니다.                                          |
+| `Shift+Tab`(`Tab`Windows의 경우) | 주기 승인 모드(`plan`→`default`→`auto-edit`→`yolo`)             |
 
-## Input Prompt
+## 입력 프롬프트
 
-| Shortcut                                           | Description                                                                                                                         |
-| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `!`                                                | Toggle shell mode when the input is empty.                                                                                          |
-| `?`                                                | Toggle keyboard shortcuts display when the input is empty.                                                                          |
-| `\` (at end of line) + `Enter`                     | Insert a newline.                                                                                                                   |
-| `Down Arrow`                                       | Navigate down through the input history.                                                                                            |
-| `Enter`                                            | Submit the current prompt.                                                                                                          |
-| `Meta+Delete` / `Ctrl+Delete`                      | Delete the word to the right of the cursor.                                                                                         |
-| `Tab`                                              | Autocomplete the current suggestion if one exists.                                                                                  |
-| `Up Arrow`                                         | Navigate up through the input history.                                                                                              |
-| `Ctrl+A` / `Home`                                  | Move the cursor to the beginning of the line.                                                                                       |
-| `Ctrl+B` / `Left Arrow`                            | Move the cursor one character to the left.                                                                                          |
-| `Ctrl+C`                                           | Clear the input prompt                                                                                                              |
-| `Esc` (double press)                               | Clear the input prompt.                                                                                                             |
-| `Ctrl+D` / `Delete`                                | Delete the character to the right of the cursor.                                                                                    |
-| `Ctrl+E` / `End`                                   | Move the cursor to the end of the line.                                                                                             |
-| `Ctrl+F` / `Right Arrow`                           | Move the cursor one character to the right.                                                                                         |
-| `Ctrl+H` / `Backspace`                             | Delete the character to the left of the cursor.                                                                                     |
-| `Ctrl+K`                                           | Delete from the cursor to the end of the line.                                                                                      |
-| `Ctrl+Left Arrow` / `Meta+Left Arrow` / `Meta+B`   | Move the cursor one word to the left.                                                                                               |
-| `Ctrl+N`                                           | Navigate down through the input history.                                                                                            |
-| `Ctrl+P`                                           | Navigate up through the input history.                                                                                              |
-| `Ctrl+R`                                           | Reverse search through input/shell history.                                                                                         |
-| `Ctrl+Y`                                           | Retry the last failed request.                                                                                                      |
-| `Ctrl+Right Arrow` / `Meta+Right Arrow` / `Meta+F` | Move the cursor one word to the right.                                                                                              |
-| `Ctrl+U`                                           | Delete from the cursor to the beginning of the line.                                                                                |
-| `Ctrl+V` (Windows: `Alt+V`)                        | Paste clipboard content. If the clipboard contains an image, it will be saved and a reference to it will be inserted in the prompt. |
-| `Ctrl+W` / `Meta+Backspace` / `Ctrl+Backspace`     | Delete the word to the left of the cursor.                                                                                          |
-| `Ctrl+X` / `Meta+Enter`                            | Open the current input in an external editor.                                                                                       |
+| 지름길                                                | 설명                                                                            |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `!`                                                | 입력이 비어 있으면 셸 모드를 전환합니다.                                                       |
+| `?`                                                | 입력이 비어 있을 때 키보드 단축키 표시를 전환합니다.                                                |
+| `\`(줄 끝에서) +`Enter`                                | 개행을 삽입합니다.                                                                    |
+| `Down Arrow`                                       | 입력 기록을 아래로 탐색합니다.                                                             |
+| `Enter`                                            | 현재 프롬프트를 제출합니다.                                                               |
+| `Meta+Delete` / `Ctrl+Delete`                      | 커서 오른쪽에 있는 단어를 삭제합니다.                                                         |
+| `Tab`                                              | 현재 제안이 있으면 자동 완성합니다.                                                          |
+| `Up Arrow`                                         | 입력 기록을 통해 위로 이동합니다.                                                           |
+| `Ctrl+A` / `Home`                                  | 커서를 줄의 시작 부분으로 이동합니다.                                                         |
+| `Ctrl+B` / `Left Arrow`                            | 커서를 한 문자 왼쪽으로 이동합니다.                                                          |
+| `Ctrl+C`                                           | 입력 프롬프트 지우기                                                                   |
+| `Esc`(두 번 누르기)                                     | 입력 프롬프트를 지웁니다.                                                                |
+| `Ctrl+D` / `Delete`                                | 커서 오른쪽에 있는 문자를 삭제합니다.                                                         |
+| `Ctrl+E` / `End`                                   | 커서를 줄의 끝으로 이동합니다.                                                             |
+| `Ctrl+F` / `Right Arrow`                           | 커서를 오른쪽으로 한 문자 이동합니다.                                                         |
+| `Ctrl+H` / `Backspace`                             | 커서 왼쪽에 있는 문자를 삭제합니다.                                                          |
+| `Ctrl+K`                                           | 커서 위치부터 줄 끝까지 삭제합니다.                                                          |
+| `Ctrl+Left Arrow` / `Meta+Left Arrow` / `Meta+B`   | 커서를 한 단어 왼쪽으로 이동합니다.                                                          |
+| `Ctrl+N`                                           | 입력 기록을 아래로 탐색합니다.                                                             |
+| `Ctrl+P`                                           | 입력 기록을 통해 위로 이동합니다.                                                           |
+| `Ctrl+R`                                           | 입력/쉘 기록을 통한 역검색.                                                              |
+| `Ctrl+Y`                                           | 마지막으로 실패한 요청을 다시 시도하십시오.                                                      |
+| `Ctrl+Right Arrow` / `Meta+Right Arrow` / `Meta+F` | 커서를 오른쪽으로 한 단어 이동합니다.                                                         |
+| `Ctrl+U`                                           | 커서부터 줄의 시작 부분까지 삭제합니다.                                                        |
+| `Ctrl+V`(윈도우:`Alt+V`)                              | 클립보드 내용을 붙여넣습니다. 클립보드에 이미지가 포함되어 있으면 해당 이미지가 저장되고 해당 이미지에 대한 참조가 프롬프트에 삽입됩니다. |
+| `Ctrl+W` / `Meta+Backspace` / `Ctrl+Backspace`     | 커서 왼쪽에 있는 단어를 삭제합니다.                                                          |
+| `Ctrl+X` / `Meta+Enter`                            | 외부 편집기에서 현재 입력을 엽니다.                                                          |
 
-## Suggestions
+## 제안
 
-| Shortcut        | Description                            |
-| --------------- | -------------------------------------- |
-| `Down Arrow`    | Navigate down through the suggestions. |
-| `Tab` / `Enter` | Accept the selected suggestion.        |
-| `Up Arrow`      | Navigate up through the suggestions.   |
+| 지름길             | 설명                |
+| --------------- | ----------------- |
+| `Down Arrow`    | 제안 사항을 아래로 탐색하세요. |
+| `Tab` / `Enter` | 선택한 제안을 수락합니다.    |
+| `Up Arrow`      | 제안 사항을 탐색하세요.     |
 
-## Radio Button Select
+## 라디오 버튼 선택
 
-| Shortcut           | Description                                                                                                   |
-| ------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `Down Arrow` / `j` | Move selection down.                                                                                          |
-| `Enter`            | Confirm selection.                                                                                            |
-| `Up Arrow` / `k`   | Move selection up.                                                                                            |
-| `1-9`              | Select an item by its number.                                                                                 |
-| (multi-digit)      | For items with numbers greater than 9, press the digits in quick succession to select the corresponding item. |
+| 지름길                | 설명                                             |
+| ------------------ | ---------------------------------------------- |
+| `Down Arrow` / `j` | 선택 항목을 아래로 이동합니다.                              |
+| `Enter`            | 선택을 확인하세요.                                     |
+| `Up Arrow` / `k`   | 선택 항목을 위로 이동합니다.                               |
+| `1-9`              | 번호로 항목을 선택합니다.                                 |
+| (여러 자리)            | 9보다 큰 숫자의 항목의 경우 숫자를 빠르게 연속해서 눌러 해당 항목을 선택하세요. |
 
-## IDE Integration
+## IDE 통합
 
-| Shortcut | Description                       |
-| -------- | --------------------------------- |
-| `Ctrl+G` | See context CLI received from IDE |
+| 지름길      | 설명                         |
+| -------- | -------------------------- |
+| `Ctrl+G` | IDE에서 수신된 컨텍스트 CLI를 참조하세요. |
