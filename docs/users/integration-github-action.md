@@ -137,7 +137,7 @@ gha-creds-*.json
 
 * <a name="__input_use_pnpm"></a><a href="#user-content-__input_use_pnpm"><code>사용\*pnpm</code></a>: \*(선택 사항, 기본값:`false`)\_ qwen-code-cli 설치에 npm 대신 pnpm을 사용할지 여부
 
-* <a name="__input_workflow_name"></a><a href="#user-content-__input_workflow_name"><code>워크플로\*이름</code></a>: \*(선택 사항, 기본값:`${{ github.workflow }}`)\_ 원격 측정 목적으로 사용되는 GitHub 워크플로 이름입니다.
+* <a name="__input_workflow_name"></a><a href="#user-content-__input_workflow_name"><code>워크플로\*이름</code></a>: \*(선택 사항, 기본값:`${{ github.workflow }}`)\_ 텔레메트리 목적으로 사용되는 GitHub 워크플로 이름입니다.
 
 <!-- END_AUTOGEN_INPUTS -->
 

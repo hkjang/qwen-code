@@ -179,7 +179,7 @@ interface CacheSafeParams {
 * 메인 턴이 성공할 때마다 저장됨`GeminiClient.sendMessageStream()`
 * 다음 날짜에 지워짐`startChat()` / `resetChat()`세션 간 유출을 방지하기 위해
 * 기록이 40개 항목으로 잘렸습니다.`createForkedChat`얕은 복사본을 사용합니다(매개변수는 이미 심층 복제된 스냅샷입니다).
-* 사고 모드가 명시적으로 비활성화되었습니다(`thinkingConfig: { includeThoughts: false }`) — 추론 토큰은 추측에 필요하지 않으며 비용/지연 시간을 낭비합니다. 이는 캐시 접두사 일치에 영향을 미치지 않습니다(systemInstruction + 도구 + 기록으로만 결정됨).
+* 사고 모드가 명시적으로 비활성화되었습니다(`thinkingConfig: { includeThoughts: false }`) — 추론 토큰은 추측에 필요하지 않으며 비용/레이턴시을 낭비합니다. 이는 캐시 접두사 일치에 영향을 미치지 않습니다(systemInstruction + 도구 + 기록으로만 결정됨).
 * 버전 감지를 통해`JSON.stringify`시스템명령 + 도구 비교
 
 ### 캐시 메커니즘

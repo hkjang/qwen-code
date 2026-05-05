@@ -22,7 +22,7 @@ cd /path/to/project
 qwen
 ```
 
-**3. 높은 수준의 개요를 요청하세요**
+**3. 개략적인 개요를 요청하세요**
 
 ```
 give me an overview of this codebase

@@ -330,7 +330,7 @@ Alibaba Cloud Coding Plan은 두 지역을 지원합니다.
 
 ### API 키 저장소
 
-코딩 계획을 통해 구성할 때`/auth`명령을 실행하면 API 키는 예약된 환경 변수 이름을 사용하여 저장됩니다.`BAILIAN_CODING_PLAN_API_KEY`. 기본적으로 다음 위치에 저장됩니다.`env`당신의 분야`settings.json`파일.
+코딩 계획을 통해 구성할 때`/auth`명령을 실행하면 API 키는 예약된 환경 변수 이름을 사용하여 저장됩니다.`BAILIAN_CODING_PLAN_API_KEY`. 기본적으로 다음 위치에 저장됩니다.`env`당신의 필드`settings.json`파일.
 
 > \[!경고]
 >
@@ -414,7 +414,7 @@ Alibaba Cloud Coding Plan은 두 지역을 지원합니다.
    * 전체`generationConfig`공급자의 적용**원자적으로**
    * **공급자 계층은 완전히 침투할 수 없습니다.**— 하위 계층(CLI, env, 설정)은 GenerationConfig 확인에 전혀 참여하지 않습니다.
    * 다음에 정의된 모든 필드`modelProviders[].generationConfig`공급자의 값을 사용하십시오.
-   * 모든 분야**정의되지 않음**공급자가 다음과 같이 설정했습니다.`undefined`(설정에서 상속되지 않음)
+   * 모든 필드**정의되지 않음**공급자가 다음과 같이 설정했습니다.`undefined`(설정에서 상속되지 않음)
    * 이를 통해 공급자 구성이 완전하고 독립적인 "봉인된 패키지"로 작동하도록 보장합니다.
 
 2. **modelProvider 모델이 선택되지 않은 경우**(예를 들어,`--model`원시 모델 ID를 사용하거나 CLI/env/settings를 직접 사용):

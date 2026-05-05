@@ -44,7 +44,7 @@ Qwen Code는 각 도구 배치가 완료된 후 짧은 git-commit-subject 스타
 * 인텐트 접두사로서 어시스턴트의 가장 최근 텍스트 출력(처음 200자)입니다.
 * git-commit-subject 스타일로 과거형 30자 라벨을 반환하도록 모델에 지시하는 시스템 프롬프트입니다.
 
-호출은 다음 차례의 API 스트리밍과 병렬로 실행되므로 \~1초의 지연 시간이 기본 모델의 응답 뒤에 숨겨져 있습니다. 레이블이 확인되면 성적표에 다음과 같이 추가됩니다.`tool_use_summary`기입.
+호출은 다음 차례의 API 스트리밍과 병렬로 실행되므로 \~1초의 레이턴시이 기본 모델의 응답 뒤에 숨겨져 있습니다. 레이블이 확인되면 성적표에 다음과 같이 추가됩니다.`tool_use_summary`기입.
 
 라벨 예시:`Searched in auth/`,`Fixed NPE in UserService`,`Created signup endpoint`,`Read config.json`,`Ran failing tests`.
 

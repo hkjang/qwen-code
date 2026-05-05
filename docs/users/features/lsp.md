@@ -381,7 +381,7 @@ ps aux | grep clangd   # or typescript-language-server, jdtls, etc.
 
 ## 확장 LSP 구성
 
-확장은 다음을 통해 LSP 서버 구성을 제공할 수 있습니다.`lspServers`그들의 분야`plugin.json`. 이는 인라인 개체이거나`.lsp.json`파일. Qwen Code는 확장이 활성화되면 이러한 구성을 로드합니다. 형식은 프로젝트에 사용된 것과 동일한 언어 키 레이아웃입니다.`.lsp.json`파일.
+확장은 다음을 통해 LSP 서버 구성을 제공할 수 있습니다.`lspServers`그들의 필드`plugin.json`. 이는 인라인 개체이거나`.lsp.json`파일. Qwen Code는 확장이 활성화되면 이러한 구성을 로드합니다. 형식은 프로젝트에 사용된 것과 동일한 언어 키 레이아웃입니다.`.lsp.json`파일.
 
 ## 모범 사례
 

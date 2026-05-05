@@ -13,10 +13,10 @@
 5. [핵심 수명 주기](#핵심 수명 주기)
 6. [추출 (Extract)](#추출-extract)
 7. [통합 (Dream)](#통합-dream)
-8. [회상 (Recall)](#회상-recall)
-9. [망각 (Forget)](#망각-forget)
+8. [리콜 (Recall)](#리콜-recall)
+9. [삭제 (Forget)](#삭제-forget)
 10. [인덱스 재구축](#인덱스-재구축)
-11. [원격 측정 (Telemetry) 측정 지점](#원격-측정-telemetry-측정-지점)
+11. [텔레메트리 (Telemetry) 지표](#원격-측정-telemetry-측정-지점)
 
 ***
 
@@ -28,8 +28,8 @@
 | ---- | ---- | ------------------- | ------------------------------------- |
 | 추출 | Extract | 자동 (매 대화 라운드 후) | 대화 기록에서 새로운 지식을 추출하여 메모리 파일에 기록 |
 | 통합 | Dream | 자동 (주기적 백그라운드 작업) | 메모리 파일을 중복 제거하고 병합하여 깔끔하게 유지 |
-| 회상 | Recall | 자동 (매 대화 라운드 전) | 현재 요청과 관련된 메모리를 검색하여 시스템 프롬프트에 삽입 |
-| 망각 | Forget | 수동 (사용자 명령어 `/forget`) | 지정된 메모리 항목을 정확하게 삭제 |
+| 리콜 | Recall | 자동 (매 대화 라운드 전) | 현재 요청과 관련된 메모리를 검색하여 시스템 프롬프트에 삽입 |
+| 삭제 | Forget | 수동 (사용자 명령어 `/forget`) | 지정된 메모리 항목을 정확하게 삭제 |
 
 ***
 
@@ -92,17 +92,15 @@
 ```markdown
 ---
 name: 메모리 명칭
-description: 한 줄 설명 (회상 관련성 판단에 사용됨, 구체적이어야 함)
+description: 한 줄 설명 (리콜 관련성 판단에 사용됨, 구체적이어야 함)
 type: user|feedback|project|reference
 ---
 
 메모리 본문 내용 (요약 줄)
 
-Why: 배경 이유 (AI가 규칙을 맹목적으로 따르지 않고 경계 상황을 이해하도록 함)
-How to apply: 적용 시나리오 및 사용 방식
+* 핵심 사항 1
+* 핵심 사항 2
 ```
-
-`feedback` 및 `project` 유형의 경우, 메모리가 경계 상황에서도 올바르게 적용될 수 있도록 `Why`와 `How to apply`를 작성하는 것이 강력히 권장됩니다.
 
 ***
 
@@ -110,67 +108,67 @@ How to apply: 적용 시나리오 및 사용 방식
 
 ```mermaid
 flowchart TD
-    A([사용자 요청 전송]) --> B
+    A(["사용자 요청 전송"]) --> B
 
-    subgraph "회상 Recall"
-        B[모든 주제 파일 스캔] --> C{문서 수 및\n쿼리 내용이 유효한가?}
-        C -- 아니오 --> D[빈 프롬프트 반환\nstrategy: none]
-        C -- 예 --> E{Config가 설정되었는가?}
-        E -- 예 --> F[모델 기반 선택\nside query]
-        F --> G{관련 문서가 선택되었는가?}
-        G -- 예 --> H[strategy: model]
-        G -- 아니오 --> I[strategy: none]
-        E -- 아니오 --> J[휴리스틱 키워드 점수 산출]
-        F -- 실패 --> J
-        J --> K{점수가 0보다 큰 문서가 있는가?}
-        K -- 예 --> L[strategy: heuristic]
-        K -- 아니오 --> I
-        H --> M[관련 메모리 프롬프트 구축\n시스템 프롬프트에 주입]
+    subgraph Recall ["회상 Recall"]
+        B["모든 주제 파일 스캔"] --> C{"문서 수 및<br/>쿼리 내용이 유효한가?"}
+        C -- "아니오" --> D["빈 프롬프트 반환<br/>strategy: none"]
+        C -- "예" --> E{"Config가 설정되었는가?"}
+        E -- "예" --> F["모델 기반 선택<br/>side query"]
+        F --> G{"관련 문서가 선택되었는가?"}
+        G -- "예" --> H["strategy: model"]
+        G -- "아니오" --> I["strategy: none"]
+        E -- "아니오" --> J["휴리스틱 키워드 점수 산출"]
+        F -- "실패" --> J
+        J --> K{"점수가 0보다 큰 문서가 있는가?"}
+        K -- "예" --> L["strategy: heuristic"]
+        K -- "아니오" --> I
+        H --> M["관련 메모리 프롬프트 구축<br/>시스템 프롬프트에 주입"]
         L --> M
-        I --> N[메모리 주입 안 함]
+        I --> N["메모리 주입 안 함"]
     end
 
-    M --> O([AI 요청 처리])
+    M --> O(["AI 요청 처리"])
     N --> O
     D --> O
 
-    O --> P([AI 응답 반환])
+    O --> P(["AI 응답 반환"])
 
-    subgraph "추출 Extract (백그라운드)"
-        P --> Q{이번 라운드에 AI가\n직접 메모리 파일을 썼는가?}
-        Q -- 예 --> R[건너뛰기\nmemory_tool]
-        Q -- 아니오 --> S{추출 작업이\n실행 중인가?}
-        S -- 예 --> T[큐에 넣거나 건너뛰기\nalready_running / queued]
-        S -- 아니오 --> U[처리되지 않은 대화 슬라이스 로드\nextract cursor 기반]
-        U --> V[추출 에이전트 호출\nrunAutoMemoryExtractionByAgent]
-        V --> W[중복 제거 및 정규화 patches]
-        W --> X{수정된 주제(topics)가 있는가?}
-        X -- 예 --> Y[meta.json 업데이트\nMEMORY.md 인덱스 재구축]
-        X -- 아니오 --> Z[extract cursor만 업데이트]
+    subgraph Extract ["추출 Extract (백그라운드)"]
+        P --> Q{"이번 라운드에 AI가<br/>직접 메모리 파일을 썼는가?"}
+        Q -- "예" --> R["건너뛰기<br/>memory_tool"]
+        Q -- "아니오" --> S{"추출 작업이<br/>실행 중인가?"}
+        S -- "예" --> T["큐에 넣거나 건너뛰기<br/>already_running / queued"]
+        S -- "아니오" --> U["처리되지 않은 대화 슬라이스 로드<br/>extract cursor 기반"]
+        U --> V["추출 에이전트 호출<br/>runAutoMemoryExtractionByAgent"]
+        V --> W["중복 제거 및 정규화 patches"]
+        W --> X{"수정된 주제(topics)가 있는가?"}
+        X -- "예" --> Y["meta.json 업데이트<br/>MEMORY.md 인덱스 재구축"]
+        X -- "아니오" --> Z["extract cursor만 업데이트"]
         Y --> Z
     end
 
-    subgraph "통합 Dream (백그라운드, 주기적)"
-        P --> AA{Dream 스케줄링 게이트 체크}
-        AA --> AB{동일 세션인가?}
-        AB -- 예 --> AC[건너뛰기\nsame_session]
-        AB -- 아니오 --> AD{마지막 Dream 후\n24시간 이상 경과?}
-        AD -- 아니오 --> AE[건너뛰기\nmin_hours]
-        AD -- 예 --> AF{마지막 Dream 후\n새 세션 수 5개 이상?}
-        AF -- 아니오 --> AG[건너뛰기\nmin_sessions]
-        AF -- 예 --> AH{consolidation.lock\n파일이 존재하는가?}
-        AH -- 예 --> AI[건너뛰기\nlocked]
-        AH -- 아니오 --> AJ[락 획득\nPID 기록]
-        AJ --> AK{Config가 설정되었는가?}
-        AK -- 예 --> AL[에이전트 경로\nplanManagedAutoMemoryDreamByAgent]
-        AL --> AM{에이전트가 파일을 수정했는가?}
-        AM -- 예 --> AN[수정된 주제(topics) 기록]
+    subgraph Dream ["통합 Dream (백그라운드, 주기적)"]
+        P --> AA{"Dream 스케줄링 게이트 체크"}
+        AA --> AB{"동일 세션인가?"}
+        AB -- "예" --> AC["건너뛰기<br/>same_session"]
+        AB -- "아니오" --> AD{"마지막 Dream 후<br/>24시간 이상 경과?"}
+        AD -- "아니오" --> AE["건너뛰기<br/>min_hours"]
+        AD -- "예" --> AF{"마지막 Dream 후<br/>새 세션 수 5개 이상?"}
+        AF -- "아니오" --> AG["건너뛰기<br/>min_sessions"]
+        AF -- "예" --> AH{"consolidation.lock<br/>파일이 존재하는가?"}
+        AH -- "예" --> AI["건너뛰기<br/>locked"]
+        AH -- "아니오" --> AJ["락 획득<br/>PID 기록"]
+        AJ --> AK{"Config가 설정되었는가?"}
+        AK -- "예" --> AL["에이전트 경로<br/>planManagedAutoMemoryDreamByAgent"]
+        AL --> AM{"에이전트가 파일을 수정했는가?"}
+        AM -- "예" --> AN["수정된 주제(topics) 기록"]
         AM -- "아니오/실패" --> AO
-        AK -- 아니오 --> AO[기계적 중복 제거 경로\n파싱+중복 제거+알파벳 정렬]
-        AO --> AP[업데이트된 주제 파일 저장]
-        AN --> AQ[MEMORY.md 인덱스 재구축\nmeta.json 업데이트]
+        AK -- "아니오" --> AO["기계적 중복 제거 경로<br/>파싱+중복 제거+알파벳 정렬"]
+        AO --> AP["업데이트된 주제 파일 저장"]
+        AN --> AQ["MEMORY.md 인덱스 재구축<br/>meta.json 업데이트"]
         AP --> AQ
-        AQ --> AR[락 해제]
+        AQ --> AR["락 해제"]
     end
 ```
 
@@ -186,20 +184,20 @@ AI가 한 라운드의 응답을 완료할 때마다 `scheduleAutoMemoryExtract`
 
 ```mermaid
 flowchart TD
-    A[scheduleAutoMemoryExtract 호출됨] --> B{이번 라운드 기록에\n메모리 파일을 쓰는 도구 호출이 있는가?}
-    B -- 예 --> C[skipped 작업 등록\n이유: memory_tool]
-    B -- 아니오 --> D{isExtractRunning?}
-    D -- 예 --> E{이미 queued 요청이 있는가?}
-    E -- 예 --> F[queued 요청의\nhistory 파라미터 업데이트]
-    E -- 아니오 --> G[pending 작업 등록\n큐에 삽입]
-    D -- 아니오 --> H[running 작업 등록\nrun작업 호출]
-    H --> I[markExtractRunning\nsetCurrent작업Id]
-    I --> J[runAutoMemoryExtract]
-    J --> K[작업 완료]
-    K --> L[clearExtractRunning\n큐 확인 → startQueuedIfNeeded]
-    F --> M[반환 skipped: queued]
+    A["scheduleAutoMemoryExtract 호출됨"] --> B{"이번 라운드 기록에<br/>메모리 파일을 쓰는 도구 호출이 있는가?"}
+    B -- "예" --> C["skipped 작업 등록<br/>이유: memory_tool"]
+    B -- "아니오" --> D{"isExtractRunning?"}
+    D -- "예" --> E{"이미 queued 요청이 있는가?"}
+    E -- "예" --> F["queued 요청의<br/>history 파라미터 업데이트"]
+    E -- "아니오" --> G["pending 작업 등록<br/>큐에 삽입"]
+    D -- "아니오" --> H["running 작업 등록<br/>run작업 호출"]
+    H --> I["markExtractRunning<br/>setCurrent작업Id"]
+    I --> J["runAutoMemoryExtract"]
+    J --> K["작업 완료"]
+    K --> L["clearExtractRunning<br/>큐 확인 → startQueuedIfNeeded"]
+    F --> M["반환 skipped: queued"]
     G --> M
-    C --> N[반환 skipped: memory_tool]
+    C --> N["반환 skipped: memory_tool"]
 ```
 
 **건너뛰기 이유**:
@@ -214,20 +212,20 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[runAutoMemoryExtract] --> B[ensureAutoMemoryScaffold\n디렉토리 및 파일 초기화]
-    B --> C[buildTranscriptMessages\nContent[]를 오프셋 포함 메시지 목록으로 변환]
-    C --> D[readExtractCursor\n마지막으로 처리된 위치 읽기]
-    D --> E[loadUnprocessedTranscriptSlice\n처리되지 않은 메시지 세그먼트 캡처]
-    E --> F{slice가 비어 있는가?}
-    F -- 예 --> G[패치 없음 결과 반환]
-    F -- 아니오 --> H[runAutoMemoryExtractionByAgent\n포크된 에이전트를 호출하여 패치 추출]
-    H --> I[dedupeExtractPatches\n중복 제거 및 정규화]
-    I --> J{수정된 주제가 있는가?}
-    J -- 예 --> K[bumpMetadata\nmeta.json 업데이트]
-    K --> L[rebuildManagedAutoMemoryIndex\nMEMORY.md 재구축]
-    L --> M[writeExtractCursor\n최신 오프셋 기록]
-    J -- 아니오 --> M
-    M --> N[AutoMemoryExtractResult 반환]
+    A[runAutoMemoryExtract] --> B["ensureAutoMemoryScaffold<br/>디렉토리 및 파일 초기화"]
+    B --> C["buildTranscriptMessages<br/>Content[]를 오프셋 포함 메시지 목록으로 변환"]
+    C --> D["readExtractCursor<br/>마지막으로 처리된 위치 읽기"]
+    D --> E["loadUnprocessedTranscriptSlice<br/>처리되지 않은 메시지 세그먼트 캡처"]
+    E --> F{"slice가 비어 있는가?"}
+    F -- "예" --> G["패치 없음 결과 반환"]
+    F -- "아니오" --> H["runAutoMemoryExtractionByAgent<br/>포크된 에이전트를 호출하여 패치 추출"]
+    H --> I["dedupeExtractPatches<br/>중복 제거 및 정규화"]
+    I --> J{"수정된 주제가 있는가?"}
+    J -- "예" --> K["bumpMetadata<br/>meta.json 업데이트"]
+    K --> L["rebuildManagedAutoMemoryIndex<br/>MEMORY.md 재구축"]
+    L --> M["writeExtractCursor<br/>최신 오프셋 기록"]
+    J -- "아니오" --> M
+    M --> N["AutoMemoryExtractResult 반환"]
 ```
 
 **추출 커서 (Cursor)**:
@@ -256,26 +254,26 @@ AI가 한 라운드의 응답을 완료할 때마다 `scheduleManagedAutoMemoryD
 
 ```mermaid
 flowchart TD
-    A[scheduleManagedAutoMemoryDream 호출됨] --> B{Dream 기능이 활성화되었는가?}
-    B -- 아니오 --> C[건너뛰기: disabled]
-    B -- 예 --> D[ensureAutoMemoryScaffold\nlastDreamSessionId 읽기]
-    D --> E{현재 sessionId\n== lastDreamSessionId?}
-    E -- 예 --> F[건너뛰기: same_session]
-    E -- 아니오 --> G{24시간 이상 경과\n또는 한 번도 수행 안 함?}
-    G -- 아니오 --> H[건너뛰기: min_hours]
-    G -- 예 --> I{마지막 세션 스캔 후\n10분 미만 경과?}
-    I -- 예 --> J[건너뛰기: min_sessions\n다음 스캔 창 대기]
-    I -- 아니오 --> K[chats/*.jsonl mtime 스캔\n마지막 Dream 이후 새 세션 수 집계]
-    K --> L{새 세션 수 ≥ 5?}
-    L -- 아니오 --> M[건너뛰기: min_sessions]
-    L -- 예 --> N{락 존재 여부 체크\nPID 체크 + 만료 체크}
-    N -- 예 --> O[건너뛰기: locked]
-    N -- 아니오 --> P{dedupeKey 기반\n동일 프로젝트 Dream 작업 중인가?}
-    P -- 예 --> Q[건너뛰기: running\n기존 taskId 반환]
-    P -- 아니오 --> R[백그라운드 작업 예약\nBg작업Scheduler]
-    R --> S[acquireDreamLock\nconsolidation.lock에 PID 기록]
-    S --> T[runManagedAutoMemoryDream]
-    T --> U[meta.json 업데이트\n락 해제]
+    A["scheduleManagedAutoMemoryDream 호출됨"] --> B{"Dream 기능이 활성화되었는가?"}
+    B -- "아니오" --> C["건너뛰기: disabled"]
+    B -- "예" --> D["ensureAutoMemoryScaffold<br/>lastDreamSessionId 읽기"]
+    D --> E{"현재 sessionId<br/>== lastDreamSessionId?"}
+    E -- "예" --> F["건너뛰기: same_session"]
+    E -- "아니오" --> G{"24시간 이상 경과<br/>또는 한 번도 수행 안 함?"}
+    G -- "아니오" --> H["건너뛰기: min_hours"]
+    G -- "예" --> I{"마지막 세션 스캔 후<br/>10분 미만 경과?"}
+    I -- "예" --> J["건너뛰기: min_sessions<br/>다음 스캔 창 대기"]
+    I -- "아니오" --> K["chats/*.jsonl mtime 스캔<br/>마지막 Dream 이후 새 세션 수 집계"]
+    K --> L{"새 세션 수 ≥ 5?"}
+    L -- "아니오" --> M["건너뛰기: min_sessions"]
+    L -- "예" --> N{"락 존재 여부 체크<br/>PID 체크 + 만료 체크"}
+    N -- "예" --> O["건너뛰기: locked"]
+    N -- "아니오" --> P{"dedupeKey 기반<br/>동일 프로젝트 Dream 작업 중인가?"}
+    P -- "예" --> Q["건너뛰기: running<br/>기존 taskId 반환"]
+    P -- "아니오" --> R["백그라운드 작업 예약<br/>Bg작업Scheduler"]
+    R --> S["acquireDreamLock<br/>consolidation.lock에 PID 기록"]
+    S --> T["runManagedAutoMemoryDream"]
+    T --> U["meta.json 업데이트<br/>락 해제"]
 ```
 
 **게이트 파라미터**:
@@ -297,33 +295,33 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[runManagedAutoMemoryDream] --> B{Config가 설정되었는가?}
-    B -- 예 --> C[에이전트 경로\nplanManagedAutoMemoryDreamByAgent]
-    C --> D{에이전트가 파일을 수정했는가?}
-    D -- 예 --> E[파일 경로에서 수정된 주제 추론]
-    E --> F[bumpMetadata\nMEMORY.md 인덱스 재구축]
+    A[runManagedAutoMemoryDream] --> B{"Config가 설정되었는가?"}
+    B -- "예" --> C["에이전트 경로<br/>planManagedAutoMemoryDreamByAgent"]
+    C --> D{"에이전트가 파일을 수정했는가?"}
+    D -- "예" --> E["파일 경로에서 수정된 주제 추론"]
+    E --> F["bumpMetadata<br/>MEMORY.md 인덱스 재구축"]
     F --> G[updateDreamMetadataResult]
-    G --> H[원격 측정 이벤트 기록]
-    H --> I[결과 반환]
-    B -- 아니오 --> J[기계적 중복 제거 경로]
-    C -- 예외 발생 --> J
-    D -- 아니오 --> J
+    G --> H["원격 측정 이벤트 기록"]
+    H --> I["결과 반환"]
+    B -- "아니오" --> J["기계적 중복 제거 경로"]
+    C -- "예외 발생" --> J
+    D -- "아니오" --> J
 
-    J --> K[scanAutoMemoryTopicDocuments\n모든 주제 파일 읽기]
-    K --> L[각 파일에 대해 buildDreamedBody 실행]
-    L --> M[항목 파싱 → summary 기준 중복 제거\n알파벳 오름차순 정렬 → 재렌더링]
-    M --> N{본문이 변경되었는가?}
-    N -- 예 --> O[파일 저장]
-    O --> P[수정된 주제 기록]
-    N -- 아니오 --> Q[파일 간 중복 체크\ndedupeKey = type:summary]
-    Q --> R{중복 파일 발견?}
-    R -- 예 --> S[항목을 대표 파일로 병합\n중복 파일 삭제]
+    J --> K["scanAutoMemoryTopicDocuments<br/>모든 주제 파일 읽기"]
+    K --> L["각 파일에 대해 buildDreamedBody 실행"]
+    L --> M["항목 파싱 → summary 기준 중복 제거<br/>알파벳 오름차순 정렬 → 재렌더링"]
+    M --> N{"본문이 변경되었는가?"}
+    N -- "예" --> O["파일 저장"]
+    O --> P["수정된 주제 기록"]
+    N -- "아니오" --> Q["파일 간 중복 체크<br/>dedupeKey = type:summary"]
+    Q --> R{"중복 파일 발견?"}
+    R -- "예" --> S["항목을 대표 파일로 병합<br/>중복 파일 삭제"]
     S --> P
-    R -- 아니오 --> T{수정된 주제가 있는가?}
+    R -- "아니오" --> T{"수정된 주제가 있는가?"}
     P --> T
-    T -- 예 --> U[bumpMetadata\nMEMORY.md 인덱스 재구축]
-    U --> V[updateDreamMetadataResult\n원격 측정 기록 → 결과 반환]
-    T -- 아니오 --> V
+    T -- "예" --> U["bumpMetadata<br/>MEMORY.md 인덱스 재구축"]
+    U --> V["updateDreamMetadataResult<br/>원격 측정 기록 → 결과 반환"]
+    T -- "아니오" --> V
 ```
 
 **기계적 중복 제거 로직**:
@@ -344,26 +342,26 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[resolveRelevantAutoMemoryPromptForQuery] --> B[scanAutoMemoryTopicDocuments\n모든 주제 파일 스캔]
-    B --> C[filterExcludedAutoMemoryDocuments\n이번 라운드에 작성된 파일 필터링]
-    C --> D{쿼리 또는\n문서가 비었거나\nlimit <= 0?}
-    D -- 예 --> E[빈 프롬프트 반환\nstrategy: none]
-    D -- 아니오 --> F{Config가 설정되었는가?}
-    F -- 예 --> G[selectRelevantAutoMemoryDocumentsByModel\n사이드 쿼리로 모델에게 선택 요청]
-    G --> H{모델 결과 반환?}
-    H -- 문서 있음 --> I[strategy: model]
-    H -- 문서 없음 --> J[strategy: none\n빈 프롬프트 반환]
-    G -- "실패/예외" --> K[휴리스틱 선택으로 폴백]
-    F -- 아니오 --> K
-    K --> L[쿼리 토큰화\n3글자 이상의 토큰 추출]
-    L --> M[scoreDocument 점수 산출\n키워드 매칭 +2 / 유형 키워드 +1 / 내용 있음 +1]
-    M --> N[점수 0 초과 문서 필터링\n점수 내림차순 정렬, Top 5 선택]
-    N --> O{점수 있는 문서 존재?}
-    O -- 예 --> P[strategy: heuristic]
-    O -- 아니오 --> J
-    I --> Q[buildRelevantAutoMemoryPrompt\nRelevant Memory 블록 구축]
+    A[resolveRelevantAutoMemoryPromptForQuery] --> B["scanAutoMemoryTopicDocuments<br/>모든 주제 파일 스캔"]
+    B --> C["filterExcludedAutoMemoryDocuments<br/>이번 라운드에 작성된 파일 필터링"]
+    C --> D{"쿼리 또는<br/>문서가 비었거나<br/>limit <= 0?"}
+    D -- "예" --> E["빈 프롬프트 반환<br/>strategy: none"]
+    D -- "아니오" --> F{"Config가 설정되었는가?"}
+    F -- "예" --> G["selectRelevantAutoMemoryDocumentsByModel<br/>사이드 쿼리로 모델에게 선택 요청"]
+    G --> H{"모델 결과 반환?"}
+    H -- "문서 있음" --> I["strategy: model"]
+    H -- "문서 없음" --> J["strategy: none<br/>빈 프롬프트 반환"]
+    G -- "실패/예외" --> K["휴리스틱 선택으로 폴백"]
+    F -- "아니오" --> K
+    K --> L["쿼리 토큰화<br/>3글자 이상의 토큰 추출"]
+    K --> M["scoreDocument 점수 산출<br/>키워드 매칭 +2 / 유형 키워드 +1 / 내용 있음 +1"]
+    M --> N["점수 0 초과 문서 필터링<br/>점수 내림차순 정렬, Top 5 선택"]
+    N --> O{"점수 있는 문서 존재?"}
+    O -- "예" --> P["strategy: heuristic"]
+    O -- "아니오" --> J
+    I --> Q["buildRelevantAutoMemoryPrompt<br/>Relevant Memory 블록 구축"]
     P --> Q
-    Q --> R[시스템 프롬프트 조각 반환]
+    Q --> R["시스템 프롬프트 조각 반환"]
 ```
 
 **점수 산출 규칙 (휴리스틱)**:
@@ -390,35 +388,35 @@ flowchart TD
 
 ***
 
-## 망각 (Forget)
+## 삭제 (Forget)
 
 ### 트리거 시점
 
 사용자가 수동으로 `/forget <query>` 명령어를 실행할 때 트리거됩니다.
 
-### 망각 프로세스 (`forget.ts`)
+### 삭제 프로세스 (`forget.ts`)
 
 ```mermaid
 flowchart TD
-    A[forgetManagedAutoMemoryEntries\nquery + config] --> B[ensureAutoMemoryScaffold]
-    B --> C[listIndexedForgetCandidates\n모든 파일의 모든 항목 스캔]
-    C --> D[각 항목에 대해 고유 ID 생성\n단일 항목 파일: relativePath\n다중 항목 파일: relativePath:index]
-    D --> E{Config가 설정되었는가?}
-    E -- 예 --> F[selectByModel\n선택 프롬프트 구축\nside query (temperature=0)]
-    F --> G{모델 선택 성공?}
+    A[forgetManagedAutoMemoryEntries<br/>query + config] --> B[ensureAutoMemoryScaffold]
+    B --> C[listIndexedForgetCandidates<br/>모든 파일의 모든 항목 스캔]
+    C --> D[각 항목에 대해 고유 ID 생성<br/>단일 항목 파일: relativePath<br/>다중 항목 파일: relativePath:index]
+    D --> E{"Config가 설정되었는가?"}
+    E -- 예 --> F["selectByModel<br/>선택 프롬프트 구축<br/>side query (temperature=0)"]
+    F --> G{"모델 선택 성공?"}
     G -- 예 --> H[strategy: model]
-    G -- 실패 --> I[selectByHeuristic\n키워드 매칭]
+    G -- 실패 --> I["selectByHeuristic<br/>키워드 매칭"]
     E -- 아니오 --> I
     I --> J[strategy: heuristic]
     H --> K[선택된 후보들 순회]
     J --> K
-    K --> L{entries.length == 1?}
-    L -- 예 --> M[파일 전체 삭제\nfs.unlink]
-    L -- 아니오 --> N[파일 내 항목 파싱\n대상 항목 제거\n재렌더링 후 저장]
+    K --> L{"entries.length == 1?"}
+    L -- 예 --> M[파일 전체 삭제<br/>fs.unlink]
+    L -- 아니오 --> N[파일 내 항목 파싱<br/>대상 항목 제거<br/>재렌더링 후 저장]
     M --> O[removedEntries 기록]
     N --> O
-    O --> P{수정된 주제가 있는가?}
-    P -- 예 --> Q[bumpMetadata\nMEMORY.md 인덱스 재구축]
+    O --> P{"수정된 주제가 있는가?"}
+    P -- 예 --> Q[bumpMetadata<br/>MEMORY.md 인덱스 재구축]
     P --> R[AutoMemoryForgetResult 반환]
     Q --> R
 ```
@@ -433,19 +431,14 @@ flowchart TD
 
 ## 인덱스 재구축
 
-`MEMORY.md`는 모든 주제 파일의 탐색 인덱스로, 각 추출 또는 통합 작업 후에 `rebuildManagedAutoMemoryIndex`에 의해 다시 작성됩니다.
+`MEMORY.md` 파일은 모든 주제 파일의 개요를 제공하며, 각 추출, 통합 또는 삭제 작업 후에 다시 작성됩니다.
 
-```
-- [사용자 선호도](user/preferences.md) — 사용자는 숙련된 Go 엔지니어이며 React를 처음 접함
-- [피드백 규정](feedback/style.md) — 답변을 간결하게 유지하고 마지막에 요약하지 말 것
-- [프로젝트 마일스톤](project/milestone.md) — 모바일 출시 브랜치 생성 전 병합 동결 기간
-```
-
-**인덱스 제한**:
-
-* 한 줄 최대 150자 (초과 시 `…`로 잘림)
-* 최대 200줄
-* 총 크기 25,000바이트 이하
+| 필드 | 설명 |
+| -------- | -------------------------------- |
+| `Name` | YAML 프론트매터의 `name` |
+| `Type` | YAML 프론트매터의 `type` |
+| `Description` | YAML 프론트매터의 `description` |
+| `Updated` | 파일의 마지막 수정 시간 |
 
 ***
 
@@ -458,52 +451,35 @@ flowchart TD
 | 필드 | 유형 | 설명 |
 | ---------------- | ------------------------- | --------------- |
 | `trigger` | `'auto'` | 트리거 방식 (현재 자동만 지원) |
-| `status` | `'completed'`\|`'failed'` | 실행 결과 |
-| `patches_count` | number | 추출된 유효한 패치 수 |
-| `touched_topics` | string[] | 기록된 메모리 유형 목록 |
-| `duration_ms` | number | 총 소요 시간 (ms) |
+| `outcome` | `'success'\|'no_patches'\|'failed'` | 추출 결과 |
+| `numPatches` | `number` | 생성된 메모리 패치 수 |
+| `numTopics` | `number` | 영향을 받은 주제 수 |
+| `latencyMs` | `number` | 추출 에이전트 실행 시간 |
 
-### 통합(Dream) 원격 측정
+### 통합 원격 측정
 
 | 필드 | 유형 | 설명 |
-| ----------------- | --------------------------------- | --------------------- |
+| ------------------ | --------------------------- | ----------------- |
 | `trigger` | `'auto'` | 트리거 방식 |
-| `status` | `'updated'`\|`'noop'`\|`'failed'` | 실행 결과 |
-| `deduped_entries` | number | 기계적 경로에서 중복 제거된 항목 수 |
-| `touched_topics` | string[] | 수정된 메모리 유형 목록 |
-| `duration_ms` | number | 총 소요 시간 (ms) |
+| `outcome` | `'success'\|'no_changes'\|'failed'` | 통합 결과 |
+| `numTopicsDeleted` | `number` | 삭제된(병합된) 주제 파일 수 |
+| `numTopicsMerged` | `number` | 수정된 주제 파일 수 |
 
-### 회상 원격 측정
+### 리콜 원격 측정
 
 | 필드 | 유형 | 설명 |
-| --------------- | ---------------------------------- | ------------ |
-| `query_length` | number | 쿼리 문자열 길이 |
-| `docs_scanned` | number | 스캔된 총 문서 수 |
-| `docs_selected` | number | 최종 주입된 문서 수 |
-| `strategy` | `'none'`\|`'heuristic'`\|`'model'` | 선택 전략 |
-| `duration_ms` | number | 총 소요 시간 (ms) |
+| ------------------ | --------------------------- | ------------------- |
+| `strategy` | `'none'\|'heuristic'\|'model'` | 선택 전략 |
+| `numDocsScanned` | `number` | 스캔된 총 문서 수 |
+| `numDocsSelected` | `number` | 최종 선택된 문서 수 |
+| `latencyMs` | `number` | 리콜 결정에 소요된 시간 |
 
 ***
 
-## 관련 소스 파일 인덱스
+## 참고 파일
 
-| 파일 | 책임 |
-| ---------------------------------------------------- | ---------------------------------------------------------------------- |
-| `packages/core/src/memory/types.ts` | 유형 정의: `AutoMemoryType`, `AutoMemoryMetadata`, `AutoMemoryExtractCursor` |
-| `packages/core/src/memory/paths.ts` | 경로 계산: `getAutoMemoryRoot`, `isAutoMemPath`, 각종 경로 헬퍼 |
-| `packages/core/src/memory/store.ts` | 스캐폴딩 초기화: `ensureAutoMemoryScaffold`, 인덱스/메타데이터 읽기 및 쓰기 |
-| `packages/core/src/memory/scan.ts` | 주제 파일 스캔: `scanAutoMemoryTopicDocuments`, 프론트매터 파싱 |
-| `packages/core/src/memory/entries.ts` | 항목 파싱 및 렌더링: `parseAutoMemoryEntries`, `renderAutoMemoryBody` |
-| `packages/core/src/memory/extract.ts` | 핵심 추출 로직: `runAutoMemoryExtract`, 커서 관리, 패치 중복 제거 |
-| `packages/core/src/memory/extractScheduler.ts` | 추출 스케줄러: `ManagedAutoMemoryExtractRuntime`, 큐/상태 머신 |
-| `packages/core/src/memory/extractionAgentPlanner.ts` | 추출 에이전트: `runAutoMemoryExtractionByAgent` |
-| `packages/core/src/memory/dream.ts` | 핵심 통합 로직: `runManagedAutoMemoryDream`, 에이전트 경로 + 기계적 중복 제거 |
-| `packages/core/src/memory/dreamScheduler.ts` | 통합 스케줄러: `ManagedAutoMemoryDreamRuntime`, 게이트 체크, 락 관리 |
-| `packages/core/src/memory/dreamAgentPlanner.ts` | 통합 에이전트: `planManagedAutoMemoryDreamByAgent` |
-| `packages/core/src/memory/recall.ts` | 회상 로직: `resolveRelevantAutoMemoryPromptForQuery`, 휴리스틱 + 모델 듀얼 경로 |
-| `packages/core/src/memory/forget.ts` | 망각 로직: `forgetManagedAutoMemoryEntries`, 후보 생성 + 정밀 삭제 |
-| `packages/core/src/memory/indexer.ts` | 인덱스 재구축: `rebuildManagedAutoMemoryIndex`, `buildManagedAutoMemoryIndex` |
-| `packages/core/src/memory/prompt.ts` | 시스템 프롬프트 템플릿: 메모리 유형 설명, 형식 예시, 사용 규정 |
-| `packages/core/src/memory/governance.ts` | 거버넌스 제안 유형: `AutoMemoryGovernanceSuggestionType` |
-| `packages/core/src/memory/state.ts` | 추출 실행 상태: `isExtractRunning`, `markExtractRunning`, `clearExtractRunning` |
-| `packages/core/src/memory/memoryAge.ts` | 신선도 텍스트: `memoryAge`, `memoryFreshnessText` |
+* 내장 명령: `/forget`
+* 핵심 추출: `packages/core/src/memory/extract.ts`
+* 핵심 통합: `packages/core/src/memory/dream.ts`
+* 회상 로직: `packages/core/src/memory/recall.ts`, 시맨틱 + 키워드 매칭
+* 설정 스키마: `packages/core/src/settings/schema.ts`

@@ -1,16 +1,16 @@
-# 프롬프트제안 이행현황
+# PromptSuggestion 이행현황
 
 > 모든 패키지에서 프롬프트 제안(NES) 기능의 구현 상태를 추적합니다.
 
 ## 핵심 모듈(`packages/core/src/followup/`)
 
-| 요소                       | 상태   | 윤곽    | 설명                                                  |
+| 요소                       | 상태   | 개요    | 설명                                                  |
 | ------------------------ | ---- | ----- | --------------------------------------------------- |
 | `followupState.ts`       | ✅ 완료 | \~230 | 타이머/디바운스를 갖춘 프레임워크에 구애받지 않는 컨트롤러                    |
 | `suggestionGenerator.ts` | ✅ 완료 | \~260 | LLM 생성 + 12개 필터 규칙 + 분기 쿼리 지원                       |
 | `forkedQuery.ts`         | ✅ 완료 | \~240 | CacheSafeParams + createForkedChat + runForkedQuery |
 | `overlayFs.ts`           | ✅ 완료 | \~140 | 기록 중 복사 오버레이 파일 시스템                                 |
-| `speculationToolGate.ts` | ✅ 완료 | \~150 | AST 쉘 파서를 사용한 도구 경계 적용                              |
+| `speculationToolGate.ts` | ✅ 완료 | \~150 | AST 쉘 파서를 사용한 Tool Boundary 적용                              |
 | `speculation.ts`         | ✅ 완료 | \~540 | 파이프라인 제안 + 모델 재정의를 갖춘 추측 엔진                         |
 
 ## CLI 통합(`packages/cli/`)
@@ -19,9 +19,9 @@
 | ---------------------------- | ---- | --------------------------------- |
 | `AppContainer.tsx`           | ✅ 완료 | 제안 생성, 추측 수명주기, UI 렌더링            |
 | `InputPrompt.tsx`            | ✅ 완료 | Tab/Enter/오른쪽 화살표 수락, 닫기 + 중단     |
-| `Composer.tsx`               | ✅ 완료 | 소품 스레딩                            |
-| `UIStateContext.tsx`         | ✅ 완료 | 프롬프트제안 + 해제프롬프트제안                 |
-| `useFollowupSuggestions.tsx` | ✅ 완료 | 원격 측정 + 키 입력 추적 기능을 갖춘 React Hook |
+| `Composer.tsx`               | ✅ 완료 | Props 전달                            |
+| `UIStateContext.tsx`         | ✅ 완료 | PromptSuggestion + DismissPromptSuggestion                 |
+| `useFollowupSuggestions.tsx` | ✅ 완료 | 텔레메트리 + 키 입력 추적 기능을 갖춘 React Hook |
 | `settingsSchema.ts`          | ✅ 완료 | 3가지 기능 플래그 + fastModel 설정         |
 | `settings.schema.json`       | ✅ 완료 | VSCode 설정 스키마                     |
 
@@ -35,12 +35,12 @@
 | `components.css`            | ✅ 완료 | 고스트 텍스트 스타일링                   |
 | `vite.config.followup.ts`   | ✅ 완료 | 별도의 빌드 구성                      |
 
-## 원격 측정(`packages/core/src/telemetry/`)
+## 텔레메트리(`packages/core/src/telemetry/`)
 
 | 요소                      | 상태   | 설명               |
 | ----------------------- | ---- | ---------------- |
 | `PromptSuggestionEvent` | ✅ 완료 | 10개 필드           |
-| `SpeculationEvent`      | ✅ 완료 | 7개 분야            |
+| `SpeculationEvent`      | ✅ 완료 | 7개 필드            |
 | `logPromptSuggestion()` | ✅ 완료 | OpenTelemetry 로거 |
 | `logSpeculation()`      | ✅ 완료 | OpenTelemetry 로거 |
 
@@ -59,16 +59,16 @@
 
 ## 감사 내역
 
-| 둥근          | 발견된 문제     | 해결된 문제                          |
+| 라운드          | 발견된 문제     | 해결된 문제                          |
 | ----------- | ---------- | ------------------------------- |
 | R1-R4       | 10         | 10 (규칙 엔진 → LLM, 상태 단순화)        |
-| R5-R6       | 2          | 2(키 바인딩 충돌 입력, 오른쪽 화살표 원격 측정)   |
-| R7-R8       | 3          | 3(WebUI 원격 측정, 데드 유형, 테스트 커버리지) |
+| R5-R6       | 2          | 2(키 바인딩 충돌 입력, 오른쪽 화살표 텔레메트리)   |
+| R7-R8       | 3          | 3(WebUI 텔레메트리, 데드 유형, 테스트 커버리지) |
 | R9          | 0          | — (수렴)                          |
 | R10-R11     | 1          | 1(historyManager 하위)            |
 | R12-R13     | 1          | 1(평가 정규식 단어 경계)                 |
 | 1+2단계 R1-R4 | 20+        | 20+(권한 우회, 오버레이 안전, 경쟁 조건)      |
-| **총**       | **37세 이상** | **37세 이상**                      |
+| **총**       | **37개 이상** | **37개 이상**                      |
 
 ## 클로드 코드 정렬
 
@@ -78,7 +78,7 @@
 | 12가지 필터 규칙              | 100%+ | \b 단어 경계 개선            |
 | UI 상호 작용(Tab/Enter/오른쪽) | 100%  |                        |
 | 가드 조건                   | 100%  | 체크 13개                 |
-| 원격 측정                   | 100%  | 10+7개 필드               |
+| 텔레메트리                   | 100%  | 10+7개 필드               |
 | 캐시 공유                   | ✅     | DashScope 캐시\_제어       |
 | 추측                      | ✅     | COW 오버레이 + 툴 게이팅       |
 | 파이프라인 제안                | ✅     | 추측 완료 후 생성됨            |

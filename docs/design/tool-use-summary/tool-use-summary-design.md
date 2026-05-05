@@ -28,7 +28,7 @@
 
 ### 2.1 흐름
 
-Claude Code는 다음에서 도구 루프를 실행합니다.`query.ts`. 도구 배치가 실행되고 그 결과가 정규화된 후 생성기 함수는 Haiku 호출을 분기하고 보류 중인 약속을 유지합니다.`nextPendingToolUseSummary`, 다음 차례의 API 호출을 계속합니다. Haiku 지연 시간(\~1초)은 기본 모델의 스트리밍(5\~30초)과 겹치므로 사용자에게는 추가된 지연 시간이 전혀 표시되지 않습니다. 다음 턴의 콘텐츠를 방출하기 직전에 생성기는 보류 중인 요약을 기다리고 다음을 생성합니다.`tool_use_summary`스트림에 메시지를 보냅니다.
+Claude Code는 다음에서 도구 루프를 실행합니다.`query.ts`. 도구 배치가 실행되고 그 결과가 정규화된 후 생성기 함수는 Haiku 호출을 분기하고 보류 중인 약속을 유지합니다.`nextPendingToolUseSummary`, 다음 차례의 API 호출을 계속합니다. Haiku 레이턴시(\~1초)은 기본 모델의 스트리밍(5\~30초)과 겹치므로 사용자에게는 추가된 레이턴시이 전혀 표시되지 않습니다. 다음 턴의 콘텐츠를 방출하기 직전에 생성기는 보류 중인 요약을 기다리고 다음을 생성합니다.`tool_use_summary`스트림에 메시지를 보냅니다.
 
 ```
 tool_batch_complete → fork queryHaiku (fire-and-forget)
@@ -92,7 +92,7 @@ tool_batch_complete (handleCompletedTools)
 | 구성 게이트    | `packages/core/src/config/config.ts:getEmitToolUseSummaries`          | 환경 재정의 → 설정 → 기본값(true)                                         |
 | 방아쇠       | `packages/cli/src/ui/hooks/useGeminiStream.ts:handleCompletedTools`   | 빠른 모델 호출을 실행하고 해결 시 addItem을 실행합니다.                             |
 | 풀 모드 렌더링  | `packages/cli/src/ui/components/HistoryItemDisplay.tsx`               | 렌더`● <label>`언제 줄`!compactMode`                                 |
-| 컴팩트 모드 조회 | `packages/cli/src/ui/components/MainContent.tsx`                      | `summaryByCallId`지도 →`compactLabel`각 tool\_group에 대한 소품         |
+| 컴팩트 모드 조회 | `packages/cli/src/ui/components/MainContent.tsx`                      | `summaryByCallId`지도 →`compactLabel`각 tool\_group에 대한 Props         |
 | 컴팩트 헤더    | `packages/cli/src/ui/components/messages/CompactToolGroupDisplay.tsx` | 기본값을 대체합니다.`Tool × N`\~와 함께`<Summary> · N tools`라벨이 있을 때        |
 | 병합 처리     | `packages/cli/src/ui/utils/mergeCompactToolGroups.ts`                 | 간식`tool_use_summary`인접성을 위해 콤팩트하게 숨겨져 있음                        |
 | UI 유형     | `packages/cli/src/ui/types.ts:HistoryItemToolUseSummary`              | `{ type: 'tool_use_summary', summary, precedingToolUseIds }`    |
@@ -146,7 +146,7 @@ Full mode              Compact mode (with merge)
 5. 오류 메시지 모양 거부(`API error: ...`,`Error: ...`,`I cannot ...`,`I can't ...`,`Unable to ...`) - 빈 문자열을 반환하므로 기록 항목이 추가되지 않습니다.
 6. 하드캡 길이는 100자입니다(모바일 UI는 약 30자에서 잘립니다. 여유 부분은 CJK 구문을 포함합니다).
 
-### 3.6 원격 측정
+### 3.6 텔레메트리
 
 요약 생성 호출 세트`promptId: 'tool_use_summary_generation'`따라서 토큰 사용량은 별도로 계산됩니다.`/stats`. 이를 통해 사용자는 프롬프트 제안이나 기본 세션 사용량과 혼동하지 않고도 기능의 정확한 증분 비용을 확인할 수 있습니다.
 

@@ -150,7 +150,7 @@ CLI(Ink) 및 WebUI(React)가 공유하는 프레임워크 독립적 컨트롤러
 
 * `setSuggestion(text)`— 300ms 지연된 쇼, null이 즉시 지워짐
 * `accept(method)`— 상태를 지우고 화재가 발생합니다.`onAccept`마이크로태스크를 통해 100ms 디바운스 잠금
-* `dismiss()`— 상태를 지우고 로그를 남깁니다.`ignored`원격 측정
+* `dismiss()`— 상태를 지우고 로그를 남깁니다.`ignored`텔레메트리
 * `clear()`— 모든 상태 + 타이머를 하드 리셋
 * `Object.freeze(INITIAL_FOLLOWUP_STATE)`우발적인 돌연변이 방지
 
@@ -168,9 +168,9 @@ CLI(Ink) 및 WebUI(React)가 공유하는 프레임워크 독립적 컨트롤러
 
 탭 핸들러는 다음을 사용합니다.`key.name === 'tab'`명시적으로(아님`ACCEPT_SUGGESTION`일치자) 왜냐하면`ACCEPT_SUGGESTION`SUBMIT 핸들러로 전달되어야 하는 Enter와도 일치합니다.
 
-## 원격 측정
+## 텔레메트리
 
-### 프롬프트제안이벤트
+### PromptSuggestion이벤트
 
 | 필드                           | 유형          | 설명                     |
 | ---------------------------- | ----------- | ---------------------- |

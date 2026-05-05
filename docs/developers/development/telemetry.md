@@ -6,9 +6,9 @@ Qwen Code용 OpenTelemetry를 활성화하고 설정하는 방법을 알아보�
   * [주요 이점](#key-benefits)
   * [OpenTelemetry 통합](#opentelemetry-integration)
   * [구성](#configuration)
-  * [Aliyun 원격 측정](#aliyun-telemetry)
+  * [Aliyun 텔레메트리](#aliyun-telemetry)
     * [수동 OTLP 내보내기](#manual-otlp-export)
-  * [로컬 원격 측정](#local-telemetry)
+  * [로컬 텔레메트리](#local-telemetry)
     * [파일 기반 출력(권장)](#file-based-output-recommended)
     * [수집기 기반 내보내기(고급)](#collector-based-export-advanced)
   * [로그 및 지표](#logs-and-metrics)
@@ -20,7 +20,7 @@ Qwen Code용 OpenTelemetry를 활성화하고 설정하는 방법을 알아보�
 * **🔍 사용 분석**: 상호작용 패턴 및 기능 채택 이해 
   팀 전반에 걸쳐
 * **⚡ 성능 모니터링**: 응답 시간, 토큰 소비 및 
-  자원 활용
+  리소스 활용
 * **🐛 실시간 디버깅**: 병목 현상, 장애, 오류 패턴을 식별합니다. 
   발생하는 대로
 * **📊 작업 흐름 최적화**: 개선을 위해 정보에 입각한 결정을 내립니다. 
@@ -60,19 +60,19 @@ Qwen Code용 OpenTelemetry를 활성화하고 설정하는 방법을 알아보�
 >
 > **⚠️ 특별 참고 사항: 이 기능을 사용하려면 해당 코드 변경이 필요합니다. 이 문서는 사전에 제공됩니다. 실제 기능에 대해서는 향후 코드 업데이트를 참조하세요.**
 
-모든 원격 측정 동작은 다음을 통해 제어됩니다.`.qwen/settings.json`파일. 
+모든 텔레메트리 동작은 다음을 통해 제어됩니다.`.qwen/settings.json`파일. 
 이러한 설정은 환경 변수 또는 CLI 플래그로 재정의될 수 있습니다.
 
 | 환경                    | 환경변수                                   | CLI 플래그                                                  | 설명                               | 가치                | 기본                      |
 | --------------------- | -------------------------------------- | -------------------------------------------------------- | -------------------------------- | ----------------- | ----------------------- |
-| `enabled`             | `QWEN_TELEMETRY_ENABLED`               | `--telemetry` / `--no-telemetry`                         | 원격 측정 활성화 또는 비활성화                | `true`/`false`    | `false`                 |
-| `target`              | `QWEN_TELEMETRY_TARGET`                | `--telemetry-target <local\|gcp>`                        | 원격 측정 데이터를 보낼 위치                 | `"gcp"`/`"local"` | `"local"`               |
+| `enabled`             | `QWEN_TELEMETRY_ENABLED`               | `--telemetry` / `--no-telemetry`                         | 텔레메트리 활성화 또는 비활성화                | `true`/`false`    | `false`                 |
+| `target`              | `QWEN_TELEMETRY_TARGET`                | `--telemetry-target <local\|gcp>`                        | 텔레메트리 데이터를 보낼 위치                 | `"gcp"`/`"local"` | `"local"`               |
 | `otlpEndpoint`        | `QWEN_TELEMETRY_OTLP_ENDPOINT`         | `--telemetry-otlp-endpoint <URL>`                        | OTLP 수집기 끝점                      | URL 문자열           | `http://localhost:4317` |
 | `otlpProtocol`        | `QWEN_TELEMETRY_OTLP_PROTOCOL`         | `--telemetry-otlp-protocol <grpc\|http>`                 | OTLP 전송 프로토콜                     | `"grpc"`/`"http"` | `"grpc"`                |
 | `otlpTracesEndpoint`  | `QWEN_TELEMETRY_OTLP_TRACES_ENDPOINT`  | -                                                        | 추적에 대한 신호별 엔드포인트 재정의(HTTP에만 해당)  | URL 문자열           | -                       |
 | `otlpLogsEndpoint`    | `QWEN_TELEMETRY_OTLP_LOGS_ENDPOINT`    | -                                                        | 로그에 대한 신호별 엔드포인트 재정의(HTTP에만 해당)  | URL 문자열           | -                       |
 | `otlpMetricsEndpoint` | `QWEN_TELEMETRY_OTLP_METRICS_ENDPOINT` | -                                                        | 지표에 대한 신호별 엔드포인트 재정의(HTTP에만 해당)  | URL 문자열           | -                       |
-| `outfile`             | `QWEN_TELEMETRY_OUTFILE`               | `--telemetry-outfile <path>`                             | 원격 측정을 파일에 저장(재정의`otlpEndpoint`) | 파일 경로             | -                       |
+| `outfile`             | `QWEN_TELEMETRY_OUTFILE`               | `--telemetry-outfile <path>`                             | 텔레메트리을 파일에 저장(재정의`otlpEndpoint`) | 파일 경로             | -                       |
 | `logPrompts`          | `QWEN_TELEMETRY_LOG_PROMPTS`           | `--telemetry-log-prompts` / `--no-telemetry-log-prompts` | 원격 분석 로그에 프롬프트 포함                | `true`/`false`    | `true`                  |
 | `useCollector`        | `QWEN_TELEMETRY_USE_COLLECTOR`         | -                                                        | 외부 OTLP 수집기 사용(고급)               | `true`/`false`    | `false`                 |
 
@@ -90,11 +90,11 @@ OpenTelemetry 이름:`OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`,`OTEL_EXPORTER_OTLP_LO
 
 모든 구성 옵션에 대한 자세한 내용은 다음을 참조하세요.[구성 가이드](./cli/configuration.md).
 
-## Aliyun 원격 측정
+## Aliyun 텔레메트리
 
 ### 수동 OTLP 내보내기
 
-Alibaba Cloud Managed Service에서 Qwen Code 원격 측정을 보려면 
+Alibaba Cloud Managed Service에서 Qwen Code 텔레메트리을 보려면 
 OpenTelemetry, OTLP 끝점으로 내보내도록 Qwen 코드 구성 
 ARMS에서 제공합니다.
 
@@ -102,7 +102,7 @@ ARMS에서 제공합니다.
 목적지. 만약에`otlpEndpoint`설정되지 않은 경우에도 Qwen 코드는 여전히 기본값입니다.`http://localhost:4317`. 만약에`outfile`설정되어 있으면 재정의됩니다.`otlpEndpoint`원격 분석이 파일에 기록되는 대신 
 Alibaba Cloud로 전송되었습니다.
 
-1. 원격 측정을 활성화합니다.`.qwen/settings.json`OTLP를 설정하고 
+1. 텔레메트리을 활성화합니다.`.qwen/settings.json`OTLP를 설정하고 
    끝점:
 
    **옵션 A: gRPC 프로토콜**(표준 OTLP 엔드포인트):
@@ -158,13 +158,13 @@ Alibaba Cloud로 전송되었습니다.
        다음으로 이동`Integration Center`.
      * **레거시 콘솔**(`tracing.console.aliyun.com`): 다음으로 이동`Cluster 설정s`→`Access point information`.
 
-## 로컬 원격 측정
+## 로컬 텔레메트리
 
 로컬 개발 및 디버깅의 경우 원격 분석 데이터를 로컬로 캡처할 수 있습니다.
 
 ### 파일 기반 출력(권장)
 
-1. 원격 측정을 활성화합니다.`.qwen/settings.json`:
+1. 텔레메트리을 활성화합니다.`.qwen/settings.json`:
    ```json
    {
      "telemetry": {
@@ -186,7 +186,7 @@ Alibaba Cloud로 전송되었습니다.
    ```
    이는 다음을 수행합니다.
    * Jaeger 및 OTEL 수집기 다운로드 및 시작
-   * 로컬 원격 측정을 위한 작업 공간 구성
+   * 로컬 텔레메트리을 위한 작업 공간 구성
    * Jaeger UI 제공:<http://localhost:16686>
    * 로그/측정항목을 다음에 저장`~/.qwen/tmp/<projectHash>/otel/collector.log`
    * 종료 시 수집기를 중지합니다(예:`Ctrl+C`)

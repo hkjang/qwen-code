@@ -168,7 +168,7 @@ const pty = spawn(
 참고:
 
 * **일반 파일**, FIFO(명명된 파이프) 또는`/dev/fd/N`모든 일. FIFO는
-  양측이 동일한 호스트에 있을 때 지연 시간이 가장 짧은 옵션입니다.
+  양측이 동일한 호스트에 있을 때 레이턴시이 가장 짧은 옵션입니다.
 * 브리지는 다음을 사용하여 FIFO를 엽니다.`O_NONBLOCK`그리고 다시 차단 상태로 돌아갑니다
   모드 켜짐`ENXIO`(아직 리더가 없음) PTY 시작이 교착 상태에 빠지는 일이 없습니다.
   소비자를 기다리고 있습니다.
@@ -297,7 +297,7 @@ echo '{"type":"submit","text":"Explain this repo"}' >> /tmp/qwen-input.jsonl
 * JSON으로 구문 분석하지 못한 줄은 기록되고 건너뜁니다.
   감시자를 멈춰라.
 
-## 지연 시간 참고
+## 레이턴시 참고
 
 입력 파일은 다음과 같이 관찰됩니다.`fs.watchFile`500ms 폴링 간격으로,
 원격의 최악의 왕복 대기 시간`submit`반쯤이야
@@ -520,7 +520,7 @@ npx tsx demo-embedder.ts
 
 ### POC 5 — 기능 핸드셰이크 기능 감지
 
-이전 Qwen 코드 버전은 방출되지 않습니다.`protocol_version`. 분야를 다루다
+이전 Qwen 코드 버전은 방출되지 않습니다.`protocol_version`. 필드를 다루다
 선택 사항 및 기능 감지:
 
 ```ts
