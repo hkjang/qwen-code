@@ -1,310 +1,308 @@
-# How to Contribute
+# 기여 방법
 
-We would love to accept your patches and contributions to this project.
+이 프로젝트에 대한 여러분의 패치와 기여를 환영합니다.
 
-## Contribution Process
+## 기여 프로세스
 
-### Code Reviews
+### 코드 리뷰
 
-All submissions, including submissions by project members, require review. We
-use [GitHub pull requests](https://docs.github.com/articles/about-pull-requests)
-for this purpose.
+프로젝트 멤버의 제출물을 포함하여 모든 제출물은 리뷰가 필요합니다. 우리는 이를 위해 [GitHub pull requests](https://docs.github.com/articles/about-pull-requests)를 사용합니다.
 
-### Pull Request Guidelines
+### Pull Request 가이드라인
 
-To help us review and merge your PRs quickly, please follow these guidelines. PRs that do not meet these standards may be closed.
+PR을 신속하게 리뷰하고 병합할 수 있도록 다음 가이드라인을 준수해 주세요. 이 기준을 충족하지 못하는 PR은 닫힐 수 있습니다.
 
-#### 1. Link to an Existing Issue
+#### 1. 기존 이슈와 연결
 
-All PRs should be linked to an existing issue in our tracker. This ensures that every change has been discussed and is aligned with the project's goals before any code is written.
+모든 PR은 이슈 트래커의 기존 이슈와 연결되어야 합니다. 이는 모든 변경 사항이 코드를 작성하기 전에 충분히 논의되었으며 프로젝트의 목표와 일치하는지 확인하기 위함입니다.
 
-- **For bug fixes:** The PR should be linked to the bug report issue.
-- **For features:** The PR should be linked to the feature request or proposal issue that has been approved by a maintainer.
+- **버그 수정:** PR은 해당 버그 리포트 이슈와 연결되어야 합니다.
+- **기능 추가:** PR은 메인테이너에 의해 승인된 기능 요청 또는 제안 이슈와 연결되어야 합니다.
 
-If an issue for your change doesn't exist, please **open one first** and wait for feedback before you start coding.
+변경 사항에 대한 이슈가 없다면, 코딩을 시작하기 전에 **먼저 이슈를 생성**하고 피드백을 기다려 주세요.
 
-#### 2. Keep It Small and Focused
+#### 2. 작고 집중된 범위 유지
 
-We favor small, atomic PRs that address a single issue or add a single, self-contained feature.
+단일 이슈를 해결하거나 독립적인 단일 기능을 추가하는 작고 원자적인 PR을 선호합니다.
 
-- **Do:** Create a PR that fixes one specific bug or adds one specific feature.
-- **Don't:** Bundle multiple unrelated changes (e.g., a bug fix, a new feature, and a refactor) into a single PR.
+- **권장:** 하나의 특정 버그를 수정하거나 하나의 특정 기능을 추가하는 PR을 만드세요.
+- **비권장:** 여러 관련 없는 변경 사항(예: 버그 수정, 새 기능, 리팩토링)을 하나의 PR에 묶지 마세요.
 
-Large changes should be broken down into a series of smaller, logical PRs that can be reviewed and merged independently.
+큰 변경 사항은 독립적으로 리뷰하고 병합할 수 있도록 작고 논리적인 일련의 PR로 나누어야 합니다.
 
-#### 3. Use Draft PRs for Work in Progress
+#### 3. 작업 중인 내용은 Draft PR 사용
 
-If you'd like to get early feedback on your work, please use GitHub's **Draft Pull Request** feature. This signals to the maintainers that the PR is not yet ready for a formal review but is open for discussion and initial feedback.
+작업에 대해 조기에 피드백을 받고 싶다면 GitHub의 **Draft Pull Request** 기능을 사용해 주세요. 이는 메인테이너에게 해당 PR이 아직 공식 리뷰를 받을 준비는 되지 않았지만 논의와 초기 피드백을 위해 열려 있다는 신호를 보냅니다.
 
-#### 4. Ensure All Checks Pass
+#### 4. 모든 체크 통과 확인
 
-Before submitting your PR, ensure that all automated checks are passing by running `npm run preflight`. This command runs all tests, linting, and other style checks.
+PR을 제출하기 전에 `npm run preflight`를 실행하여 모든 자동화된 체크를 통과했는지 확인하세요. 이 명령은 모든 테스트, 린팅 및 기타 스타일 체크를 실행합니다.
 
-#### 5. Update Documentation
+#### 5. 문서 업데이트
 
-If your PR introduces a user-facing change (e.g., a new command, a modified flag, or a change in behavior), you must also update the relevant documentation in the `/docs` directory.
+PR이 사용자에게 영향을 미치는 변경 사항(예: 새 명령, 수정된 플래그, 동작 변경)을 도입하는 경우 `/docs` 디렉토리의 관련 문서도 업데이트해야 합니다.
 
-#### 6. Include a Screenshot or Video Demo
+#### 6. 스크린샷 또는 비디오 데모 포함
 
-To help reviewers understand your change quickly and prioritize reviews, please attach a screenshot or short video to your PR showing the change in action.
+리뷰어가 변경 사항을 신속하게 이해하고 우선순위를 정할 수 있도록, 변경 사항이 작동하는 스크린샷이나 짧은 비디오를 PR에 첨부해 주세요.
 
-- **For bug fixes:** Show the before and after behavior.
-- **For new features:** Show the feature working end-to-end.
-- **For refactors or internal-only changes:** Simply note "N/A — no user-facing change" in the demo section.
+- **버그 수정:** 수정 전후의 동작을 보여주세요.
+- **새 기능:** 기능이 처음부터 끝까지 작동하는 모습을 보여주세요.
+- **리팩토링 또는 내부 변경:** 데모 섹션에 "해당 없음 — 사용자에게 보이는 변경 사항 없음"이라고 기재하세요.
 
-PRs with visual demos tend to get reviewed much faster, so this is in your interest too!
+시각적 데모가 있는 PR은 훨씬 더 빨리 리뷰되는 경향이 있으니 꼭 포함해 주세요!
 
-#### 7. Write Clear Commit Messages and a Good PR Description
+#### 7. 명확한 커밋 메시지 및 PR 설명 작성
 
-Your PR should have a clear, descriptive title and a detailed description of the changes. Follow the [Conventional Commits](https://www.conventionalcommits.org/) standard for your commit messages.
+PR은 명확하고 설명적인 제목과 상세한 변경 내용을 포함해야 합니다. 커밋 메시지는 [Conventional Commits](https://www.conventionalcommits.org/) 표준을 따르세요.
 
-- **Good PR Title:** `feat(cli): Add --json flag to 'config get' command`
-- **Bad PR Title:** `Made some changes`
+- **좋은 PR 제목:** `feat(cli): Add --json flag to 'config get' command`
+- **나쁜 PR 제목:** `Made some changes`
 
-In the PR description, explain the "why" behind your changes and link to the relevant issue (e.g., `Fixes #123`).
+PR 설명에서는 변경 이유를 설명하고 관련 이슈와 연결하세요(예: `Fixes #123`).
 
-## Development Setup and Workflow
+## 개발 설정 및 워크플로우
 
-This section guides contributors on how to build, modify, and understand the development setup of this project.
+이 섹션은 프로젝트를 빌드, 수정 및 개발 설정을 이해하려는 기여자들을 위한 가이드입니다.
 
-### Setting Up the Development Environment
+### 개발 환경 설정
 
-**Prerequisites:**
+**전제 조건:**
 
 1.  **Node.js**:
-    - **Development:** Please use Node.js `~20.19.0`. This specific version is required due to an upstream development dependency issue. You can use a tool like [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions.
-    - **Production:** For running the CLI in a production environment, any version of Node.js `>=20` is acceptable.
+    - **개발용:** Node.js `~20.19.0`을 사용해 주세요. 상위 개발 종속성 문제로 인해 이 특정 버전이 필요합니다. [nvm](https://github.com/nvm-sh/nvm)과 같은 도구를 사용하여 Node.js 버전을 관리할 수 있습니다.
+    - **운영용:** 운영 환경에서 CLI를 실행하려면 Node.js `>=20` 버전이면 충분합니다.
 2.  **Git**
 
-### Build Process
+### 빌드 프로세스
 
-To clone the repository:
+저장소 복제:
 
 ```bash
-git clone https://github.com/QwenLM/qwen-code.git # Or your fork's URL
+git clone https://github.com/QwenLM/qwen-code.git # 또는 포크한 저장소 URL
 cd qwen-code
 ```
 
-To install dependencies defined in `package.json` as well as root dependencies:
+`package.json`에 정의된 종속성 및 루트 종속성 설치:
 
 ```bash
 npm install
 ```
 
-To build the entire project (all packages):
+전체 프로젝트 빌드 (모든 패키지):
 
 ```bash
 npm run build
 ```
 
-This command typically compiles TypeScript to JavaScript, bundles assets, and prepares the packages for execution. Refer to `scripts/build.js` and `package.json` scripts for more details on what happens during the build.
+이 명령은 일반적으로 TypeScript를 JavaScript로 컴파일하고, 자산을 번들링하며, 패키지를 실행할 수 있도록 준비합니다. 빌드 중에 일어나는 자세한 내용은 `scripts/build.js` 및 `package.json` 스크립트를 참조하세요.
 
-### Enabling Sandboxing
+### 샌드박싱 활성화
 
-[Sandboxing](#sandboxing) is highly recommended and requires, at a minimum, setting `QWEN_SANDBOX=true` in your `~/.env` and ensuring a sandboxing provider (e.g. `macOS Seatbelt`, `docker`, or `podman`) is available. See [Sandboxing](#sandboxing) for details.
+[샌드박싱](#샌드박싱)은 강력히 권장되며, 최소한 `~/.env`에 `QWEN_SANDBOX=true`를 설정하고 샌드박싱 제공업체(예: `macOS Seatbelt`, `docker`, `podman`)를 사용할 수 있어야 합니다. 자세한 내용은 [샌드박싱](#샌드박싱) 섹션을 참조하세요.
 
-To build both the `qwen-code` CLI utility and the sandbox container, run `build:all` from the root directory:
+`qwen-code` CLI 유틸리티와 샌드박스 컨테이너를 모두 빌드하려면 루트 디렉토리에서 `build:all`을 실행하세요:
 
 ```bash
 npm run build:all
 ```
 
-To skip building the sandbox container, you can use `npm run build` instead.
+샌드박스 컨테이너 빌드를 건너뛰려면 대신 `npm run build`를 사용할 수 있습니다.
 
-### Running
+### 실행하기
 
-To start the Qwen Code application from the source code (after building), run the following command from the root directory:
+빌드 후 소스 코드에서 Qwen Code 애플리케이션을 시작하려면 루트 디렉토리에서 다음 명령을 실행하세요:
 
 ```bash
 npm start
 ```
 
-If you'd like to run the source build outside of the qwen-code folder, you can utilize `npm link path/to/qwen-code/packages/cli` (see: [docs](https://docs.npmjs.com/cli/v9/commands/npm-link)) to run with `qwen-code`
+소스 빌드를 qwen-code 폴더 외부에서 실행하려면 `npm link path/to/qwen-code/packages/cli` ([문서](https://docs.npmjs.com/cli/v9/commands/npm-link) 참조)를 사용하여 `qwen-code`로 실행할 수 있습니다.
 
-### Running Tests
+### 테스트 실행
 
-This project contains two types of tests: unit tests and integration tests.
+이 프로젝트에는 단위 테스트와 통합 테스트의 두 가지 유형의 테스트가 있습니다.
 
-#### Unit Tests
+#### 단위 테스트
 
-To execute the unit test suite for the project:
+프로젝트의 단위 테스트 제품군을 실행하려면:
 
 ```bash
 npm run test
 ```
 
-This will run tests located in the `packages/core` and `packages/cli` directories. Ensure tests pass before submitting any changes. For a more comprehensive check, it is recommended to run `npm run preflight`.
+이 명령은 `packages/core` 및 `packages/cli` 디렉토리에 있는 테스트를 실행합니다. 변경 사항을 제출하기 전에 테스트가 통과하는지 확인하세요. 더 포괄적인 확인을 위해 `npm run preflight`를 실행하는 것을 권장합니다.
 
-#### Integration Tests
+#### 통합 테스트
 
-The integration tests are designed to validate the end-to-end functionality of Qwen Code. They are not run as part of the default `npm run test` command.
+통합 테스트는 Qwen Code의 종단간 기능을 검증하도록 설계되었습니다. 기본 `npm run test` 명령의 일부로 실행되지 않습니다.
 
-To run the integration tests, use the following command:
+통합 테스트를 실행하려면 다음 명령을 사용하세요:
 
 ```bash
 npm run test:e2e
 ```
 
-For more detailed information on the integration testing framework, please see the [Integration Tests documentation](./docs/integration-tests.md).
+통합 테스트 프레임워크에 대한 자세한 내용은 [통합 테스트 문서](./docs/integration-tests.md)를 참조하세요.
 
-### Linting and Preflight Checks
+### 린팅 및 Preflight 체크
 
-To ensure code quality and formatting consistency, run the preflight check:
+코드 품질과 포맷 일관성을 보장하기 위해 preflight 체크를 실행하세요:
 
 ```bash
 npm run preflight
 ```
 
-This command will run ESLint, Prettier, all tests, and other checks as defined in the project's `package.json`.
+이 명령은 ESLint, Prettier, 모든 테스트 및 프로젝트의 `package.json`에 정의된 기타 체크를 실행합니다.
 
-_ProTip_
+_팁_
 
-after cloning create a git precommit hook file to ensure your commits are always clean.
+저장소를 복제한 후 git precommit 훅 파일을 생성하여 커밋이 항상 깨끗한지 확인하세요.
 
 ```bash
 echo "
 # Run npm build and check for errors
 if ! npm run preflight; then
-  echo "npm build failed. Commit aborted."
+  echo \"npm build failed. Commit aborted.\"
   exit 1
 fi
 " > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 ```
 
-#### Formatting
+#### 포매팅
 
-To separately format the code in this project by running the following command from the root directory:
+이 프로젝트의 코드를 별도로 포맷하려면 루트 디렉토리에서 다음 명령을 실행하세요:
 
 ```bash
 npm run format
 ```
 
-This command uses Prettier to format the code according to the project's style guidelines.
+이 명령은 Prettier를 사용하여 프로젝트의 스타일 가이드라인에 따라 코드를 포맷합니다.
 
-#### Linting
+#### 린팅
 
-To separately lint the code in this project, run the following command from the root directory:
+코드를 별도로 린트하려면 루트 디렉토리에서 다음 명령을 실행하세요:
 
 ```bash
 npm run lint
 ```
 
-### Coding Conventions
+### 코딩 컨벤션
 
-- Please adhere to the coding style, patterns, and conventions used throughout the existing codebase.
-- **Imports:** Pay special attention to import paths. The project uses ESLint to enforce restrictions on relative imports between packages.
+- 기존 코드베이스 전체에서 사용되는 코딩 스타일, 패턴 및 컨벤션을 준수해 주세요.
+- **임포트:** 임포트 경로에 특별히 주의해 주세요. 프로젝트는 ESLint를 사용하여 패키지 간의 상대 임포트 제한을 강제합니다.
 
-### Project Structure
+### 프로젝트 구조
 
-- `packages/`: Contains the individual sub-packages of the project.
-  - `cli/`: The command-line interface.
-  - `core/`: The core backend logic for Qwen Code.
-- `docs/`: Contains all project documentation.
-- `scripts/`: Utility scripts for building, testing, and development tasks.
+- `packages/`: 프로젝트의 개별 하위 패키지를 포함합니다.
+  - `cli/`: 명령줄 인터페이스.
+  - `core/`: Qwen Code의 핵심 백엔드 로직.
+- `docs/`: 모든 프로젝트 문서를 포함합니다.
+- `scripts/`: 빌드, 테스트 및 개발 작업을 위한 유틸리티 스크립트.
 
-For more detailed architecture, see `docs/architecture.md`.
+더 자세한 아키텍처는 `docs/architecture.md`를 참조하세요.
 
-## Documentation Development
+## 문서 개발
 
-This section describes how to develop and preview the documentation locally.
+이 섹션은 문서를 로컬에서 개발하고 미리 보는 방법을 설명합니다.
 
-### Prerequisites
+### 전제 조건
 
-1. Ensure you have Node.js (version 18+) installed
-2. Have npm or yarn available
+1. Node.js (버전 18+) 설치 여부 확인
+2. npm 또는 yarn 사용 가능 여부 확인
 
-### Setup Documentation Site Locally
+### 로컬에서 문서 사이트 설정
 
-To work on the documentation and preview changes locally:
+문서 작업을 하고 변경 사항을 로컬에서 미리 보려면:
 
-1. Navigate to the `docs-site` directory:
+1. `docs-site` 디렉토리로 이동합니다:
 
    ```bash
    cd docs-site
    ```
 
-2. Install dependencies:
+2. 종속성 설치:
 
    ```bash
    npm install
    ```
 
-3. Link the documentation content from the main `docs` directory:
+3. 메인 `docs` 디렉토리의 문서 콘텐츠 연결:
 
    ```bash
    npm run link
    ```
 
-   This creates a symbolic link from `../docs` to `content` in the docs-site project, allowing the documentation content to be served by the Next.js site.
+   이 명령은 `../docs`에서 docs-site 프로젝트의 `content`로 심볼릭 링크를 생성하여 Next.js 사이트에서 문서 콘텐츠를 제공할 수 있게 합니다.
 
-4. Start the development server:
+4. 개발 서버 시작:
 
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the documentation site with live updates as you make changes.
+5. 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 변경 사항이 실시간으로 업데이트되는 문서 사이트를 확인합니다.
 
-Any changes made to the documentation files in the main `docs` directory will be reflected immediately in the documentation site.
+메인 `docs` 디렉토리의 문서 파일을 변경하면 문서 사이트에 즉시 반영됩니다.
 
-## Debugging
+## 디버깅
 
 ### VS Code:
 
-0.  Run the CLI to interactively debug in VS Code with `F5`
-1.  Start the CLI in debug mode from the root directory:
+0.  `F5` 키를 사용하여 VS Code에서 대화형으로 CLI를 디버깅할 수 있습니다.
+1.  루트 디렉토리에서 디버그 모드로 CLI를 시작합니다:
     ```bash
     npm run debug
     ```
-    This command runs `node --inspect-brk dist/index.js` within the `packages/cli` directory, pausing execution until a debugger attaches. You can then open `chrome://inspect` in your Chrome browser to connect to the debugger.
-2.  In VS Code, use the "Attach" launch configuration (found in `.vscode/launch.json`).
+    이 명령은 `packages/cli` 디렉토리 내에서 `node --inspect-brk dist/index.js`를 실행하여 디버거가 연결될 때까지 실행을 일시 중지합니다. 그런 다음 Chrome 브라우저에서 `chrome://inspect`를 열어 디버거에 연결할 수 있습니다.
+2.  VS Code에서 "Attach" 실행 구성(`.vscode/launch.json`에 있음)을 사용하세요.
 
-Alternatively, you can use the "Launch Program" configuration in VS Code if you prefer to launch the currently open file directly, but 'F5' is generally recommended.
+또는 현재 열려 있는 파일을 직접 실행하려는 경우 VS Code에서 "Launch Program" 구성을 사용할 수 있지만, 일반적으로 'F5'를 권장합니다.
 
-To hit a breakpoint inside the sandbox container run:
+샌드박스 컨테이너 내부의 중단점에 도달하려면 다음을 실행하세요:
 
 ```bash
 DEBUG=1 qwen-code
 ```
 
-**Note:** If you have `DEBUG=true` in a project's `.env` file, it won't affect qwen-code due to automatic exclusion. Use `.qwen-code/.env` files for qwen-code specific debug settings.
+**참고:** 프로젝트의 `.env` 파일에 `DEBUG=true`가 있어도 자동 제외로 인해 qwen-code에는 영향을 미치지 않습니다. qwen-code 전용 디버그 설정에는 `.qwen-code/.env` 파일을 사용하세요.
 
 ### React DevTools
 
-To debug the CLI's React-based UI, you can use React DevTools. Ink, the library used for the CLI's interface, is compatible with React DevTools version 4.x.
+CLI의 React 기반 UI를 디버깅하기 위해 React DevTools를 사용할 수 있습니다. CLI 인터페이스에 사용된 라이브러리인 Ink는 React DevTools 버전 4.x와 호환됩니다.
 
-1.  **Start the Qwen Code application in development mode:**
+1.  **Qwen Code 애플리케이션을 개발 모드로 시작:**
 
     ```bash
     DEV=true npm start
     ```
 
-2.  **Install and run React DevTools version 4.28.5 (or the latest compatible 4.x version):**
+2.  **React DevTools 버전 4.28.5(또는 호환되는 최신 4.x 버전) 설치 및 실행:**
 
-    You can either install it globally:
+    전역으로 설치하거나:
 
     ```bash
     npm install -g react-devtools@4.28.5
     react-devtools
     ```
 
-    Or run it directly using npx:
+    npx를 사용하여 직접 실행할 수 있습니다:
 
     ```bash
     npx react-devtools@4.28.5
     ```
 
-    Your running CLI application should then connect to React DevTools.
+    실행 중인 CLI 애플리케이션이 React DevTools에 연결됩니다.
 
-## Sandboxing
+## 샌드박싱
 
-> TBD
+> 추후 작성 예정
 
-## Manual Publish
+## 수동 배포
 
-We publish an artifact for each commit to our internal registry. But if you need to manually cut a local build, then run the following commands:
+우리는 모든 커밋에 대해 내부 레지스트리에 아티팩트를 배포합니다. 하지만 수동으로 로컬 빌드를 생성해야 하는 경우 다음 명령을 실행하세요:
 
-```
+```bash
 npm run clean
 npm install
 npm run auth

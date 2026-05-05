@@ -178,7 +178,7 @@ if (args.startsWith('--fast') && !modelName) {
 
 **ACP 의미론**: IDE는 사용자가 참고할 수 있도록 현재 모델 이름을 표시합니다. 모델 전환은 `/model <model-id>`와 같이 매개변수를 사용하여 수행할 수 있습니다.
 
-> **참고**: 현재 `/model <model-id>` (`--fast` 없이)를 통해 현재 세션의 모델을 설정하는 로직은 아직 구현되지 않았습니다. 2단계에서 ACP 하의 모델 전환을 지원하려면 `/model <model-id>` 설정 로직을 동기적으로 구현해야 합니다. 이번 설계에서는 이 경로를 예약해 두었지만, 2단계의 선택 사항(Optional)으로 표시하여 "현재 모델 보기"라는 읽기 전용 경로를 먼저 보장하는 데 우선순위를 둡니다.
+> **참고**: 현재 `/model <model-id>` (`--fast` 없이)를 통해 현재 세션의 모델을 설정하는 로직은 아직 구현되지 않았습니다. 2단계에서 ACP 하의 모델 전환을 지원하려면 `/model <model-id>` 설정 로직을 동기적으로 구현해야 합니다. 이번 설계에서는 이 경로를 예약해 두었지만, 2단계의 선택 사항(선택)으로 표시하여 "현재 모델 보기"라는 읽기 전용 경로를 먼저 보장하는 데 우선순위를 둡니다.
 
 ### 6.2 `/approval-mode`
 
@@ -274,7 +274,7 @@ action: (context) => {
       `API requests: ${totalRequests}`,
       `Tokens — prompt: ${totalPromptTokens}, output: ${totalCandidateTokens}`,
       `Tool calls: ${metrics.tools.totalCalls} (${metrics.tools.totalSuccess} ok, ${metrics.tools.totalFail} fail)`,
-      `Files: +${metrics.files.totalLinesAdded} / -${metrics.files.totalLinesRemoved} lines`,
+      `Files: +${metrics.files.totalLinesAdded} / -${metrics.files.totalLines제거됨} lines`,
     ];
     return { type: 'message', messageType: 'info', content: lines.join('\n') };
   }

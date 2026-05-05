@@ -37,12 +37,12 @@ Qwen Code를 실행하는 방법에는 여러 가지가 있습니다. 선택하�
 
 보안 및 격리를 위해 Qwen Code는 컨테이너 내부에서 실행될 수 있습니다. 이는 CLI가 부작용이 있을 수 있는 도구를 실행하는 기본 방법입니다.
 
-* **레지스트리에서 직접:**&#xAC8C;시된 샌드박스 이미지를 직접 실행할 수 있습니다. 이는 Docker만 있고 CLI를 실행하려는 환경에 유용합니다.
+* **레지스트리에서 직접:**게시된 샌드박스 이미지를 직접 실행할 수 있습니다. 이는 Docker만 있고 CLI를 실행하려는 환경에 유용합니다.
   ```bash
   # Run the published sandbox image
   docker run --rm -it ghcr.io/qwenlm/qwen-code:0.0.11
   ```
-* **사용하여`--sandbox`깃발:**&#x51;wen Code를 로컬에 설치한 경우(위에 설명된 표준 설치 사용) 샌드박스 컨테이너 내에서 실행되도록 지시할 수 있습니다.
+* **사용하여`--sandbox`깃발:**Qwen Code를 로컬에 설치한 경우(위에 설명된 표준 설치 사용) 샌드박스 컨테이너 내에서 실행되도록 지시할 수 있습니다.
   ```bash
   qwen --sandbox -y -p "your prompt here"
   ```
@@ -53,12 +53,12 @@ Qwen Code를 실행하는 방법에는 여러 가지가 있습니다. 선택하�
 
 프로젝트 기여자는 소스 코드에서 직접 CLI를 실행하기를 원할 것입니다.
 
-* **개발 모드:**&#xC774; 방법은 핫 리로딩을 제공하며 활성 개발에 유용합니다.
+* **개발 모드:**이 방법은 핫 리로딩을 제공하며 활성 개발에 유용합니다.
   ```bash
   # From the root of the repository
   npm run start
   ```
-* **프로덕션과 유사한 모드(링크된 패키지):**&#xC774; 방법은 로컬 패키지를 연결하여 전역 설치를 시뮬레이션합니다. 프로덕션 워크플로에서 로컬 빌드를 테스트하는 데 유용합니다.
+* **프로덕션과 유사한 모드(링크된 패키지):**이 방법은 로컬 패키지를 연결하여 전역 설치를 시뮬레이션합니다. 프로덕션 워크플로에서 로컬 빌드를 테스트하는 데 유용합니다.
 
   ```bash
   # Link the local cli package to your global node_modules
@@ -96,9 +96,9 @@ Qwen Code 프로젝트는 NPM 레지스트리에 핵심 패키지를 게시하�
 
 배포 채널에 따라 두 가지 고유한 빌드 프로세스가 사용됩니다.
 
-* **NPM 출판물:**&#x4E;PM 레지스트리에 게시하려면 다음의 TypeScript 소스 코드를 사용하세요.`@qwen-code/qwen-code-core`그리고`@qwen-code/qwen-code`TypeScript 컴파일러(`tsc`). 결과`dist/`디렉토리는 NPM 패키지에 게시되는 것입니다. 이는 TypeScript 라이브러리에 대한 표준 접근 방식입니다.
+* **NPM 출판물:**NPM 레지스트리에 게시하려면 다음의 TypeScript 소스 코드를 사용하세요.`@qwen-code/qwen-code-core`그리고`@qwen-code/qwen-code`TypeScript 컴파일러(`tsc`). 결과`dist/`디렉토리는 NPM 패키지에 게시되는 것입니다. 이는 TypeScript 라이브러리에 대한 표준 접근 방식입니다.
 
-* **GitHub`npx`실행:**&#x47;itHub에서 최신 버전의 Qwen Code를 직접 실행하면 다음 프로세스에 의해 다른 프로세스가 트리거됩니다.`prepare`스크립트`package.json`. 이 스크립트는`esbuild`전체 애플리케이션과 해당 종속성을 하나의 독립된 JavaScript 파일로 묶습니다. 이 번들은 사용자 컴퓨터에서 즉시 생성되며 저장소에 체크인되지 않습니다.
+* **GitHub`npx`실행:**GitHub에서 최신 버전의 Qwen Code를 직접 실행하면 다음 프로세스에 의해 다른 프로세스가 트리거됩니다.`prepare`스크립트`package.json`. 이 스크립트는`esbuild`전체 애플리케이션과 해당 종속성을 하나의 독립된 JavaScript 파일로 묶습니다. 이 번들은 사용자 컴퓨터에서 즉시 생성되며 저장소에 체크인되지 않습니다.
 
 **Docker 샌드박스 이미지**
 

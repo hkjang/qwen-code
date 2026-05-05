@@ -1,4 +1,4 @@
 export default {
-  'ide-integration': 'Introduction',
+  'ide-integration': '소개',
   'ide-companion-spec': 'IDE Companion Spec',
 };

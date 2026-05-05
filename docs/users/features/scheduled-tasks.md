@@ -6,7 +6,7 @@
 
 작업은 세션 범위입니다. 현재 Qwen Code 프로세스에 있으며 종료하면 사라집니다. 디스크에는 아무것도 기록되지 않습니다.
 
-> **메모:**&#xC608;약된 작업은 실험적인 기능입니다. 다음을 사용하여 활성화하세요.`experimental.cron: true`당신의[설정](../configuration/settings.md)또는 설정`QWEN_CODE_ENABLE_CRON=1`당신의 환경에서.
+> **메모:**예약된 작업은 실험적인 기능입니다. 다음을 사용하여 활성화하세요.`experimental.cron: true`당신의[설정](../configuration/settings.md)또는 설정`QWEN_CODE_ENABLE_CRON=1`당신의 환경에서.
 
 ## /loop를 사용하여 반복 프롬프트 예약
 

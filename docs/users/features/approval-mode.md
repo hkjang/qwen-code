@@ -246,7 +246,7 @@ qwen --prompt "Run the test suite, fix all failing tests, then commit changes"
 Qwen Code 세션 중에 다음을 사용하십시오.**Shift+Tab**​ (또는**꼬리표**Windows의 경우) 다음 네 가지 모드를 빠르게 순환합니다.
 
 ```
-Default Mode → Auto-Edit Mode → YOLO Mode → Plan Mode → Default Mode
+기본값 Mode → Auto-Edit Mode → YOLO Mode → Plan Mode → 기본값 Mode
 ```
 
 ### 영구 구성

@@ -1,9 +1,9 @@
-# Security Policy
+# 보안 정책
 
-## Reporting a Vulnerability
+## 취약점 보고
 
-If you believe you have discovered a security vulnerability, please report it to us through the following portal: [Report Security Issue](https://yundun.console.aliyun.com/?p=xznew#/taskmanagement/tasks/detail/151)
+보안 취약점을 발견했다고 생각되시면 다음 포털을 통해 보고해 주시기 바랍니다: [보안 문제 보고](https://yundun.console.aliyun.com/?p=xznew#/taskmanagement/tasks/detail/151)
 
-> **Note:** This channel is strictly for reporting security-related issues. Non-security vulnerabilities or general bug reports will not be addressed here.
+> **참고:** 이 채널은 오직 보안 관련 문제를 보고하기 위한 용도입니다. 보안과 관련 없는 취약점이나 일반적인 버그 리포트는 여기서 처리되지 않습니다.
 
-We sincerely appreciate your responsible disclosure and your contribution to helping us keep our project secure.
+책임 있는 공개와 우리 프로젝트의 보안을 유지하는 데 기여해 주셔서 진심으로 감사드립니다.

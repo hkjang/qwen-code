@@ -1,6 +1,6 @@
 # 웹 검색
 
-Qwen Code는 다음을 통해 웹 검색 기능을 지원합니다.**MCP(모델 컨텍스트 프로토콜)**&#xD1B5;합. 내장된 검색 도구가 아닌 외부 MCP 서버에 연결하여 웹 검색이 제공되므로 필요에 가장 적합한 검색 서비스를 선택할 수 있는 완전한 유연성을 제공합니다.
+Qwen Code는 다음을 통해 웹 검색 기능을 지원합니다.**MCP(모델 컨텍스트 프로토콜)**통합. 내장된 검색 도구가 아닌 외부 MCP 서버에 연결하여 웹 검색이 제공되므로 필요에 가장 적합한 검색 서비스를 선택할 수 있는 완전한 유연성을 제공합니다.
 
 ## ⚠️ 획기적인 변화: 내장`web_search`도구가 제거되었습니다.
 
@@ -79,9 +79,9 @@ Qwen Code는 다음을 통해 웹 검색 기능을 지원합니다.**MCP(모델 
 DashScope가 지원하는 Alibaba Cloud Bailian 플랫폼에서 제공하는 공식 웹 검색 MCP 서비스입니다.
 
 * **MCP 마켓플레이스:** <https://bailian.console.aliyun.com/cn-beijing?tab=mcp#/mcp-market/detail/WebSearch>
-* **비용:**&#xC720;료(Alibaba Cloud DashScope를 통해 청구)
+* **비용:**유료(Alibaba Cloud DashScope를 통해 청구)
 * **API 키 받기:** <https://help.aliyun.com/zh/model-studio/get-api-key>
-* **가장 적합한 대상:**&#xC911;국어 쿼리, 중국어 웹 콘텐츠 액세스, Alibaba Cloud 생태계와의 통합
+* **가장 적합한 대상:**중국어 쿼리, 중국어 웹 콘텐츠 액세스, Alibaba Cloud 생태계와의 통합
 
 #### 설정
 
@@ -118,9 +118,9 @@ qwen mcp add WebSearch \
 실시간 웹 검색, 추출, 매핑 및 크롤링 기능을 제공하는 프로덕션 지원 MCP 서버입니다.
 
 * **저장소:** <https://github.com/tavily-ai/tavily-mcp>
-* **비용:**&#xC720;료(무료 등급 사용 가능)
+* **비용:**유료(무료 등급 사용 가능)
 * **API 키 받기:** <https://app.tavily.com/home>
-* **가장 적합한 대상:**&#xACE0;품질 AI 생성 답변을 갖춘 범용 웹 검색
+* **가장 적합한 대상:**고품질 AI 생성 답변을 갖춘 범용 웹 검색
 
 #### 사용 가능한 도구
 
@@ -173,12 +173,12 @@ qwen mcp add tavily \
 
 ### GLM 웹서치 프라임 (ZhipuAI)
 
-GLM Coding Plan 사용자를 위해 설계된 ZhipuAI(智谱AI)에서 제공하는 공식 웹 검색 Remote MCP 서비스입니다. 뉴스, 주가, 날씨 등을 포함한 실시간 웹 검색을 제공합니다.
+GLM Coding Plan 사용자를 위해 설계된 ZhipuAI (지푸AI)에서 제공하는 공식 웹 검색 원격 MCP 서비스입니다. 뉴스, 주가, 날씨 등을 포함한 실시간 웹 검색을 제공합니다.
 
 * **선적 서류 비치:** <https://docs.bigmodel.cn/cn/coding-plan/mcp/search-mcp-server>
-* **비용:**&#x47;LM 코딩 플랜 구독에 포함됨(Lite: 100콜/월, Pro: 1,000/월, 최대: 4,000/월)
+* **비용:**GLM 코딩 플랜 구독에 포함됨(Lite: 100콜/월, Pro: 1,000/월, 최대: 4,000/월)
 * **API 키 받기:** <https://open.bigmodel.cn/apikey/platform>
-* **가장 적합한 대상:**&#xC911;국어 질의, 실시간 정보 검색
+* **가장 적합한 대상:**중국어 질의, 실시간 정보 검색
 
 #### 사용 가능한 도구
 

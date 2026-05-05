@@ -2,14 +2,14 @@
 
 Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 도구 모음을 제공합니다. 이러한 도구를 사용하면 모델이 파일과 디렉터리를 읽고, 쓰고, 나열하고, 검색하고, 수정할 수 있으며, 이 모든 작업은 사용자가 제어할 수 있으며 일반적으로 민감한 작업에 대한 확인이 필요합니다.
 
-**메모:**&#xBAA8;든 파일 시스템 도구는`rootDirectory`(일반적으로 CLI를 시작한 현재 작업 디렉터리) 보안을 위해. 이러한 도구에 제공하는 경로는 일반적으로 절대 경로이거나 이 루트 디렉터리를 기준으로 확인됩니다.
+**메모:**모든 파일 시스템 도구는`rootDirectory`(일반적으로 CLI를 시작한 현재 작업 디렉터리) 보안을 위해. 이러한 도구에 제공하는 경로는 일반적으로 절대 경로이거나 이 루트 디렉터리를 기준으로 확인됩니다.
 
 ## 1. `list_directory`(목록파일)
 
 `list_directory`지정된 디렉터리 경로 내에 있는 파일 및 하위 디렉터리의 이름을 직접 나열합니다. 제공된 glob 패턴과 일치하는 항목을 선택적으로 무시할 수 있습니다.
 
 * **도구 이름:** `list_directory`
-* **표시 이름:**&#xBAA9;록파일
+* **표시 이름:**목록파일
 * **파일:** `ls.ts`
 * **매개변수:**
   * `path`(문자열, 필수): 나열할 디렉터리의 절대 경로입니다.
@@ -19,15 +19,15 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
   * 파일 및 디렉터리 이름 목록을 반환합니다.
   * 각 항목이 디렉터리인지 여부를 나타냅니다.
   * 먼저 디렉토리를 기준으로 항목을 정렬한 다음 알파벳순으로 정렬합니다.
-* **출력(`llmContent`):**&#xB2E4;음과 같은 문자열:`Directory listing for /path/to/your/folder:\n[DIR] subfolder1\nfile1.txt\nfile2.png`
-* **확인:**&#xC544;니요.
+* **출력(`llmContent`):**다음과 같은 문자열:`Directory listing for /path/to/your/folder:\n[DIR] subfolder1\nfile1.txt\nfile2.png`
+* **확인:**아니요.
 
 ## 2. `read_file`(파일 읽기)
 
 `read_file`지정된 파일의 내용을 읽고 반환합니다. 이 도구는 현재 모델에서 지원되는 형식의 텍스트 파일과 미디어 파일(이미지, PDF, 오디오, 비디오)을 처리합니다. 텍스트 파일의 경우 특정 줄 범위를 읽을 수 있습니다. 현재 모델에서 양식이 지원되지 않는 미디어 파일은 유용한 오류 메시지와 함께 거부됩니다. 다른 바이너리 파일 형식은 일반적으로 건너뜁니다.
 
 * **도구 이름:** `read_file`
-* **표시 이름:**&#xD30C;일 읽기
+* **표시 이름:**파일 읽기
 * **파일:** `read-file.ts`
 * **매개변수:**
   * `path`(문자열, 필수) : 읽을 파일의 절대 경로입니다.
@@ -42,14 +42,14 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
   * 지원되는 미디어 파일의 경우: 다음을 포함하는 객체`inlineData`\~와 함께`mimeType`및 base64`data`(예:`{ inlineData: { mimeType: 'image/png', data: 'base64encodedstring' } }`).
   * 지원되지 않는 미디어 파일의 경우: 현재 모델이 이 형식을 지원하지 않음을 설명하는 오류 메시지 문자열과 대안 제안.
   * 기타 바이너리 파일의 경우: 다음과 같은 메시지가 표시됩니다.`Cannot display content of binary file: /path/to/data.bin`.
-* **확인:**&#xC544;니요.
+* **확인:**아니요.
 
 ## 3. `write_file`(파일 쓰기)
 
 `write_file`지정된 파일에 콘텐츠를 씁니다. 파일이 있으면 덮어쓰게 됩니다. 파일이 없으면 해당 파일(및 필요한 상위 디렉터리)이 생성됩니다.
 
 * **도구 이름:** `write_file`
-* **표시 이름:**&#xD30C;일 쓰기
+* **표시 이름:**파일 쓰기
 * **파일:** `write-file.ts`
 * **매개변수:**
   * `file_path`(문자열, 필수): 쓸 파일의 절대 경로입니다.
@@ -57,15 +57,15 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
 * **행동:**
   * 제공된 내용을 작성합니다.`content`에`file_path`.
   * 존재하지 않는 경우 상위 디렉토리를 만듭니다.
-* **출력(`llmContent`):**&#xC131;공 메시지(예:`Successfully overwrote file: /path/to/your/file.txt`또는`Successfully created and wrote to new file: /path/to/new/file.txt`.
-* **확인:**&#xC608;. 변경 사항의 차이점을 표시하고 쓰기 전에 사용자 승인을 요청합니다.
+* **출력(`llmContent`):**성공 메시지(예:`Successfully overwrote file: /path/to/your/file.txt`또는`Successfully created and wrote to new file: /path/to/new/file.txt`.
+* **확인:**예. 변경 사항의 차이점을 표시하고 쓰기 전에 사용자 승인을 요청합니다.
 
 ## 4. `glob`(글로브)
 
 `glob`특정 glob 패턴과 일치하는 파일을 찾습니다(예:`src/**/*.ts`,`*.md`), 수정 시간을 기준으로 정렬된 절대 경로를 반환합니다(최신 항목부터).
 
 * **도구 이름:** `glob`
-* **표시 이름:**&#xAE00;로브
+* **표시 이름:**글로브
 * **파일:** `glob.ts`
 * **매개변수:**
   * `pattern`(문자열, 필수): 일치시킬 glob 패턴(예:`"*.py"`,`"src/**/*.js"`).
@@ -75,8 +75,8 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
   * 가장 최근에 수정된 파일을 먼저 정렬하여 절대 경로 목록을 반환합니다.
   * 기본적으로 .gitignore 및 .qwenignore 패턴을 존중합니다.
   * 컨텍스트 오버플로를 방지하기 위해 결과를 100개 파일로 제한합니다.
-* **출력(`llmContent`):**&#xB2E4;음과 같은 메시지:`Found 5 file(s) matching "*.ts" within /path/to/search/dir, sorted by modification time (newest first):\n---\n/path/to/file1.ts\n/path/to/subdir/file2.ts\n---\n[95 files truncated] ...`
-* **확인:**&#xC544;니요.
+* **출력(`llmContent`):**다음과 같은 메시지:`Found 5 file(s) matching "*.ts" within /path/to/search/dir, sorted by modification time (newest first):\n---\n/path/to/file1.ts\n/path/to/subdir/file2.ts\n---\n[95 files truncated] ...`
+* **확인:**아니요.
 
 ## 5. `grep_search`(그렙)
 
@@ -84,7 +84,7 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
 
 * **도구 이름:** `grep_search`
 
-* **표시 이름:**&#xADF8;렙
+* **표시 이름:**그렙
 
 * **파일:** `grep.ts`(와 함께`ripGrep.ts`대체용으로)
 
@@ -101,7 +101,7 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
   * .gitignore 및 .qwenignore 패턴을 존중합니다.
   * 컨텍스트 오버플로를 방지하기 위해 출력을 제한합니다.
 
-* **출력(`llmContent`):**&#xD615;식화된 일치 문자열입니다. 예:
+* **출력(`llmContent`):**형식화된 일치 문자열입니다. 예:
 
   ```
   Found 3 matches for pattern "myFunction" in path "." (filter: "*.ts"):
@@ -114,7 +114,7 @@ Qwen Code는 로컬 파일 시스템과 상호 작용하기 위한 포괄적인 
   [0 lines truncated] ...
   ```
 
-* **확인:**&#xC544;니요.
+* **확인:**아니요.
 
 ### `grep_search`예
 
@@ -142,7 +142,7 @@ grep_search(pattern="function", glob="*.js", limit=10)
 
 * **도구 이름:** `edit`
 
-* **표시 이름:**&#xD3B8;집하다
+* **표시 이름:**편집하다
 
 * **파일:** `edit.ts`
 
@@ -151,7 +151,7 @@ grep_search(pattern="function", glob="*.js", limit=10)
 
   * `old_string`(문자열, 필수): 대체할 정확한 리터럴 텍스트입니다.
 
-    **비판적인:**&#xC774; 문자열은 변경할 단일 인스턴스를 고유하게 식별해야 합니다. 공백과 들여쓰기가 정확하게 일치하면서 대상 텍스트 주위에 충분한 컨텍스트가 포함되어야 합니다. 만약에`old_string`비어 있으면 도구는 다음 위치에 새 파일을 생성하려고 시도합니다.`file_path`\~와 함께`new_string`콘텐츠로.
+    **비판적인:**이 문자열은 변경할 단일 인스턴스를 고유하게 식별해야 합니다. 공백과 들여쓰기가 정확하게 일치하면서 대상 텍스트 주위에 충분한 컨텍스트가 포함되어야 합니다. 만약에`old_string`비어 있으면 도구는 다음 위치에 새 파일을 생성하려고 시도합니다.`file_path`\~와 함께`new_string`콘텐츠로.
 
   * `new_string`(문자열, 필수): 대체할 정확한 리터럴 텍스트`old_string`와 함께.
 
@@ -161,11 +161,11 @@ grep_search(pattern="function", glob="*.js", limit=10)
   * 만약에`old_string`비어 있고`file_path`존재하지 않습니다. 다음을 사용하여 새 파일을 만듭니다.`new_string`콘텐츠로.
   * 만약에`old_string`제공되면 다음을 읽습니다.`file_path`그리고 다음과 같은 경우가 아니면 정확히 한 번만 찾으려고 시도합니다.`replace_all`사실이다.
   * 일치하는 항목이 고유한 경우(또는`replace_all`true), 텍스트를 다음으로 바꿉니다.`new_string`.
-  * **향상된 신뢰성(다단계 편집 수정):**&#xD2B9;히 모델이 제공하는 경우 편집 성공률을 크게 향상시킵니다.`old_string`완벽하게 정확하지 않을 수도 있지만 이 도구에는 다단계 편집 수정 메커니즘이 통합되어 있습니다.
+  * **향상된 신뢰성(다단계 편집 수정):**특히 모델이 제공하는 경우 편집 성공률을 크게 향상시킵니다.`old_string`완벽하게 정확하지 않을 수도 있지만 이 도구에는 다단계 편집 수정 메커니즘이 통합되어 있습니다.
     * 만약 초기`old_string`찾을 수 없거나 여러 위치와 일치하는 경우 도구는 Qwen 모델을 활용하여 반복적으로 개선할 수 있습니다.`old_string`(그리고 잠재적으로`new_string`).
     * 이 자체 수정 프로세스는 모델이 수정하려는 고유 세그먼트를 식별하여`edit`약간 불완전한 초기 컨텍스트에서도 작동이 더욱 강력해졌습니다.
 
-* **실패 조건:**&#xC218;정 메커니즘에도 불구하고 다음과 같은 경우 도구가 실패합니다.
+* **실패 조건:**수정 메커니즘에도 불구하고 다음과 같은 경우 도구가 실패합니다.
   * `file_path`절대적이지 않거나 루트 디렉터리 외부에 있습니다.
   * `old_string`비어 있지는 않지만`file_path`존재하지 않습니다.
   * `old_string`비어 있지만`file_path`이미 존재합니다.
@@ -176,7 +176,7 @@ grep_search(pattern="function", glob="*.js", limit=10)
   * 성공 시:`Successfully modified file: /path/to/file.txt (1 replacements).`또는`Created new file: /path/to/new_file.txt with provided content.`
   * 실패 시: 이유를 설명하는 오류 메시지(예:`Failed to edit, 0 occurrences found...`,`Failed to edit because the text matches multiple locations...`).
 
-* **확인:**&#xC608;. 제안된 변경 사항의 차이점을 표시하고 파일에 쓰기 전에 사용자 승인을 요청합니다.
+* **확인:**예. 제안된 변경 사항의 차이점을 표시하고 파일에 쓰기 전에 사용자 승인을 요청합니다.
 
 ## 파일 인코딩 및 플랫폼별 동작
 
@@ -223,7 +223,7 @@ Windows에서는**UTF-8이 아닌 시스템 코드 페이지**(예: GBK/cp936, B
 * 플랫폼은 윈도우
 * 시스템 코드 페이지가 UTF-8이 아닙니다(코드 페이지 65001 아님).
 * 파일이 새 파일입니다.`.ps1`파일(기존 파일은 원래 인코딩을 유지함)
-* 사용자&#xB294;**\~ 아니다**명시적으로 설정`defaultFileEncoding`설정에서
+* 사용자는**\~ 아니다**명시적으로 설정`defaultFileEncoding`설정에서
 
 PowerShell 7+(pwsh)는 기본적으로 UTF-8로 설정되어 있으며 BOM을 투명하게 처리하므로 BOM은 무해합니다.
 

@@ -115,7 +115,7 @@ qwen extensions install @scope/my-extension --registry https://your-registry.com
 
 **입증**을 통해 자동으로 처리됩니다.`NPM_TOKEN`환경 변수 또는 레지스트리별`_authToken`귀하의 항목`.npmrc`파일.
 
-> **메모:**&#x6E;pm 확장에는 다음이 포함되어야 합니다.`qwen-extension.json`다른 Qwen Code 확장과 동일한 형식을 따르는 패키지 루트의 파일입니다. 보다[확장 출시](./extension-releasing.md#releasing-through-npm-registry)포장 세부사항을 위해.
+> **메모:**npm 확장에는 다음이 포함되어야 합니다.`qwen-extension.json`다른 Qwen Code 확장과 동일한 형식을 따르는 패키지 루트의 파일입니다. 보다[확장 출시](./extension-releasing.md#releasing-through-npm-registry)포장 세부사항을 위해.
 
 #### Git 저장소에서
 
@@ -262,7 +262,7 @@ Qwen Code가 시작되면 모든 확장을 로드하고 해당 구성을 병합�
 
 확장 기능은 다음을 제공할 수 있습니다.[사용자 정의 명령](./cli/commands.md#custom-commands)Markdown 파일을`commands/`확장 디렉터리 내의 하위 디렉터리입니다. 이러한 명령은 사용자 및 프로젝트 사용자 정의 명령과 동일한 형식을 따르며 표준 명명 규칙을 사용합니다.
 
-> **메모:**&#xBA85;령 형식이 TOML에서 Markdown으로 업데이트되었습니다. TOML 파일은 더 이상 사용되지 않지만 계속 지원됩니다. TOML 파일이 감지되면 나타나는 자동 마이그레이션 프롬프트를 사용하여 기존 TOML 명령을 마이그레이션할 수 있습니다.
+> **메모:**명령 형식이 TOML에서 Markdown으로 업데이트되었습니다. TOML 파일은 더 이상 사용되지 않지만 계속 지원됩니다. TOML 파일이 감지되면 나타나는 자동 마이그레이션 프롬프트를 사용하여 기존 TOML 명령을 마이그레이션할 수 있습니다.
 
 **예**
 

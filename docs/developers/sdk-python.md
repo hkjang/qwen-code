@@ -2,8 +2,8 @@
 
 ## `qwen-code-sdk`
 
-`qwen-code-sdk`Qwen Code용 실험용 Python SDK입니다. v1은&#x20;
-기존`stream-json`CLI 프로토콜을 사용하여 전송 표면을 작게 유지하고&#x20;
+`qwen-code-sdk`Qwen Code용 실험용 Python SDK입니다. v1은 
+기존`stream-json`CLI 프로토콜을 사용하여 전송 표면을 작게 유지하고 
 테스트 가능.
 
 ## 범위
@@ -118,7 +118,7 @@ CLI가`can_use_tool`제어 요청이 있으면 SDK는 이를 통해 요청을 �
 ## 오류 모델
 
 * `ValidationError`: 잘못된 옵션, 잘못된 UUID, 지원되지 않는 조합
-* `ControlRequestTimeoutError`: 초기화, 인터럽트, 기타 제어 요청&#x20;
+* `ControlRequestTimeoutError`: 초기화, 인터럽트, 기타 제어 요청 
   시간 초과
 * `ProcessExitError`: CLI가 0이 아닌 값으로 종료되었습니다.
 * `AbortError`: 제어 요청 또는 세션이 취소되었습니다.

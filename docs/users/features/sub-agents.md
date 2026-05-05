@@ -134,12 +134,12 @@ AI: I'll delegate this to your testing specialist Subagents.
 ---
 name: agent-name
 description: Brief description of when and how to use this agent
-model: inherit # Optional: inherit or model-id
-approvalMode: auto-edit # Optional: default, plan, auto-edit, yolo
-tools:         # Optional: allowlist of tools
+model: inherit # 선택: inherit or model-id
+approvalMode: auto-edit # 선택: default, plan, auto-edit, yolo
+tools:         # 선택: allowlist of tools
   - tool1
   - tool2
-disallowedTools: # Optional: blocklist of tools
+disallowedTools: # 선택: blocklist of tools
   - tool3
 ---
 
@@ -192,7 +192,7 @@ Do not modify any files.
 
 사용`tools`그리고`disallowedTools`하위 에이전트가 액세스할 수 있는 도구를 제어합니다.
 
-**`tools`(허용 목록):**&#xC9C0;정된 경우 하위 에이전트는 나열된 도구만 ​​사용할 수 있습니다. 생략하면 하위 에이전트는 상위 세션에서 사용 가능한 모든 도구를 상속합니다.
+**`tools`(허용 목록):**지정된 경우 하위 에이전트는 나열된 도구만 ​​사용할 수 있습니다. 생략하면 하위 에이전트는 상위 세션에서 사용 가능한 모든 도구를 상속합니다.
 
 ```
 ---
@@ -206,7 +206,7 @@ tools:
 ---
 ```
 
-**`disallowedTools`(차단 목록):**&#xC9C0;정되면 나열된 도구가 하위 에이전트의 도구 풀에서 제거됩니다. 이는 허용된 모든 도구를 나열하지 않고 "X를 제외한 모든 것"을 원할 때 유용합니다.
+**`disallowedTools`(차단 목록):**지정되면 나열된 도구가 하위 에이전트의 도구 풀에서 제거됩니다. 이는 허용된 모든 도구를 나열하지 않고 "X를 제외한 모든 것"을 원할 때 유용합니다.
 
 ```
 ---
@@ -340,7 +340,7 @@ You are a technical documentation specialist.
 Your role is to create clear, comprehensive documentation that serves both
 developers and end users. Focus on:
 
-**For API Documentation:**
+**For API 문서:**
 
 - Clear endpoint descriptions with examples
 - Parameter details with types and constraints
@@ -348,15 +348,15 @@ developers and end users. Focus on:
 - Error code explanations
 - Authentication requirements
 
-**For User Documentation:**
+**For User 문서:**
 
 - Step-by-step instructions with screenshots when helpful
 - Installation and setup guides
-- Configuration options and examples
+- 설정 options and examples
 - Troubleshooting sections for common issues
 - FAQ sections based on common user questions
 
-**For Developer Documentation:**
+**For Developer 문서:**
 
 - Architecture overviews and design decisions
 - Code examples that actually work
@@ -534,7 +534,7 @@ description: Helps with testing, documentation, code review, and deployment
 ---
 ```
 
-**왜:**&#xC9D1;중된 에이전트는 더 나은 결과를 생성하고 유지 관리가 더 쉽습니다.
+**왜:**집중된 에이전트는 더 나은 결과를 생성하고 유지 관리가 더 쉽습니다.
 
 #### 명확한 전문화
 
@@ -558,7 +558,7 @@ description: Works on frontend development tasks
 ---
 ```
 
-**왜:**&#xD2B9;정 전문지식은 보다 목표적이고 효과적인 지원으로 이어집니다.
+**왜:**특정 전문지식은 보다 목표적이고 효과적인 지원으로 이어집니다.
 
 #### 실행 가능한 설명
 
@@ -576,7 +576,7 @@ description: Reviews code for security vulnerabilities, performance issues, and 
 description: A helpful code reviewer
 ```
 
-**왜:**&#xBA85;확한 설명은 기본 AI가 각 작업에 적합한 에이전트를 선택하는 데 도움이 됩니다.
+**왜:**명확한 설명은 기본 AI가 각 작업에 적합한 에이전트를 선택하는 데 도움이 됩니다.
 
 ### 구성 모범 사례
 

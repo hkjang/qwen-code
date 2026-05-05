@@ -88,7 +88,7 @@ Request (max_tokens = 8K)
 
 이 논리는 세 가지 콘텐츠 생성기에서 구현됩니다.
 
-* `DefaultOpenAICompatibleProvider.applyOutputTokenLimit()`— OpenAI 호환 제공업체
+* `기본값OpenAICompatibleProvider.applyOutputTokenLimit()`— OpenAI 호환 제공업체
 * `DashScopeProvider`— 상속`applyOutputTokenLimit()`기본 공급자로부터
 * `AnthropicContentGenerator.buildSamplingParameters()`— 인류 공급자
 

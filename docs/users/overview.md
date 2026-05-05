@@ -32,7 +32,7 @@ cd your-project
 qwen
 ```
 
-인증 방법을 선택하세요 —**API 키**또&#xB294;**[Alibaba Cloud 코딩 계획](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)**([국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) — 프롬프트에 따라 구성합니다. API 설정 가이드([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model\&url=3023091) / [국제](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model\&url=2974721)) 단계별 지침을 참조하세요. 그런 다음 코드베이스를 이해하는 것부터 시작하겠습니다. 다음 명령 중 하나를 시도해 보십시오.
+인증 방법을 선택하세요 —**API 키**또는**[Alibaba Cloud 코딩 계획](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)**([국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) — 프롬프트에 따라 구성합니다. API 설정 가이드([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model\&url=3023091) / [국제](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model\&url=2974721)) 단계별 지침을 참조하세요. 그런 다음 코드베이스를 이해하는 것부터 시작하겠습니다. 다음 명령 중 하나를 시도해 보십시오.
 
 ```
 what does this project do?

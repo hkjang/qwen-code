@@ -1,8 +1,8 @@
 export default {
   npm: 'NPM',
-  telemetry: 'Telemetry',
-  'integration-tests': 'Integration Tests',
-  'issue-and-pr-automation': 'Issue and PR Automation',
+  telemetry: '원격 측정',
+  'integration-tests': '통합 테스트',
+  'issue-and-pr-automation': 'Issue 및 PR 자동화',
   deployment: {
     display: 'hidden',
   },

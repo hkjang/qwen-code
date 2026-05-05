@@ -116,14 +116,14 @@ LSP 서버는 구성 중심입니다. 다음에서 정의해야 합니다.`.lsp.
 | `transport`             | 끈    | `"stdio"` | 운송 유형:`stdio`,`tcp`, 또는`socket`             |
 | `env`                   | 물체   | -         | 환경변수                                        |
 | `initializationOptions` | 물체   | -         | LSP 초기화 옵션                                  |
-| `settings`              | 물체   | -         | 서버 설정을 통해`workspace/didChangeConfiguration` |
+| `settings`              | 물체   | -         | 서버 설정을 통해`workspace/did변경설정` |
 | `extensionToLanguage`   | 물체   | -         | 파일 확장자를 언어 식별자에 매핑합니다.                      |
 | `workspaceFolder`       | 끈    | -         | 작업공간 폴더 재정의(프로젝트 루트 내에 있어야 함)               |
 | `startupTimeout`        | 숫자   | `10000`   | 시작 시간 초과(밀리초)                               |
 | `shutdownTimeout`       | 숫자   | `5000`    | 종료 시간 초과(밀리초)                               |
 | `restartOnCrash`        | 부울   | `false`   | 충돌 시 자동 재시작                                 |
 | `maxRestarts`           | 숫자   | `3`       | 최대 다시 시작 시도                                 |
-| `trustRequired`         | 부울   | `true`    | 신뢰할 수 있는 작업 공간 필요                           |
+| `trust필수`         | 부울   | `true`    | 신뢰할 수 있는 작업 공간 필요                           |
 
 ### TCP/소켓 전송
 
@@ -315,7 +315,7 @@ LSP 서버는 기본적으로 신뢰할 수 있는 작업 공간에서만 시작
 ### 신뢰 제어
 
 * **신뢰할 수 있는 작업 공간**: 구성된 경우 LSP 서버가 시작됩니다.
-* **신뢰할 수 없는 작업공간**: LSP 서버는 다음이 아니면 시작되지 않습니다.`trustRequired: false`서버 구성에 설정되어 있습니다
+* **신뢰할 수 없는 작업공간**: LSP 서버는 다음이 아니면 시작되지 않습니다.`trust필수: false`서버 구성에 설정되어 있습니다
 
 작업공간을 신뢰할 수 있는 것으로 표시하려면 다음을 사용하세요.`/trust`명령.
 
@@ -328,7 +328,7 @@ LSP 서버는 기본적으로 신뢰할 수 있는 작업 공간에서만 시작
   "safe-server": {
     "command": "safe-language-server",
     "args": ["--stdio"],
-    "trustRequired": false,
+    "trust필수": false,
     "extensionToLanguage": {
       ".safe": "safe"
     }

@@ -9,10 +9,10 @@
 ## 특징
 
 * **오토메이션**: 이벤트(예: 이슈 개시) 또는 일정(예: 야간)을 기반으로 워크플로를 트리거합니다.
-* **주문형 협업**: 문제가 있는 워크플로 및 끌어오기 요청을 트리거합니다.&#x20;
+* **주문형 협업**: 문제가 있는 워크플로 및 끌어오기 요청을 트리거합니다. 
   언급하면서 댓글을 달았다.[Qwen 코드 CLI](./features/commands)(예:`@qwencoder /review`).
 * **도구로 확장 가능**: 영향력[퀀 코드](../developers/tools/introduction.md)다음과 같은 다른 CLI와 상호 작용하는 모델의 도구 호출 기능[GitHub CLI]\(`gh`).
-* **맞춤형**: 사용`QWEN.md`제공할 저장소의 파일&#x20;
+* **맞춤형**: 사용`QWEN.md`제공할 저장소의 파일 
   프로젝트별 지침 및 컨텍스트[Qwen 코드 CLI](./features/commands).
 
 ## 빠른 시작
@@ -120,9 +120,9 @@ gha-creds-*.json
 
 * <a name="__input_qwen_model"></a><a href="#user-content-__input_qwen_model"><code>qwen\*모델</code></a>: \*(선택)\_ Qwen Code와 함께 사용할 모델입니다.
 
-* <a name="__input_prompt"></a><a href="#user-content-__input_prompt"><code>즉각적인</code></a>:*(선택사항, 기본값:`You are a helpful assistant.`)*&#x51;wen Code CLI에 전달된 문자열[`--prompt`논쟁](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#command-line-arguments).
+* <a name="__input_prompt"></a><a href="#user-content-__input_prompt"><code>즉각적인</code></a>:*(선택사항, 기본값:`You are a helpful assistant.`)*Qwen Code CLI에 전달된 문자열[`--prompt`논쟁](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#command-line-arguments).
 
-* <a name="__input_settings"></a><a href="#user-content-__input_settings"><code>설정</code></a>:*(선택 과목)*&#xB2E4;음에 작성된 JSON 문자열`.qwen/settings.json`CLI를 구성하려면*프로젝트*설정.
+* <a name="__input_settings"></a><a href="#user-content-__input_settings"><code>설정</code></a>:*(선택 과목)*다음에 작성된 JSON 문자열`.qwen/settings.json`CLI를 구성하려면*프로젝트*설정.
   자세한 내용은 에 대한 설명서를 참조하세요.[설정 파일](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/configuration.md#settings-files).
 
 * <a name="__input_use_qwen_code_assist"></a><a href="#user-content-__input_use_qwen_code_assist"><code>\*qwen\_code\_assist 사용</code></a>: \*(선택 사항, 기본값:`false`)\_ Qwen Code 모델 액세스를 위해 기본 Qwen Code API 키 대신 Code Assist를 사용할지 여부입니다.
@@ -131,7 +131,7 @@ gha-creds-*.json
 * <a name="__input_use_vertex_ai"></a><a href="#user-content-__input_use_vertex_ai"><code>사용\*vertex\_ai</code></a>: \*(선택 사항, 기본값:`false`)\_ Qwen Code 모델 액세스에 기본 Qwen Code API 키 대신 Vertex AI를 사용할지 여부입니다.
   자세한 내용은 다음을 참조하세요.[Qwen 코드 CLI 문서](https://github.com/QwenLM/qwen-code-action/blob/main/docs/cli/authentication.md).
 
-* <a name="__input_extensions"></a><a href="#user-content-__input_extensions"><code>확장</code></a>:*(선택 과목)*&#xC124;치할 Qwen Code CLI 확장 목록입니다.
+* <a name="__input_extensions"></a><a href="#user-content-__input_extensions"><code>확장</code></a>:*(선택 과목)*설치할 Qwen Code CLI 확장 목록입니다.
 
 * <a name="__input_upload_artifacts"></a><a href="#user-content-__input_upload_artifacts"><code>업로드\*아티팩트</code></a>: \*(선택 사항, 기본값:`false`)\_ github 작업에 아티팩트를 업로드할지 여부입니다.
 
@@ -194,9 +194,9 @@ gha-creds-*.json
 
 다음 두 가지 방법으로 GitHub에 인증할 수 있습니다.
 
-1. **기본`GITHUB_TOKEN`:**&#xB354; 간단한 사용 사례의 경우 작업에서
+1. **기본`GITHUB_TOKEN`:**더 간단한 사용 사례의 경우 작업에서
    기본값`GITHUB_TOKEN`워크플로에서 제공됩니다.
-2. **사용자 정의 GitHub 앱(권장):**&#xAC00;장 안전하고 유연한 솔루션을 위해
+2. **사용자 정의 GitHub 앱(권장):**가장 안전하고 유연한 솔루션을 위해
    인증을 위해서는 사용자 정의 GitHub 앱을 생성하는 것이 좋습니다.
 
 Qwen 및 GitHub 인증에 대한 자세한 설정 지침을 보려면 다음으로 이동하세요.[**인증 문서**](./configuration/auth).
@@ -214,16 +214,16 @@ Qwen Code CLI는 확장을 통해 추가 기능으로 확장될 수 있습니다
 
 주요 권장 사항은 다음과 같습니다.
 
-* **저장소 보안:**&#xBD84;기 및 태그 보호를 구현하고 끌어오기 요청 승인자를 제한합니다.
-* **모니터링 및 감사:**&#xC815;기적으로 작업 로그를 검토하고 OpenTelemetry를 활성화하여 성능과 동작에 대한 더 깊은 통찰력을 얻습니다.
+* **저장소 보안:**분기 및 태그 보호를 구현하고 끌어오기 요청 승인자를 제한합니다.
+* **모니터링 및 감사:**정기적으로 작업 로그를 검토하고 OpenTelemetry를 활성화하여 성능과 동작에 대한 더 깊은 통찰력을 얻습니다.
 
 리포지토리 및 작업 흐름 보안에 대한 포괄적인 가이드는 다음을 참조하세요.[**모범 사례 문서**](./common-workflow).
 
 ## 맞춤화
 
-다음을 제공하기 위해 저장소 루트에 QWEN.md 파일을 생성합니다.&#x20;
-프로젝트별 컨텍스트 및 지침[Qwen 코드 CLI](./common-workflow). 이는 정의하는 데 유용합니다.&#x20;
-코딩 규칙, 아키텍처 패턴 또는 모델이 수행해야 하는 기타 지침&#x20;
+다음을 제공하기 위해 저장소 루트에 QWEN.md 파일을 생성합니다. 
+프로젝트별 컨텍스트 및 지침[Qwen 코드 CLI](./common-workflow). 이는 정의하는 데 유용합니다. 
+코딩 규칙, 아키텍처 패턴 또는 모델이 수행해야 하는 기타 지침 
 주어진 저장소를 따르십시오.
 
 ## 기여

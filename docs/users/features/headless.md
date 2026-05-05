@@ -67,7 +67,7 @@ qwen --resume 123e4567-e89b-12d3-a456-426614174000 -p "Apply the follow-up refac
 사용`--system-prompt`현재 실행에 대한 Qwen Code의 내장 기본 세션 프롬프트를 대체하려면 다음을 수행하십시오.
 
 ```bash
-qwen -p "Review this patch" --system-prompt "You are a terse release reviewer. Report only blocking issues."
+qwen -p "Review this patch" --system-prompt "You are a terse release reviewer. 저장소rt only blocking issues."
 ```
 
 ### 추가 지침 추가
@@ -195,7 +195,7 @@ qwen -p "Write a Python script" --output-format stream-json --include-partial-me
 * **`text`**(기본값): stdin 또는 명령줄 인수의 표준 텍스트 입력
 * **`stream-json`**: 양방향 통신을 위한 stdin을 통한 JSON 메시지 프로토콜
 
-> **메모:**&#x53;tream-json 입력 모드는 현재 구축 중이며 SDK 통합을 위한 것입니다. 그것은 필요하다`--output-format stream-json`설정됩니다.
+> **메모:**Stream-json 입력 모드는 현재 구축 중이며 SDK 통합을 위한 것입니다. 그것은 필요하다`--output-format stream-json`설정됩니다.
 
 ### 파일 리디렉션
 
@@ -329,8 +329,8 @@ Qwen 코드가 CI/CD 파이프라인에서 또는 백그라운드 데몬으로 �
 export QWEN_CODE_UNATTENDED_RETRY=1
 ```
 
-> \[!중요]&#x20;
-> 지속적인 재시도에는**명시적인 동의**. `CI=true`혼자서&#xB294;**\~ 아니다**활성화하십시오. 빠르게 실패하는 CI 작업을 자동으로 무한 대기 작업으로 바꾸는 것은 위험할 수 있습니다. 항상 설정`QWEN_CODE_UNATTENDED_RETRY`파이프라인 구성에서 명시적으로.
+> \[!중요] 
+> 지속적인 재시도에는**명시적인 동의**. `CI=true`혼자서는**\~ 아니다**활성화하십시오. 빠르게 실패하는 CI 작업을 자동으로 무한 대기 작업으로 바꾸는 것은 위험할 수 있습니다. 항상 설정`QWEN_CODE_UNATTENDED_RETRY`파이프라인 구성에서 명시적으로.
 
 ### 예
 

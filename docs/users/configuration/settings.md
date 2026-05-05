@@ -2,7 +2,7 @@
 
 > \[!팁]
 >
-> **인증/API 키:**&#xC778;증(API Key, Alibaba Cloud Coding Plan) 및 인증 관련 환경 변수(예:`OPENAI_API_KEY`)에 문서화되어 있습니다.**[입증](../configuration/auth)**.
+> **인증/API 키:**인증(API Key, Alibaba Cloud Coding Plan) 및 인증 관련 환경 변수(예:`OPENAI_API_KEY`)에 문서화되어 있습니다.**[입증](../configuration/auth)**.
 
 > \[!메모]
 >
@@ -36,7 +36,7 @@ Qwen Code는 지속적인 구성을 위해 JSON 설정 파일을 사용합니다
 
 > \[!메모]
 >
-> **설정의 환경 변수에 대한 참고 사항:**&#xADC0;하의 문자열 값`settings.json`파일은 다음 중 하나를 사용하여 환경 변수를 참조할 수 있습니다.`$VAR_NAME`또는`${VAR_NAME}`통사론. 이러한 변수는 설정이 로드되면 자동으로 해결됩니다. 예를 들어 환경 변수가 있는 경우`MY_API_TOKEN`, 당신은 그것을 사용할 수 있습니다`settings.json`이와 같이:`"apiKey": "$MY_API_TOKEN"`.
+> **설정의 환경 변수에 대한 참고 사항:**귀하의 문자열 값`settings.json`파일은 다음 중 하나를 사용하여 환경 변수를 참조할 수 있습니다.`$VAR_NAME`또는`${VAR_NAME}`통사론. 이러한 변수는 설정이 로드되면 자동으로 해결됩니다. 예를 들어 환경 변수가 있는 경우`MY_API_TOKEN`, 당신은 그것을 사용할 수 있습니다`settings.json`이와 같이:`"apiKey": "$MY_API_TOKEN"`.
 
 ### 그만큼`.qwen`프로젝트의 디렉토리
 
@@ -58,7 +58,7 @@ Qwen Code는 기존 구성 설정을 새로운 형식으로 자동 마이그레�
 
 > \[!메모]
 >
-> **부울 값 반전:**&#xB9C8;이그레이션 시 부울 값이 반전됩니다(예:`disableAutoUpdate: true`된다`enableAutoUpdate: false`).
+> **부울 값 반전:**마이그레이션 시 부울 값이 반전됩니다(예:`disableAutoUpdate: true`된다`enableAutoUpdate: false`).
 
 #### 다음에 대한 통합 정책`disableAutoUpdate`그리고`disableUpdateNag`
 
@@ -144,7 +144,7 @@ Qwen Code는 기존 구성 설정을 새로운 형식으로 자동 마이그레�
 | -------------------------------------------------- | -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
 | `model.name`                                       | 끈  | 대화에 사용할 Qwen 모델입니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `undefined` |
 | `model.maxSessionTurns`                            | 숫자 | 세션에서 유지할 수 있는 사용자/모델/도구의 최대 회전 수입니다. -1은 무제한을 의미합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `-1`        |
-| `model.generationConfig`                           | 물체 | 기본 콘텐츠 생성기에 전달된 고급 재정의. 다음과 같은 요청 제어를 지원합니다.`timeout`,`maxRetries`,`enableCacheControl`,`splitToolMedia`(세트`true`텍스트가 아닌 콘텐츠를 거부하는 LM Studio와 같은 엄격한 OpenAI 호환 서버의 경우`role: "tool"`메시지 — 미디어를 후속 사용자 메시지로 분할합니다.`contextWindowSize`(모델의 컨텍스트 창 크기 재정의),`modalities`(자동 감지된 입력 형식 무시),`customHeaders`(API 요청을 위한 사용자 정의 HTTP 헤더)`extra_body`(OpenAI 호환 API 요청에 대한 추가 본문 매개변수만 해당)`reasoning`(`{ effort: 'low' \| 'medium' \| 'high' \| 'max', budget_tokens?: number }`사고 강도를 조절하거나`false`비활성화하다;`'max'`DeepSeek 확장 프로그램입니다 — 참조[추론/사고 구성](./model-providers.md#reasoning--thinking-configuration)공급자별 동작을 위해.**메모:**&#xC5B8;제`samplingParams`OpenAI 호환 공급자에 설정되어 있으면 파이프라인은 해당 키를 그대로 제공하고 별도의 최상위 수준 키를 제공합니다.`reasoning`필드가 삭제되었습니다 - 넣습니다`reasoning_effort`내부에`samplingParams`(또는`extra_body`) 이 경우에는 대신) 아래의 미세 조정 손잡이와 함께`samplingParams`(예를 들어`temperature`,`top_p`,`max_tokens`). 공급자 기본값을 사용하려면 설정하지 않은 상태로 두세요. | `undefined` |
+| `model.generationConfig`                           | 물체 | 기본 콘텐츠 생성기에 전달된 고급 재정의. 다음과 같은 요청 제어를 지원합니다.`timeout`,`maxRetries`,`enableCacheControl`,`splitToolMedia`(세트`true`텍스트가 아닌 콘텐츠를 거부하는 LM Studio와 같은 엄격한 OpenAI 호환 서버의 경우`role: "tool"`메시지 — 미디어를 후속 사용자 메시지로 분할합니다.`contextWindowSize`(모델의 컨텍스트 창 크기 재정의),`modalities`(자동 감지된 입력 형식 무시),`customHeaders`(API 요청을 위한 사용자 정의 HTTP 헤더)`extra_body`(OpenAI 호환 API 요청에 대한 추가 본문 매개변수만 해당)`reasoning`(`{ effort: 'low' \| 'medium' \| 'high' \| 'max', budget_tokens?: number }`사고 강도를 조절하거나`false`비활성화하다;`'max'`DeepSeek 확장 프로그램입니다 — 참조[추론/사고 구성](./model-providers.md#reasoning--thinking-configuration)공급자별 동작을 위해.**메모:**언제`samplingParams`OpenAI 호환 공급자에 설정되어 있으면 파이프라인은 해당 키를 그대로 제공하고 별도의 최상위 수준 키를 제공합니다.`reasoning`필드가 삭제되었습니다 - 넣습니다`reasoning_effort`내부에`samplingParams`(또는`extra_body`) 이 경우에는 대신) 아래의 미세 조정 손잡이와 함께`samplingParams`(예를 들어`temperature`,`top_p`,`max_tokens`). 공급자 기본값을 사용하려면 설정하지 않은 상태로 두세요. | `undefined` |
 | `model.chatCompression.contextPercentageThreshold` | 숫자 | 모델의 총 토큰 한도에 대한 백분율로 채팅 기록 압축 임계값을 설정합니다. 자동 압축과 수동 압축 모두에 적용되는 0\~1 사이의 값입니다.`/compress`명령. 예를 들어,`0.6`채팅 기록이 토큰 한도의 60%를 초과하면 압축이 실행됩니다. 사용`0`압축을 완전히 비활성화합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `0.7`       |
 | `model.skipNextSpeakerCheck`                       | 부울 | 다음 스피커 확인을 건너뜁니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `false`     |
 | `model.skipLoopDetection`                          | 부울 | 루프 감지 검사를 비활성화합니다. 루프 감지는 AI 응답의 무한 루프를 방지하지만 합법적인 워크플로를 방해하는 오탐지를 생성할 수 있습니다. 잘못된 긍정 루프 감지 중단이 자주 발생하는 경우 이 옵션을 활성화합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `false`     |
@@ -204,7 +204,7 @@ Qwen Code는 기존 구성 설정을 새로운 형식으로 자동 마이그레�
 
 모든 API 요청에 사용자 정의 HTTP 헤더를 추가할 수 있습니다. 이는 요청 추적, 모니터링, API 게이트웨이 라우팅 또는 여러 모델에 서로 다른 헤더가 필요한 경우에 유용합니다. 만약에`customHeaders`에 정의되어 있습니다`modelProviders[].generationConfig.customHeaders`, 직접 사용됩니다. 그렇지 않은 경우 헤더는`model.generationConfig.customHeaders`사용됩니다. 두 수준 간에는 병합이 발생하지 않습니다.
 
-그만큼`extra_body`필드를 사용하면 API로 전송된 요청 본문에 사용자 정의 매개변수를 추가할 수 있습니다. 이는 표준 구성 필드에서 다루지 않는 공급자별 옵션에 유용합니다.**참고: 이 필드는 OpenAI 호환 공급자(`openai`,`qwen-oauth`). Anthropic 및 Gemini 제공자에 대해서는 무시됩니다.**&#xB9CC;약에`extra_body`에 정의되어 있습니다`modelProviders[].generationConfig.extra_body`, 직접 사용됩니다. 그렇지 않으면 다음 값`model.generationConfig.extra_body`사용됩니다.
+그만큼`extra_body`필드를 사용하면 API로 전송된 요청 본문에 사용자 정의 매개변수를 추가할 수 있습니다. 이는 표준 구성 필드에서 다루지 않는 공급자별 옵션에 유용합니다.**참고: 이 필드는 OpenAI 호환 공급자(`openai`,`qwen-oauth`). Anthropic 및 Gemini 제공자에 대해서는 무시됩니다.**만약에`extra_body`에 정의되어 있습니다`modelProviders[].generationConfig.extra_body`, 직접 사용됩니다. 그렇지 않으면 다음 값`model.generationConfig.extra_body`사용됩니다.
 
 **model.openAILoggingDir 예:**
 
@@ -237,9 +237,9 @@ Qwen Code는 기존 구성 설정을 새로운 형식으로 자동 마이그레�
 
 파일 검색 시 성능 문제가 발생하는 경우(예:`@`완료), 특히 파일 수가 매우 많은 프로젝트에서 권장되는 순서대로 시도해 볼 수 있는 몇 가지 사항은 다음과 같습니다.
 
-1. **사용`.qwenignore`:**&#xB9CC;들기`.qwenignore`참조할 필요가 없는 다수의 파일(예: 빌드 아티팩트, 로그,`node_modules`). 크롤링되는 총 파일 수를 줄이는 것이 성능을 향상시키는 가장 효과적인 방법입니다.
-2. **퍼지 검색 비활성화:**&#xD30C;일을 무시하는 것만으로는 충분하지 않은 경우 설정을 통해 퍼지 검색을 비활성화할 수 있습니다.`enableFuzzySearch`에게`false`당신의`settings.json`파일. 이는 더 빠르고 간단하며 퍼지가 아닌 일치 알고리즘을 사용합니다.
-3. **재귀 파일 검색 비활성화:**&#xCD5C;후의 수단으로 설정을 통해 재귀 파일 검색을 완전히 비활성화할 수 있습니다.`enableRecursiveFileSearch`에게`false`. 이는 프로젝트의 재귀 크롤링을 방지하므로 가장 빠른 옵션입니다. 그러나 이는 다음을 사용할 때 파일의 전체 경로를 입력해야 함을 의미합니다.`@`완료.
+1. **사용`.qwenignore`:**만들기`.qwenignore`참조할 필요가 없는 다수의 파일(예: 빌드 아티팩트, 로그,`node_modules`). 크롤링되는 총 파일 수를 줄이는 것이 성능을 향상시키는 가장 효과적인 방법입니다.
+2. **퍼지 검색 비활성화:**파일을 무시하는 것만으로는 충분하지 않은 경우 설정을 통해 퍼지 검색을 비활성화할 수 있습니다.`enableFuzzySearch`에게`false`당신의`settings.json`파일. 이는 더 빠르고 간단하며 퍼지가 아닌 일치 알고리즘을 사용합니다.
+3. **재귀 파일 검색 비활성화:**최후의 수단으로 설정을 통해 재귀 파일 검색을 완전히 비활성화할 수 있습니다.`enableRecursiveFileSearch`에게`false`. 이는 프로젝트의 재귀 크롤링을 방지하므로 가장 빠른 옵션입니다. 그러나 이는 다음을 사용할 때 파일의 전체 경로를 입력해야 함을 의미합니다.`@`완료.
 
 #### 도구
 
@@ -248,9 +248,9 @@ Qwen Code는 기존 구성 설정을 새로운 형식으로 자동 마이그레�
 | `tools.sandbox`                      | 부울 또는 문자열 | 샌드박스 실행 환경(부울 또는 경로 문자열일 수 있음)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `undefined` |                                                                                                                                        |
 | `tools.sandboxImage`                 | 끈         | Docker/Podman이 다음과 같은 경우에 사용하는 샌드박스 이미지 URI`--sandbox-image`그리고`QWEN_SANDBOX_IMAGE`설정되지 않았습니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `undefined` |                                                                                                                                        |
 | `tools.shell.enableInteractiveShell` | 부울        | 사용`node-pty`대화형 쉘 경험을 위해. 대체 대상`child_process`여전히 적용됩니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `false`     |                                                                                                                                        |
-| `tools.core`                         | 문자열 배열    | **더 이상 사용되지 않습니다.**&#xB2E4;음 버전에서는 제거될 예정입니다. 사용`permissions.allow`+`permissions.deny`대신에. 기본 제공 도구를 허용 목록으로 제한합니다. 목록에 없는 모든 도구는 비활성화됩니다.                                                                                                                                                                                                                                                                                                                                                                                                                                  | `undefined` |                                                                                                                                        |
-| `tools.exclude`                      | 문자열 배열    | **더 이상 사용되지 않습니다.**&#xC0AC;용`permissions.deny`대신에. 검색에서 제외할 도구 이름입니다. 자동으로 다음으로 마이그레이션되었습니다.`permissions`첫 번째 로드 시 형식을 지정합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                               | `undefined` |                                                                                                                                        |
-| `tools.allowed`                      | 문자열 배열    | **더 이상 사용되지 않습니다.**&#xC0AC;용`permissions.allow`대신에. 확인 대화 상자를 우회하는 도구 이름입니다. 자동으로 다음으로 마이그레이션되었습니다.`permissions`첫 번째 로드 시 형식을 지정합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined` |                                                                                                                                        |
+| `tools.core`                         | 문자열 배열    | **더 이상 사용되지 않습니다.**다음 버전에서는 제거될 예정입니다. 사용`permissions.allow`+`permissions.deny`대신에. 기본 제공 도구를 허용 목록으로 제한합니다. 목록에 없는 모든 도구는 비활성화됩니다.                                                                                                                                                                                                                                                                                                                                                                                                                                  | `undefined` |                                                                                                                                        |
+| `tools.exclude`                      | 문자열 배열    | **더 이상 사용되지 않습니다.**사용`permissions.deny`대신에. 검색에서 제외할 도구 이름입니다. 자동으로 다음으로 마이그레이션되었습니다.`permissions`첫 번째 로드 시 형식을 지정합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                               | `undefined` |                                                                                                                                        |
+| `tools.allowed`                      | 문자열 배열    | **더 이상 사용되지 않습니다.**사용`permissions.allow`대신에. 확인 대화 상자를 우회하는 도구 이름입니다. 자동으로 다음으로 마이그레이션되었습니다.`permissions`첫 번째 로드 시 형식을 지정합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                        | `undefined` |                                                                                                                                        |
 | `tools.approvalMode`                 | 끈         | 도구 사용에 대한 기본 승인 모드를 설정합니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `default`   | 가능한 값:`plan`(분석만 하고, 파일을 수정하거나 명령을 실행하지 마세요),`default`(파일 편집 또는 셸 명령 실행 전에 승인 필요)`auto-edit`(파일 편집을 자동으로 승인),`yolo`(모든 도구 호출을 자동으로 승인) |
 | `tools.discoveryCommand`             | 끈         | 도구 검색을 위해 실행하는 명령입니다.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `undefined` |                                                                                                                                        |
 | `tools.callCommand`                  | 끈         | 다음을 사용하여 검색된 특정 도구를 호출하기 위한 사용자 정의 셸 명령을 정의합니다.`tools.discoveryCommand`. 쉘 명령은 다음 기준을 충족해야 합니다. 기능을 수행해야 합니다.`name`(정확히 에서와 같이[함수 선언](https://ai.google.dev/gemini-api/docs/function-calling#function-declarations))를 첫 번째 명령줄 인수로 사용합니다. 함수 인수를 JSON으로 읽어야 합니다.`stdin`, 유사[`functionCall.args`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference#functioncall). 함수 출력을 JSON으로 반환해야 합니다.`stdout`, 유사[`functionResponse.response.content`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference#functionresponse). | `undefined` |                                                                                                                                        |
@@ -261,7 +261,7 @@ Qwen Code는 기존 구성 설정을 새로운 형식으로 자동 마이그레�
 
 > \[!메모]
 >
-> **다음에서 마이그레이션 중`tools.core` / `tools.exclude` / `tools.allowed`:**&#xC774;러한 레거시 설정은**더 이상 사용되지 않음**자동으로 새 버전으로 마이그레이션되었습니다.`permissions`첫 번째 로드 시 형식을 지정합니다. 구성을 선호합니다`permissions.allow` / `permissions.deny`곧장. 사용`/permissions`규칙을 대화식으로 관리합니다.
+> **다음에서 마이그레이션 중`tools.core` / `tools.exclude` / `tools.allowed`:**이러한 레거시 설정은**더 이상 사용되지 않음**자동으로 새 버전으로 마이그레이션되었습니다.`permissions`첫 번째 로드 시 형식을 지정합니다. 구성을 선호합니다`permissions.allow` / `permissions.deny`곧장. 사용`/permissions`규칙을 대화식으로 관리합니다.
 
 #### 메모리
 
@@ -405,7 +405,7 @@ CLI에서 사용할 수 있는 슬래시 명령을 제어합니다. 잠그는 �
 
 > \[!메모]
 >
-> **MCP 서버에 대한 보안 참고 사항:**&#xC774;러한 설정은 수정 가능한 MCP 서버 이름에 대한 단순 문자열 일치를 사용합니다. 사용자가 이를 우회하지 못하도록 방지하려는 시스템 관리자라면`mcpServers`사용자가 자신의 MCP 서버를 구성할 수 없도록 시스템 설정 수준에서. 이는 완벽한 보안 메커니즘으로 사용되어서는 안 됩니다.
+> **MCP 서버에 대한 보안 참고 사항:**이러한 설정은 수정 가능한 MCP 서버 이름에 대한 단순 문자열 일치를 사용합니다. 사용자가 이를 우회하지 못하도록 방지하려는 시스템 관리자라면`mcpServers`사용자가 자신의 MCP 서버를 구성할 수 없도록 시스템 설정 수준에서. 이는 완벽한 보안 메커니즘으로 사용되어서는 안 됩니다.
 
 #### lsp
 
@@ -544,11 +544,11 @@ CLI는 실행하는 셸 명령의 기록을 유지합니다. 서로 다른 프�
 환경 변수는 특히 중요한 정보(예: 토큰) 또는 환경 간에 변경될 수 있는 설정에 대해 애플리케이션을 구성하는 일반적인 방법입니다.
 
 Qwen 코드는 다음에서 환경 변수를 자동으로 로드할 수 있습니다.`.env`파일.
-인증 관련 변수(예:`OPENAI_*`) 및 권장 사항`.qwen/.env`접근하다, 보아&#xB77C;**[입증](../configuration/auth)**.
+인증 관련 변수(예:`OPENAI_*`) 및 권장 사항`.qwen/.env`접근하다, 보아라**[입증](../configuration/auth)**.
 
 > \[!팁]
 >
-> **환경 변수 제외:**&#xC77C;부 환경 변수(예:`DEBUG`그리고`DEBUG_MODE`)은 프로젝트에서 자동으로 제외됩니다.`.env`CLI 동작에 대한 간섭을 방지하기 위해 기본적으로 파일을 저장합니다. 변수의`.qwen/.env`파일은 제외되지 않습니다. 다음을 사용하여 이 동작을 사용자 정의할 수 있습니다.`advanced.excludedEnvVars`당신의 설정`settings.json`파일.
+> **환경 변수 제외:**일부 환경 변수(예:`DEBUG`그리고`DEBUG_MODE`)은 프로젝트에서 자동으로 제외됩니다.`.env`CLI 동작에 대한 간섭을 방지하기 위해 기본적으로 파일을 저장합니다. 변수의`.qwen/.env`파일은 제외되지 않습니다. 다음을 사용하여 이 동작을 사용자 정의할 수 있습니다.`advanced.excludedEnvVars`당신의 설정`settings.json`파일.
 
 ### 환경 변수 테이블
 
@@ -564,12 +564,12 @@ Qwen 코드는 다음에서 환경 변수를 자동으로 로드할 수 있습�
 | `QWEN_SANDBOX`                 | 대안`sandbox`설정`settings.json`.                                                                                                                         | 수락`true`,`false`,`docker`,`podman`, 또는 사용자 정의 명령 문자열.                                                                                                                                                                                                                                                                                            |
 | `QWEN_SANDBOX_IMAGE`           | Docker/Podman에 대한 샌드박스 이미지 선택을 재정의합니다.                                                                                                                | 다음보다 우선합니다.`tools.sandboxImage`.                                                                                                                                                                                                                                                                                                                 |
 | `SEATBELT_PROFILE`             | (macOS 특정) 안전벨트 전환(`sandbox-exec`) macOS의 프로필.                                                                                                        | `permissive-open`: (기본값) 프로젝트 폴더(및 기타 몇 가지 폴더에 대한 쓰기를 제한합니다. 참조)`packages/cli/src/utils/sandbox-macos-permissive-open.sb`) 그러나 다른 작업은 허용됩니다.`strict`: 기본적으로 작업을 거부하는 엄격한 프로필을 사용합니다.`<profile_name>`: 사용자 정의 프로필을 사용합니다. 사용자 정의 프로필을 정의하려면`sandbox-macos-<profile_name>.sb`당신의 프로젝트에서`.qwen/`디렉토리(예:`my-project/.qwen/sandbox-macos-custom.sb`). |
-| `DEBUG`또는`DEBUG_MODE`          | (종종 기본 라이브러리 또는 CLI 자체에서 사용됨)`true`또는`1`문제 해결에 도움이 될 수 있는 자세한 디버그 로깅을 활성화합니다.                                                                         | **메모:**&#xC774; 변수는 프로젝트에서 자동으로 제외됩니다.`.env`CLI 동작에 대한 간섭을 방지하기 위해 기본적으로 파일을 저장합니다. 사용`.qwen/.env`Qwen Code에 대해 특별히 설정해야 하는 경우 파일을 사용하세요.                                                                                                                                                                                                        |
+| `DEBUG`또는`DEBUG_MODE`          | (종종 기본 라이브러리 또는 CLI 자체에서 사용됨)`true`또는`1`문제 해결에 도움이 될 수 있는 자세한 디버그 로깅을 활성화합니다.                                                                         | **메모:**이 변수는 프로젝트에서 자동으로 제외됩니다.`.env`CLI 동작에 대한 간섭을 방지하기 위해 기본적으로 파일을 저장합니다. 사용`.qwen/.env`Qwen Code에 대해 특별히 설정해야 하는 경우 파일을 사용하세요.                                                                                                                                                                                                        |
 | `NO_COLOR`                     | CLI에서 모든 색상 출력을 비활성화하려면 임의의 값으로 설정하십시오.                                                                                                               |                                                                                                                                                                                                                                                                                                                                                  |
 | `CLI_TITLE`                    | CLI 제목을 사용자 정의하려면 문자열로 설정하십시오.                                                                                                                        |                                                                                                                                                                                                                                                                                                                                                  |
 | `CODE_ASSIST_ENDPOINT`         | 코드 지원 서버의 엔드포인트를 지정합니다.                                                                                                                               | 이는 개발 및 테스트에 유용합니다.                                                                                                                                                                                                                                                                                                                              |
 | `QWEN_CODE_MAX_OUTPUT_TOKENS`  | 응답당 기본 최대 출력 토큰을 재정의합니다. 설정되지 않은 경우 Qwen Code는 적응형 전략을 사용합니다. 즉, 8K 토큰으로 시작하고 응답이 잘리면 자동으로 64K로 다시 시도합니다. 이를 특정 값으로 설정합니다(예:`16000`) 대신 고정 제한을 사용합니다. | 제한된 기본값(8K)보다 우선하지만 다음에 의해 재정의됩니다.`samplingParams.max_tokens`설정에서. 설정 시 자동 에스컬레이션을 비활성화합니다. 예:`export QWEN_CODE_MAX_OUTPUT_TOKENS=16000`                                                                                                                                                                                                         |
-| `QWEN_CODE_UNATTENDED_RETRY`   | 다음으로 설정`true`또는`1`지속적인 재시도 모드를 활성화합니다. 활성화되면 일시적 API 용량 오류(HTTP 429 속도 제한 및 529 오버로드)는 지수 백오프(재시도당 최대 5분) 및 stderr에서 30초마다 하트비트 연결 유지를 통해 무기한 재시도됩니다. | 장기 실행 작업이 일시적인 API 중단에도 살아남아야 하는 CI/CD 파이프라인 및 백그라운드 자동화용으로 설계되었습니다. 명시적으로 설정해야 합니다 —`CI=true`혼자서&#xB294;**\~ 아니다**이 모드를 활성화하세요. 보다[헤드리스 모드](../features/headless#persistent-retry-mode)자세한 내용은. 예:`export QWEN_CODE_UNATTENDED_RETRY=1`                                                                                                         |
+| `QWEN_CODE_UNATTENDED_RETRY`   | 다음으로 설정`true`또는`1`지속적인 재시도 모드를 활성화합니다. 활성화되면 일시적 API 용량 오류(HTTP 429 속도 제한 및 529 오버로드)는 지수 백오프(재시도당 최대 5분) 및 stderr에서 30초마다 하트비트 연결 유지를 통해 무기한 재시도됩니다. | 장기 실행 작업이 일시적인 API 중단에도 살아남아야 하는 CI/CD 파이프라인 및 백그라운드 자동화용으로 설계되었습니다. 명시적으로 설정해야 합니다 —`CI=true`혼자서는**\~ 아니다**이 모드를 활성화하세요. 보다[헤드리스 모드](../features/headless#persistent-retry-mode)자세한 내용은. 예:`export QWEN_CODE_UNATTENDED_RETRY=1`                                                                                                         |
 | `QWEN_CODE_PROFILE_STARTUP`    | 다음으로 설정`1`시작 성능 프로파일링을 활성화합니다. JSON 타이밍 보고서를 작성합니다.`~/.qwen/startup-perf/`단계별 기간이 있습니다.                                                               | 샌드박스 하위 프로세스 내에서만 활성화됩니다. 설정되지 않은 경우 오버헤드가 0입니다. 예:`export QWEN_CODE_PROFILE_STARTUP=1`                                                                                                                                                                                                                                                          |
 
 ## 명령줄 인수
@@ -621,7 +621,7 @@ CLI를 실행할 때 직접 전달된 인수는 해당 특정 세션에 대한 �
 
 CLI에 대한 구성이 엄격하지는 않지만*행동*, 컨텍스트 파일(기본값은`QWEN.md`하지만 다음을 통해 구성 가능`context.fileName`설정)은*교육적 맥락*("메모리"라고도 함). 이 강력한 기능을 사용하면 프로젝트별 지침, 코딩 스타일 가이드 또는 관련 배경 정보를 AI에 제공하여 AI의 응답을 사용자의 요구에 더욱 맞춤화되고 정확하게 만들 수 있습니다. CLI에는 로드된 컨텍스트 파일 수를 표시하는 바닥글의 표시기와 같은 UI 요소가 포함되어 활성 컨텍스트에 대한 정보를 지속적으로 제공합니다.
 
-* **목적:**&#xC774;러한 Markdown 파일에는 상호 작용 중에 Qwen 모델이 인식할 수 있는 지침, 지침 또는 컨텍스트가 포함되어 있습니다. 시스템은 이러한 교육적 맥락을 계층적으로 관리하도록 설계되었습니다.
+* **목적:**이러한 Markdown 파일에는 상호 작용 중에 Qwen 모델이 인식할 수 있는 지침, 지침 또는 컨텍스트가 포함되어 있습니다. 시스템은 이러한 교육적 맥락을 계층적으로 관리하도록 설계되었습니다.
 
 ### 예제 컨텍스트 파일 콘텐츠(예:`QWEN.md`)
 
@@ -648,21 +648,21 @@ CLI에 대한 구성이 엄격하지는 않지만*행동*, 컨텍스트 파일(�
 - Use the existing `fetchWithRetry` utility for all GET requests.
 
 ## Regarding Dependencies:
-- Avoid introducing new external dependencies unless absolutely necessary.
+- 피해야 할 사항 introducing new external dependencies unless absolutely necessary.
 - If a new dependency is required, please state the reason.
 ```
 
 이 예에서는 일반적인 프로젝트 컨텍스트, 특정 코딩 규칙, 심지어 특정 파일이나 구성 요소에 대한 참고 사항까지 제공할 수 있는 방법을 보여줍니다. 컨텍스트 파일이 더 관련성이 높고 정확할수록 AI가 더 나은 지원을 제공할 수 있습니다. 프로젝트별 컨텍스트 파일은 규칙과 컨텍스트를 설정하는 데 적극 권장됩니다.
 
-* **계층적 로딩 및 우선순위:**&#x43;LI는 컨텍스트 파일(예:`QWEN.md`) 여러 위치에서. 이 목록의 아래쪽(더 구체적)에 있는 파일의 콘텐츠는 일반적으로 위쪽(더 일반적인) 파일의 콘텐츠를 재정의하거나 보완합니다. 정확한 연결 순서와 최종 컨텍스트는 다음을 사용하여 검사할 수 있습니다.`/memory show`명령. 일반적인 로딩 순서는 다음과 같습니다.
+* **계층적 로딩 및 우선순위:**CLI는 컨텍스트 파일(예:`QWEN.md`) 여러 위치에서. 이 목록의 아래쪽(더 구체적)에 있는 파일의 콘텐츠는 일반적으로 위쪽(더 일반적인) 파일의 콘텐츠를 재정의하거나 보완합니다. 정확한 연결 순서와 최종 컨텍스트는 다음을 사용하여 검사할 수 있습니다.`/memory show`명령. 일반적인 로딩 순서는 다음과 같습니다.
   1. **전역 컨텍스트 파일:**
      * 위치:`~/.qwen/<configured-context-filename>`(예:`~/.qwen/QWEN.md`사용자 홈 디렉터리에 있음).
      * 범위: 모든 프로젝트에 대한 기본 지침을 제공합니다.
   2. **프로젝트 루트 및 조상 컨텍스트 파일:**
      * 위치: CLI는 현재 작업 디렉터리에서 구성된 컨텍스트 파일을 검색한 다음 각 상위 디렉터리에서 프로젝트 루트(`.git`폴더) 또는 홈 디렉터리입니다.
      * 범위: 전체 프로젝트 또는 프로젝트의 상당 부분과 관련된 컨텍스트를 제공합니다.
-* **연결 및 UI 표시:**&#xBC1C;견된 모든 컨텍스트 파일의 내용은 연결되어(원본과 경로를 나타내는 구분 기호와 함께) 시스템 프롬프트의 일부로 제공됩니다. CLI 바닥글은 로드된 컨텍스트 파일 수를 표시하여 활성 교육 컨텍스트에 대한 빠른 시각적 신호를 제공합니다.
-* **콘텐츠 가져오기:**&#xB2E4;음을 사용하여 다른 Markdown 파일을 가져와서 컨텍스트 파일을 모듈화할 수 있습니다.`@path/to/file.md`통사론. 자세한 내용은 다음을 참조하세요.[메모리 가져오기 프로세서 문서](../configuration/memory).
+* **연결 및 UI 표시:**발견된 모든 컨텍스트 파일의 내용은 연결되어(원본과 경로를 나타내는 구분 기호와 함께) 시스템 프롬프트의 일부로 제공됩니다. CLI 바닥글은 로드된 컨텍스트 파일 수를 표시하여 활성 교육 컨텍스트에 대한 빠른 시각적 신호를 제공합니다.
+* **콘텐츠 가져오기:**다음을 사용하여 다른 Markdown 파일을 가져와서 컨텍스트 파일을 모듈화할 수 있습니다.`@path/to/file.md`통사론. 자세한 내용은 다음을 참조하세요.[메모리 가져오기 프로세서 문서](../configuration/memory).
 * **메모리 관리 명령:**
   * 사용`/memory refresh`구성된 모든 위치에서 모든 컨텍스트 파일을 강제로 다시 검색하고 다시 로드합니다. 이는 AI의 교육적 맥락을 업데이트합니다.
   * 사용`/memory show`현재 로드된 결합된 교육 컨텍스트를 표시하여 AI가 사용하는 계층 구조와 콘텐츠를 확인할 수 있습니다.
@@ -704,15 +704,15 @@ Qwen Code 개선을 돕기 위해 당사는 익명화된 사용 통계를 수집
 
 **우리가 수집하는 것:**
 
-* **도구 호출:**&#xD638;출된 도구의 이름, 성공 여부, 실행하는 데 걸리는 시간을 기록합니다. 우리는 도구에 전달된 인수나 도구에서 반환된 데이터를 수집하지 않습니다.
-* **API 요청:**&#xAC01; 요청에 사용된 모델, 요청 기간, 성공 여부를 기록합니다. 우리는 프롬프트나 응답의 내용을 수집하지 않습니다.
-* **세션 정보:**&#xD65C;성화된 도구, 승인 모드 등 CLI 구성에 대한 정보를 수집합니다.
+* **도구 호출:**호출된 도구의 이름, 성공 여부, 실행하는 데 걸리는 시간을 기록합니다. 우리는 도구에 전달된 인수나 도구에서 반환된 데이터를 수집하지 않습니다.
+* **API 요청:**각 요청에 사용된 모델, 요청 기간, 성공 여부를 기록합니다. 우리는 프롬프트나 응답의 내용을 수집하지 않습니다.
+* **세션 정보:**활성화된 도구, 승인 모드 등 CLI 구성에 대한 정보를 수집합니다.
 
 **당사가 수집하지 않는 것:**
 
-* **개인 식별 정보(PII):**&#xC6B0;리는 귀하의 이름, 이메일 주소, API 키와 같은 어떠한 개인정보도 수집하지 않습니다.
-* **프롬프트 및 응답 내용:**&#xC6B0;리는 귀하의 프롬프트 내용이나 모델의 응답을 기록하지 않습니다.
-* **파일 내용:**&#x43;LI에서 읽거나 쓴 파일의 내용은 기록하지 않습니다.
+* **개인 식별 정보(PII):**우리는 귀하의 이름, 이메일 주소, API 키와 같은 어떠한 개인정보도 수집하지 않습니다.
+* **프롬프트 및 응답 내용:**우리는 귀하의 프롬프트 내용이나 모델의 응답을 기록하지 않습니다.
+* **파일 내용:**CLI에서 읽거나 쓴 파일의 내용은 기록하지 않습니다.
 
 **선택 해제 방법:**
 

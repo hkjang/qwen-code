@@ -138,7 +138,7 @@ Multi-line status + non-default mode (3 rows max):
 | `metrics.files`                       | 물체        | 파일 변경 통계:`total_lines_added`,`total_lines_removed`            |
 | `vim`                                 | 개체 \| 결석한 | vim 모드가 활성화된 경우에만 표시됩니다. 포함`mode`(`"INSERT"`또는`"NORMAL"`).    |
 
-> **중요한:**&#x73;tdin은 한 번만 읽을 수 있습니다. 항상 먼저 변수에 저장하십시오.`input=$(cat)`.
+> **중요한:**stdin은 한 번만 읽을 수 있습니다. 항상 먼저 변수에 저장하십시오.`input=$(cat)`.
 
 ## 예
 

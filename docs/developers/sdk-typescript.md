@@ -137,10 +137,10 @@ const closed = q.isClosed();
 // Interrupt the current operation
 await q.interrupt();
 
-// Change permission mode mid-session
+// 변경 permission mode mid-session
 await q.setPermissionMode('yolo');
 
-// Change model mid-session
+// 변경 model mid-session
 await q.setModel('qwen-max');
 
 // Get context window usage breakdown (token counts per category)

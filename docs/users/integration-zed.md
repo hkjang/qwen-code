@@ -2,7 +2,7 @@
 
 > Zed Editor는 ACP(에이전트 클라이언트 프로토콜)를 통해 AI 코딩 도우미에 대한 기본 지원을 제공합니다. 이 통합을 통해 실시간 코드 제안과 함께 Zed의 인터페이스 내에서 직접 Qwen Code를 사용할 수 있습니다.
 
-![Zed Editor Overview](https://img.alicdn.com/imgextra/i1/O1CN01aAhU311GwEoNh27FP_!!6000000000686-2-tps-3024-1898.png)
+![Zed Editor 개요](https://img.alicdn.com/imgextra/i1/O1CN01aAhU311GwEoNh27FP_!!6000000000686-2-tps-3024-1898.png)
 
 ### 특징
 
@@ -28,7 +28,7 @@ npm install -g @qwen-code/qwen-code
 
 2. 다운로드 및 설치[제드 편집자](https://zed.dev/)
 
-3. Zed에서**설정 버튼**오른쪽 상단에&#xC11C;**"대리인 추가"**, 선택하&#xB2E4;**"레지스트리에서 설치"**, 찾다**퀀 코드**을 클릭한 다음**설치하다**.
+3. Zed에서**설정 버튼**오른쪽 상단에서**"대리인 추가"**, 선택하다**"레지스트리에서 설치"**, 찾다**퀀 코드**을 클릭한 다음**설치하다**.
 
    ![ACP Registry](https://img.alicdn.com/imgextra/i4/O1CN0186ybL61EeG35fHFjy_!!6000000000376-2-tps-3056-1705.png)
 
@@ -44,7 +44,7 @@ npm install -g @qwen-code/qwen-code
 
 2. 다운로드 및 설치[제드 편집자](https://zed.dev/)
 
-3. Zed에서**설정 버튼**오른쪽 상단에&#xC11C;**"대리인 추가"**, 선택하&#xB2E4;**"커스텀 에이전트 만들기"**&#xC744; 클릭하고 다음 구성을 추가합니다.
+3. Zed에서**설정 버튼**오른쪽 상단에서**"대리인 추가"**, 선택하다**"커스텀 에이전트 만들기"**을 클릭하고 다음 구성을 추가합니다.
 
 ```json
 "Qwen Code": {

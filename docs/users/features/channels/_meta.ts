@@ -1,7 +1,7 @@
 export default {
-  overview: 'Overview',
+  overview: '개요',
   telegram: 'Telegram',
   weixin: 'WeChat',
   dingtalk: 'DingTalk',
-  plugins: 'Plugins',
+  plugins: '플러그인',
 };

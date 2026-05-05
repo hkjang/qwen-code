@@ -35,7 +35,7 @@
       "allowedUsers": ["123456789"],
       "sessionScope": "user",
       "cwd": "/path/to/working/directory",
-      "instructions": "Optional system instructions for the agent.",
+      "instructions": "선택 system instructions for the agent.",
       "groupPolicy": "disabled",
       "groups": {
         "*": { "requireMention": true }
@@ -136,7 +136,7 @@ qwen channel pairing approve my-channel <CODE>
 봇이 그룹 채팅에 참여하는지 여부를 제어합니다.
 
 * **`disabled`**(기본값) — 봇은 모든 그룹 메시지를 무시합니다. 가장 안전한 옵션.
-* **`allowlist`**— 봇은 명시적으로 나열된 그룹에만 응답합니다.`groups`채팅 ID로 그만큼`"*"`키는 기본 설정을 제공하지&#xB9CC;**\~ 아니다**와일드카드 허용 역할을 합니다.
+* **`allowlist`**— 봇은 명시적으로 나열된 그룹에만 응답합니다.`groups`채팅 ID로 그만큼`"*"`키는 기본 설정을 제공하지만**\~ 아니다**와일드카드 허용 역할을 합니다.
 * **`open`**— 봇은 자신이 추가된 모든 그룹에서 응답합니다. 주의해서 사용하세요.
 
 ### 게이팅 언급

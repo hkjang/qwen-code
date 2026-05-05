@@ -290,12 +290,12 @@ Qwen Code 세션 중 특정 지점에서 후크가 실행됩니다. 다양한 �
 
 **출력 옵션**:
 
-* `hookSpecificOutput.permissionDecision`: "허용", "거부" 또는 "요청"(필수)
-* `hookSpecificOutput.permissionDecisionReason`: 결정에 대한 설명(필수)
+* `hookSpecificOutput.permission결정`: "허용", "거부" 또는 "요청"(필수)
+* `hookSpecificOutput.permission결정Reason`: 결정에 대한 설명(필수)
 * `hookSpecificOutput.updatedInput`: 원본 대신 사용할 수정된 도구 입력 매개변수
 * `hookSpecificOutput.additionalContext`: 추가 컨텍스트 정보
 
-**메모**: 표준 후크 출력 필드는 다음과 같습니다.`decision`그리고`reason`기본 클래스에서 기술적으로 지원되므로 공식 인터페이스에서는 다음을 기대합니다.`hookSpecificOutput`\~와 함께`permissionDecision`그리고`permissionDecisionReason`.
+**메모**: 표준 후크 출력 필드는 다음과 같습니다.`decision`그리고`reason`기본 클래스에서 기술적으로 지원되므로 공식 인터페이스에서는 다음을 기대합니다.`hookSpecificOutput`\~와 함께`permission결정`그리고`permission결정Reason`.
 
 **예제 출력**:
 
@@ -303,8 +303,8 @@ Qwen Code 세션 중 특정 지점에서 후크가 실행됩니다. 다양한 �
 {
   "hookSpecificOutput": {
     "hookEventName": "PreToolUse",
-    "permissionDecision": "deny",
-    "permissionDecisionReason": "Security policy blocks database writes",
+    "permission결정": "deny",
+    "permission결정Reason": "Security policy blocks database writes",
     "additionalContext": "Current environment: production. Proceed with caution."
   }
 }
@@ -648,7 +648,7 @@ Qwen Code 세션 중 특정 지점에서 후크가 실행됩니다. 다양한 �
 * `hookSpecificOutput.additionalContext`: 추가 컨텍스트(로깅에만 해당)
 * 표준 후크 출력 필드(로깅 전용)
 
-**메모**: 포스트컴팩트&#xB294;**\~ 아니다**공식 결정 모드에서 지원되는 이벤트 목록. 그만큼`decision`필드 및 기타 제어 필드는 제어 효과를 생성하지 않으며 로깅 목적으로만 사용됩니다.
+**메모**: 포스트컴팩트는**\~ 아니다**공식 결정 모드에서 지원되는 이벤트 목록. 그만큼`decision`필드 및 기타 제어 필드는 제어 효과를 생성하지 않으며 로깅 목적으로만 사용됩니다.
 
 **종료 코드 처리**:
 
@@ -873,8 +873,8 @@ if echo "$TOOL_INPUT" | grep -qiE "(rm.*-rf|mv.*\/|chmod.*777)"; then
   echo '{
     "hookSpecificOutput": {
       "hookEventName": "PreToolUse",
-      "permissionDecision": "deny",
-      "permissionDecisionReason": "Security policy blocks dangerous command"
+      "permission결정": "deny",
+      "permission결정Reason": "Security policy blocks dangerous command"
     }
   }'
   exit 2  # Blocking error
@@ -887,8 +887,8 @@ echo "INFO: Tool $TOOL_NAME executed safely at $(date)" >> /var/log/qwen-securit
 echo '{
   "hookSpecificOutput": {
     "hookEventName": "PreToolUse",
-    "permissionDecision": "allow",
-    "permissionDecisionReason": "Security check passed",
+    "permission결정": "allow",
+    "permission결정Reason": "Security check passed",
     "additionalContext": "Command approved by security policy"
   }
 }'

@@ -3,9 +3,9 @@ export default {
     title: 'Qwen Code에 기여',
     type: 'separator',
   },
-  architecture: 'Architecture',
-  roadmap: 'Roadmap',
-  contributing: 'Contributing Guide',
+  architecture: '아키텍처',
+  roadmap: '로드맵',
+  contributing: '기여 가이드',
   'Qwen Code SDK': {
     title: '에이전트 SDK',
     type: 'separator',
@@ -18,8 +18,8 @@ export default {
     type: 'separator',
   },
 
-  'channel-plugins': 'Channel Plugin Guide',
-  tools: 'Tools',
+  'channel-plugins': '채널 플러그인 가이드',
+  tools: '도구',
 
   examples: {
     display: 'hidden',

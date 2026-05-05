@@ -12,7 +12,7 @@ Qwen Code를 사용하면 다음을 통해 여러 모델 공급자를 구성할 
 
 > \[!경고]
 >
-> **동일한 authType 내에서 중복된 모델 ID:**&#xB3D9;일한 모델을 여러 개 정의`id`하나의 아래`authType`(예를 들어 다음과 같은 두 개의 항목이 있습니다.`"id": "gpt-4o"`\~에`openai`)은 현재 지원되지 않습니다. 중복이 존재하는 경우,**첫 번째 발생이 승리합니다.**&#xD6C4;속 중복은 경고와 함께 건너뜁니다. 참고`id`필드는 구성 식별자와 API로 전송되는 실제 모델 이름으로 모두 사용되므로 고유 ID(예:`gpt-4o-creative`,`gpt-4o-balanced`) 실행 가능한 해결 방법이 아닙니다. 이는 향후 릴리스에서 해결할 예정인 알려진 제한 사항입니다.
+> **동일한 authType 내에서 중복된 모델 ID:**동일한 모델을 여러 개 정의`id`하나의 아래`authType`(예를 들어 다음과 같은 두 개의 항목이 있습니다.`"id": "gpt-4o"`\~에`openai`)은 현재 지원되지 않습니다. 중복이 존재하는 경우,**첫 번째 발생이 승리합니다.**후속 중복은 경고와 함께 건너뜁니다. 참고`id`필드는 구성 식별자와 API로 전송되는 실제 모델 이름으로 모두 사용되므로 고유 ID(예:`gpt-4o-creative`,`gpt-4o-balanced`) 실행 가능한 해결 방법이 아닙니다. 이는 향후 릴리스에서 해결할 예정인 알려진 제한 사항입니다.
 
 ## 인증 유형별 구성 예
 
@@ -29,7 +29,7 @@ Qwen Code를 사용하면 다음을 통해 여러 모델 공급자를 구성할 
 | `gemini`     | 구글 제미니 API                                                    |
 | `qwen-oauth` | Qwen OAuth(하드 코딩됨, 다음에서 재정의할 수 없음)`modelProviders`)           |
 
-> \[!경고]&#x20;
+> \[!경고] 
 > 잘못된 인증 유형 키가 사용된 경우(예: 다음과 같은 오타)`"openai-custom"`) 구성은 다음과 같습니다.**조용히 건너뛰었습니다**모델은 표시되지 않습니다.`/model`소매치기. 항상 위에 나열된 지원되는 인증 유형 값 중 하나를 사용하십시오.
 
 ### API 요청에 사용되는 SDK
@@ -379,7 +379,7 @@ Alibaba Cloud Coding Plan은 두 지역을 지원합니다.
 >
 > * 어떤 환경 변수 이름이든 사용할 수 있습니다.`envKey`
 > * 구성할 필요가 없습니다.`codingPlan.*`
-> * **자동 업데이트가 적용되지 않습니다.**&#xC218;동으로 구성된 코딩 계획 모델
+> * **자동 업데이트가 적용되지 않습니다.**수동으로 구성된 코딩 계획 모델
 
 > \[!경고]
 >
@@ -402,7 +402,7 @@ Alibaba Cloud Coding Plan은 두 지역을 지원합니다.
 
 > \[!경고]
 >
-> **지원 중단`security.auth.apiKey`그리고`security.auth.baseUrl`:**&#xB2E4;음을 통해 API 자격 증명을 직접 구성`security.auth.apiKey`그리고`security.auth.baseUrl`\~에`settings.json`더 이상 사용되지 않습니다. 이러한 설정은 UI를 통해 입력된 자격 증명에 대한 기록 버전에서 사용되었지만 버전 0.10.1에서는 자격 증명 입력 흐름이 제거되었습니다. 이러한 필드는 향후 릴리스에서 완전히 제거될 예정입니다.**다음으로 마이그레이션하는 것이 좋습니다.`modelProviders`**&#xBAA8;든 모델 및 자격 증명 구성에 적용됩니다. 사용`envKey`\~에`modelProviders`설정 파일에 자격 증명을 하드코딩하는 대신 안전한 자격 증명 관리를 위해 환경 변수를 참조합니다.
+> **지원 중단`security.auth.apiKey`그리고`security.auth.baseUrl`:**다음을 통해 API 자격 증명을 직접 구성`security.auth.apiKey`그리고`security.auth.baseUrl`\~에`settings.json`더 이상 사용되지 않습니다. 이러한 설정은 UI를 통해 입력된 자격 증명에 대한 기록 버전에서 사용되었지만 버전 0.10.1에서는 자격 증명 입력 흐름이 제거되었습니다. 이러한 필드는 향후 릴리스에서 완전히 제거될 예정입니다.**다음으로 마이그레이션하는 것이 좋습니다.`modelProviders`**모든 모델 및 자격 증명 구성에 적용됩니다. 사용`envKey`\~에`modelProviders`설정 파일에 자격 증명을 하드코딩하는 대신 안전한 자격 증명 관리를 위해 환경 변수를 참조합니다.
 
 ## 세대 구성 계층화: 불침투성 공급자 계층
 
@@ -514,7 +514,7 @@ Alibaba Cloud Coding Plan은 두 지역을 지원합니다.
 | ------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **오픈AI/딥시크**(`api.deepseek.com`)      | 평평한`reasoning_effort: <effort>`신체 매개변수                     | 언제`reasoning.effort`중첩된 구성 모양으로 설정되어 플랫으로 다시 작성됩니다.`reasoning_effort`그리고`'low'`/`'medium'`정규화되었습니다`'high'`,`'xhigh'`에게`'max'`— DeepSeek의 미러링[서버 측 하위 호환](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion). 최상위`samplingParams.reasoning_effort`또는`extra_body.reasoning_effort`재정의하면 이 정규화를 건너뛰고 그대로 전달됩니다. |
 | **오픈AI**(다른 호환 서버)                    | `reasoning: { effort, ... }`말 그대로 통과했다                     | 다음을 통해 설정`samplingParams`(예:`samplingParams.reasoning_effort`GPT-5/o 시리즈의 경우) 공급자가 다른 모양을 기대하는 경우.                                                                                                                                                                                                                        |
-| **인류학**(진짜`api.anthropic.com`)        | `output_config: { effort }`게다가`effort-2025-11-24`베타 헤더     | 실제 인류는 받아들인다`'low'`/`'medium'`/`'high'`오직.`'max'`\~이&#xB2E4;**\~에 고정되어 있다`'high'`**&#xC640;`debugLogger.warn`라인(발전기당 한 번); 최대한 노력하려면 baseURL을 이를 지원하는 DeepSeek 호환 엔드포인트로 전환하세요.                                                                                                                                           |
+| **인류학**(진짜`api.anthropic.com`)        | `output_config: { effort }`게다가`effort-2025-11-24`베타 헤더     | 실제 인류는 받아들인다`'low'`/`'medium'`/`'high'`오직.`'max'`\~이다**\~에 고정되어 있다`'high'`**와`debugLogger.warn`라인(발전기당 한 번); 최대한 노력하려면 baseURL을 이를 지원하는 DeepSeek 호환 엔드포인트로 전환하세요.                                                                                                                                           |
 | **인류학**(`api.deepseek.com/anthropic`) | 같은`output_config: { effort }`+ 베타 헤더                       | `'max'`변함없이 통과됩니다.                                                                                                                                                                                                                                                                                                        |
 | **쌍둥이자리**(`@google/genai`)            | `thinkingConfig: { includeThoughts: true, thinkingLevel }` | `'low'`→`LOW`,`'high'`/`'max'`→`HIGH`, 기타 →`THINKING_LEVEL_UNSPECIFIED`(쌍둥이자리는 없어요`MAX`층).                                                                                                                                                                                                                                |
 
@@ -522,7 +522,7 @@ Alibaba Cloud Coding Plan은 두 지역을 지원합니다.
 
 환경`reasoning: false`(리터럴 부울)은 모든 제공자에 대한 사고를 명시적으로 비활성화합니다. 추론의 이점을 얻지 못하는 저렴한 부가 쿼리에 유용합니다. 이는 요청 수준에서도 다음을 통해 적용됩니다.`request.config.thinkingConfig.includeThoughts: false`일회성 통화(예: 제안 생성)
 
-에`api.deepseek.com`baseURL, OpenAI 파이프라인은 명시적인 URL을 내보냅니다.`thinking: { type: 'disabled' }`DeepSeek V4+에 필요한 필드 — 서버측 기본값은`'enabled'`, 그래서 간단히 생략`reasoning_effort`여전히 생각하는 대기 시간/비용을 지불할 것입니다. 자체 호스팅 DeepSeek 백엔드(sglang/vllm) 및 기타 OpenAI 호환 서버&#xB294;**\~ 아니다**이 필드를 수신합니다. 그런 생각을 비활성화해야 한다면, 주입하세요.`thinking: { type: 'disabled' }`(또는 추론 프레임워크가 노출하는 노브)를 통해`samplingParams`/`extra_body`.
+에`api.deepseek.com`baseURL, OpenAI 파이프라인은 명시적인 URL을 내보냅니다.`thinking: { type: 'disabled' }`DeepSeek V4+에 필요한 필드 — 서버측 기본값은`'enabled'`, 그래서 간단히 생략`reasoning_effort`여전히 생각하는 대기 시간/비용을 지불할 것입니다. 자체 호스팅 DeepSeek 백엔드(sglang/vllm) 및 기타 OpenAI 호환 서버는**\~ 아니다**이 필드를 수신합니다. 그런 생각을 비활성화해야 한다면, 주입하세요.`thinking: { type: 'disabled' }`(또는 추론 프레임워크가 노출하는 노브)를 통해`samplingParams`/`extra_body`.
 
 ### 상호작용`samplingParams`(OpenAI 호환만 가능)
 

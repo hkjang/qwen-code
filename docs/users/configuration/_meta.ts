@@ -1,10 +1,10 @@
 export default {
-  settings: 'Settings',
-  auth: 'Authentication',
+  settings: '설정',
+  auth: '인증',
   memory: {
     display: 'hidden',
   },
   'qwen-ignore': 'Ignoring Files',
-  'trusted-folders': 'Trusted Folders',
-  themes: 'Themes',
+  'trusted-folders': '신뢰할 수 있는 폴더',
+  themes: '테마',
 };

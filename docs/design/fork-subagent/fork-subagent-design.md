@@ -80,7 +80,7 @@ agent.ts (fork path)
 2. agent.ts: import forkSubagent.js
 3. agent.ts: getCacheSafeParams() → forkGenerationConfig + forkToolsOverride
 4. agent.ts: build extraHistory from parent's getHistory(true)
-5. agent.ts: build forkTaskPrompt (directive or 'Begin.')
+5. agent.ts: build fork작업Prompt (directive or 'Begin.')
 6. agent.ts: createAgentHeadless(FORK_AGENT, ...)
 7. agent.ts: void executeSubagent() — background
 8. agent.ts: return FORK_PLACEHOLDER_RESULT to parent immediately

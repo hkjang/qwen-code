@@ -17,29 +17,29 @@ Qwen Code용 OpenTelemetry를 활성화하고 설정하는 방법을 알아보�
 
 ## 주요 이점
 
-* **🔍 사용 분석**: 상호작용 패턴 및 기능 채택 이해&#x20;
+* **🔍 사용 분석**: 상호작용 패턴 및 기능 채택 이해 
   팀 전반에 걸쳐
-* **⚡ 성능 모니터링**: 응답 시간, 토큰 소비 및&#x20;
+* **⚡ 성능 모니터링**: 응답 시간, 토큰 소비 및 
   자원 활용
-* **🐛 실시간 디버깅**: 병목 현상, 장애, 오류 패턴을 식별합니다.&#x20;
+* **🐛 실시간 디버깅**: 병목 현상, 장애, 오류 패턴을 식별합니다. 
   발생하는 대로
-* **📊 작업 흐름 최적화**: 개선을 위해 정보에 입각한 결정을 내립니다.&#x20;
+* **📊 작업 흐름 최적화**: 개선을 위해 정보에 입각한 결정을 내립니다. 
   구성 및 프로세스
-* **🏢 기업 거버넌스**: 팀 전체의 사용량을 모니터링하고, 비용을 추적하고,&#x20;
+* **🏢 기업 거버넌스**: 팀 전체의 사용량을 모니터링하고, 비용을 추적하고, 
   규정 준수 및 기존 모니터링 인프라와 통합
 
 ## OpenTelemetry 통합
 
-기&#xBC18;**[오픈텔레메트리][OpenTelemetry]**— 공급업체 중립적, 업계 표준&#x20;
+기반**[오픈텔레메트리][OpenTelemetry]**— 공급업체 중립적, 업계 표준 
 관찰 가능성 프레임워크 — Qwen Code의 관찰 가능성 시스템은 다음을 제공합니다.
 
-* **범용 호환성**: OpenTelemetry 백엔드로 내보내기(Aliyun,&#x20;
+* **범용 호환성**: OpenTelemetry 백엔드로 내보내기(Aliyun, 
   예거, 프로메테우스, 데이터독 등)
-* **표준화된 데이터**: 전 세계에 걸쳐 일관된 형식과 수집 방법을 사용합니다.&#x20;
+* **표준화된 데이터**: 전 세계에 걸쳐 일관된 형식과 수집 방법을 사용합니다. 
   당신의 툴체인
-* **미래 지향적 통합**: 기존 및 미래의 관측성과 연결&#x20;
+* **미래 지향적 통합**: 기존 및 미래의 관측성과 연결 
   인프라
-* **공급업체 종속 없음**: 변경하지 않고 백엔드 간 전환&#x20;
+* **공급업체 종속 없음**: 변경하지 않고 백엔드 간 전환 
   계측
 
 [OpenTelemetry]: https://opentelemetry.io/
@@ -60,7 +60,7 @@ Qwen Code용 OpenTelemetry를 활성화하고 설정하는 방법을 알아보�
 >
 > **⚠️ 특별 참고 사항: 이 기능을 사용하려면 해당 코드 변경이 필요합니다. 이 문서는 사전에 제공됩니다. 실제 기능에 대해서는 향후 코드 업데이트를 참조하세요.**
 
-모든 원격 측정 동작은 다음을 통해 제어됩니다.`.qwen/settings.json`파일.&#x20;
+모든 원격 측정 동작은 다음을 통해 제어됩니다.`.qwen/settings.json`파일. 
 이러한 설정은 환경 변수 또는 CLI 플래그로 재정의될 수 있습니다.
 
 | 환경                    | 환경변수                                   | CLI 플래그                                                  | 설명                               | 가치                | 기본                      |
@@ -76,16 +76,16 @@ Qwen Code용 OpenTelemetry를 활성화하고 설정하는 방법을 알아보�
 | `logPrompts`          | `QWEN_TELEMETRY_LOG_PROMPTS`           | `--telemetry-log-prompts` / `--no-telemetry-log-prompts` | 원격 분석 로그에 프롬프트 포함                | `true`/`false`    | `true`                  |
 | `useCollector`        | `QWEN_TELEMETRY_USE_COLLECTOR`         | -                                                        | 외부 OTLP 수집기 사용(고급)               | `true`/`false`    | `false`                 |
 
-**부울 환경 변수에 대한 참고 사항:**&#xBD80;울 설정의 경우(`enabled`,`logPrompts`,`useCollector`), 해당 환경 변수를 다음으로 설정합니다.`true`또는`1`기능을 활성화하겠습니다. 다른 값을 사용하면 비활성화됩니다.
+**부울 환경 변수에 대한 참고 사항:**부울 설정의 경우(`enabled`,`logPrompts`,`useCollector`), 해당 환경 변수를 다음으로 설정합니다.`true`또는`1`기능을 활성화하겠습니다. 다른 값을 사용하면 비활성화됩니다.
 
-**HTTP OTLP 신호 라우팅:**&#x48;TTP 프로토콜을 사용하는 경우(`otlpProtocol: "http"`),&#x20;
-Qwen 코드는 신호별 경로를 자동으로 추가합니다(`/v1/traces`,`/v1/logs`,`/v1/metrics`) 베이스로`otlpEndpoint`. 예를 들어,`http://collector:4318`된다`http://collector:4318/v1/traces`흔적을 위해. URL이 이미 끝나는 경우&#x20;
-신호 경로가 있으면 그대로 사용됩니다. 신호별 엔드포인트 재정의&#x20;
-(`otlpTracesEndpoint`등)은 기본 끝점보다 우선하며 사용됩니다.&#x20;
+**HTTP OTLP 신호 라우팅:**HTTP 프로토콜을 사용하는 경우(`otlpProtocol: "http"`), 
+Qwen 코드는 신호별 경로를 자동으로 추가합니다(`/v1/traces`,`/v1/logs`,`/v1/metrics`) 베이스로`otlpEndpoint`. 예를 들어,`http://collector:4318`된다`http://collector:4318/v1/traces`흔적을 위해. URL이 이미 끝나는 경우 
+신호 경로가 있으면 그대로 사용됩니다. 신호별 엔드포인트 재정의 
+(`otlpTracesEndpoint`등)은 기본 끝점보다 우선하며 사용됩니다. 
 말 그대로. gRPC 프로토콜은 서비스 기반 라우팅을 사용하며 경로를 추가하지 않습니다.
 
-신호별 엔드포인트 환경 변수도 표준을 허용합니다.&#x20;
-OpenTelemetry 이름:`OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`,`OTEL_EXPORTER_OTLP_LOGS_ENDPOINT`,`OTEL_EXPORTER_OTLP_METRICS_ENDPOINT`.&#x20;
+신호별 엔드포인트 환경 변수도 표준을 허용합니다. 
+OpenTelemetry 이름:`OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`,`OTEL_EXPORTER_OTLP_LOGS_ENDPOINT`,`OTEL_EXPORTER_OTLP_METRICS_ENDPOINT`. 
 그만큼`QWEN_TELEMETRY_OTLP_*`변형이 다음보다 우선합니다.`OTEL_*`변형.
 
 모든 구성 옵션에 대한 자세한 내용은 다음을 참조하세요.[구성 가이드](./cli/configuration.md).
@@ -94,15 +94,15 @@ OpenTelemetry 이름:`OTEL_EXPORTER_OTLP_TRACES_ENDPOINT`,`OTEL_EXPORTER_OTLP_LO
 
 ### 수동 OTLP 내보내기
 
-Alibaba Cloud Managed Service에서 Qwen Code 원격 측정을 보려면&#x20;
-OpenTelemetry, OTLP 끝점으로 내보내도록 Qwen 코드 구성&#x20;
+Alibaba Cloud Managed Service에서 Qwen Code 원격 측정을 보려면 
+OpenTelemetry, OTLP 끝점으로 내보내도록 Qwen 코드 구성 
 ARMS에서 제공합니다.
 
-환경`"target": "gcp"`혼자서는 내보내기를 구성하지 않습니다&#x20;
-목적지. 만약에`otlpEndpoint`설정되지 않은 경우에도 Qwen 코드는 여전히 기본값입니다.`http://localhost:4317`. 만약에`outfile`설정되어 있으면 재정의됩니다.`otlpEndpoint`원격 분석이 파일에 기록되는 대신&#x20;
+환경`"target": "gcp"`혼자서는 내보내기를 구성하지 않습니다 
+목적지. 만약에`otlpEndpoint`설정되지 않은 경우에도 Qwen 코드는 여전히 기본값입니다.`http://localhost:4317`. 만약에`outfile`설정되어 있으면 재정의됩니다.`otlpEndpoint`원격 분석이 파일에 기록되는 대신 
 Alibaba Cloud로 전송되었습니다.
 
-1. 원격 측정을 활성화합니다.`.qwen/settings.json`OTLP를 설정하고&#x20;
+1. 원격 측정을 활성화합니다.`.qwen/settings.json`OTLP를 설정하고 
    끝점:
 
    **옵션 A: gRPC 프로토콜**(표준 OTLP 엔드포인트):
@@ -133,7 +133,7 @@ Alibaba Cloud로 전송되었습니다.
    }
    ```
 
-   > **메모:**&#x48;TTP 프로토콜을 사용하는 경우`otlpEndpoint`(아니요
+   > **메모:**HTTP 프로토콜을 사용하는 경우`otlpEndpoint`(아니요
    > 신호별 재정의), Qwen 코드는 표준 OTLP 경로를 추가합니다.
    > (`/v1/traces`,`/v1/logs`,`/v1/metrics`)를 기본 URL로 변경합니다. 만약 당신의
    > 백엔드는 다른 경로를 사용합니다. 신호별 엔드포인트 재정의를 다음과 같이 사용하세요.
@@ -156,7 +156,7 @@ Alibaba Cloud로 전송되었습니다.
    * OTLP 엔드포인트를 찾고 정보에 액세스하려면:
      * **새 콘솔**(`trace.console.aliyun.com`또는 국제):
        다음으로 이동`Integration Center`.
-     * **레거시 콘솔**(`tracing.console.aliyun.com`): 다음으로 이동`Cluster Configurations`→`Access point information`.
+     * **레거시 콘솔**(`tracing.console.aliyun.com`): 다음으로 이동`Cluster 설정s`→`Access point information`.
 
 ## 로컬 원격 측정
 

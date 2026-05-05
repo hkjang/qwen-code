@@ -79,7 +79,7 @@ Assistant says "Tip: type post comments to publish findings" → "post comments"
 Assistant says "type /review to start" → "/review"
 User asked "fix the bug and run tests", bug is fixed → "run the tests"
 After code written → "try it out"
-Task complete, obvious follow-up → "commit this" or "push it"
+작업 complete, obvious follow-up → "commit this" or "push it"
 
 Format: 2-12 words, match the user's style. Or nothing.
 Reply with ONLY the suggestion, no quotes or explanation.

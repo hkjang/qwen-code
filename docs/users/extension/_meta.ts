@@ -1,5 +1,5 @@
 export default {
-  introduction: 'Introduction',
+  introduction: '소개',
   'getting-started-extensions': {
     display: 'hidden',
   },

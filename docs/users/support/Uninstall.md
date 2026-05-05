@@ -11,7 +11,7 @@ npx 캐시는 다음과 같은 디렉터리입니다.`_npx`기본 npm 캐시 폴
 **macOS/리눅스의 경우**
 
 ```bash
-# The path is typically ~/.npm/_npx
+# 경로는 일반적으로 다음과 같습니다 ~/.npm/_npx
 rm -rf "$(npm config get cache)/_npx"
 ```
 
@@ -20,14 +20,14 @@ rm -rf "$(npm config get cache)/_npx"
 *명령 프롬프트*
 
 ```cmd
-:: The path is typically %LocalAppData%\npm-cache\_npx
+:: 경로는 일반적으로 다음과 같습니다 %LocalAppData%\npm-cache\_npx
 rmdir /s /q "%LocalAppData%\npm-cache\_npx"
 ```
 
 *파워셸*
 
 ```powershell
-# The path is typically $env:LocalAppData\npm-cache\_npx
+# 경로는 일반적으로 다음과 같습니다 $env:LocalAppData\npm-cache\_npx
 Remove-Item -Path (Join-Path $env:LocalAppData "npm-cache\_npx") -Recurse -Force
 ```
 

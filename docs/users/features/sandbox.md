@@ -29,7 +29,7 @@ The benefits of sandboxing include:
 
 > \[!메모]
 >
-> **명명 참고 사항:**&#xC77C;부 샌드박스 관련 환경 변수는`GEMINI_*`역사적으로 접두사. 모든 새로운 환경 변수는`QWEN_*`접두사.
+> **명명 참고 사항:**일부 샌드박스 관련 환경 변수는`GEMINI_*`역사적으로 접두사. 모든 새로운 환경 변수는`QWEN_*`접두사.
 
 ## 샌드박싱 방법
 
@@ -223,7 +223,7 @@ QWEN_SANDBOX=docker BUILD_SANDBOX=1 qwen -s
 DEBUG=1 qwen -s -p "debug command"
 ```
 
-**메모:**&#xB9CC;약 당신이`DEBUG=true`프로젝트에서`.env`파일의 경우 자동 제외로 인해 CLI에 영향을 미치지 않습니다. 사용`.qwen/.env`Qwen 코드 관련 디버그 설정을 위한 파일입니다.
+**메모:**만약 당신이`DEBUG=true`프로젝트에서`.env`파일의 경우 자동 제외로 인해 CLI에 영향을 미치지 않습니다. 사용`.qwen/.env`Qwen 코드 관련 디버그 설정을 위한 파일입니다.
 
 ### 샌드박스 검사
 

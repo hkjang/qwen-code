@@ -64,7 +64,7 @@ Windows에서는 명령이 다음과 같이 실행됩니다.`cmd.exe /c`. 다른
 run_shell_command(command="Your commands.", description="Your description of the command.", directory="Your execution directory.", is_background=false)
 ```
 
-**메모:**&#xADF8;만큼`is_background`매개변수는 필수이며 모든 명령 실행에 대해 명시적으로 지정되어야 합니다.
+**메모:**그만큼`is_background`매개변수는 필수이며 모든 명령 실행에 대해 명시적으로 지정되어야 합니다.
 
 ## `run_shell_command`예
 
@@ -112,7 +112,7 @@ run_shell_command(command="docker-compose up", description="Start all services",
 
 그만큼`tools.shell.enableInteractiveShell`설정은 쉘 명령이 다음을 통해 실행되는지 여부를 제어합니다.`node-pty`(대화형 PTY) 또는 일반`child_process`백엔드. 활성화되면 다음과 같은 대화형 세션이`vim`,`git rebase -i`및 TUI 프로그램이 올바르게 작동합니다.
 
-이 설정의 기본값은`true`대부분의 플랫폼에서. Windows 빌드에&#xC11C;**<= 19041**(Windows 10 버전 2004 이전) 기본값은 다음과 같습니다.`false`이전 ConPTY 구현에는 알려진 신뢰성 문제(출력 누락, 정지)가 있기 때문입니다. 이는 VS Code에서 사용하는 것과 동일한 컷오프와 일치합니다([마이크로소프트/vscode#123725](https://github.com/microsoft/vscode/issues/123725)). 만약에`node-pty`런타임에 사용할 수 없는 경우 도구는 다음으로 대체됩니다.`child_process`이 설정과 상관없이.
+이 설정의 기본값은`true`대부분의 플랫폼에서. Windows 빌드에서**<= 19041**(Windows 10 버전 2004 이전) 기본값은 다음과 같습니다.`false`이전 ConPTY 구현에는 알려진 신뢰성 문제(출력 누락, 정지)가 있기 때문입니다. 이는 VS Code에서 사용하는 것과 동일한 컷오프와 일치합니다([마이크로소프트/vscode#123725](https://github.com/microsoft/vscode/issues/123725)). 만약에`node-pty`런타임에 사용할 수 없는 경우 도구는 다음으로 대체됩니다.`child_process`이 설정과 상관없이.
 
 기본값을 명시적으로 재정의하려면 다음 값을 설정하세요.`settings.json`:
 
@@ -168,11 +168,11 @@ run_shell_command(command="docker-compose up", description="Start all services",
 
 ## 중요 사항
 
-* **보안:**&#xBCF4;안 취약성을 방지하려면 명령, 특히 사용자 입력으로 구성된 명령을 실행할 때 주의하십시오.
-* **오류 처리:**&#xD655;인해보세요`Stderr`,`Error`, 그리고`Exit Code`명령이 성공적으로 실행되었는지 확인하는 필드입니다.
-* **백그라운드 프로세스:**&#xC5B8;제`is_background=true`또는 명령에 다음이 포함된 경우`&`, 도구가 즉시 반환되고 프로세스는 백그라운드에서 계속 실행됩니다. 그만큼`Background PIDs`필드에는 백그라운드 프로세스의 프로세스 ID가 포함됩니다.
-* **백그라운드 실행 선택:**&#xADF8;만큼`is_background`매개변수는 필수이며 실행 모드에 대한 명시적인 제어를 제공합니다. 추가할 수도 있습니다.`&`수동 백그라운드 실행 명령에`is_background`매개변수는 계속 지정되어야 합니다. 매개변수는 보다 명확한 의도를 제공하고 백그라운드 실행 설정을 자동으로 처리합니다.
-* **명령 설명:**&#xC0AC;용시`is_background=true`, 명령 설명에는 다음이 포함됩니다.`[background]`실행 모드를 명확하게 표시하는 표시기입니다.
+* **보안:**보안 취약성을 방지하려면 명령, 특히 사용자 입력으로 구성된 명령을 실행할 때 주의하십시오.
+* **오류 처리:**확인해보세요`Stderr`,`Error`, 그리고`Exit Code`명령이 성공적으로 실행되었는지 확인하는 필드입니다.
+* **백그라운드 프로세스:**언제`is_background=true`또는 명령에 다음이 포함된 경우`&`, 도구가 즉시 반환되고 프로세스는 백그라운드에서 계속 실행됩니다. 그만큼`Background PIDs`필드에는 백그라운드 프로세스의 프로세스 ID가 포함됩니다.
+* **백그라운드 실행 선택:**그만큼`is_background`매개변수는 필수이며 실행 모드에 대한 명시적인 제어를 제공합니다. 추가할 수도 있습니다.`&`수동 백그라운드 실행 명령에`is_background`매개변수는 계속 지정되어야 합니다. 매개변수는 보다 명확한 의도를 제공하고 백그라운드 실행 설정을 자동으로 처리합니다.
+* **명령 설명:**사용시`is_background=true`, 명령 설명에는 다음이 포함됩니다.`[background]`실행 모드를 명확하게 표시하는 표시기입니다.
 
 ## 환경 변수
 

@@ -2,9 +2,9 @@
 
 > Qwen Code를 위한 외부 메시징 연동 기능 — Telegram, WeChat 등의 플랫폼에서 에이전트와 상호 작용합니다.
 >
-> 사용자 문서:[채널 개요 (Channels Overview)](../../users/features/channels/overview.md).
+> 사용자 문서:[채널 개요 (Channels 개요)](../../users/features/channels/overview.md).
 
-## 개요 (Overview)
+## 개요 (개요)
 
 \*\*채널(channel)\*\*은 외부 메시징 플랫폼을 Qwen Code 에이전트에 연결합니다.`settings.json`에서 설정하며,`qwen channel`하위 명령어로 관리하고 다중 사용자를 지원합니다 (각 사용자는 독립된 ACP 세션을 얻습니다).
 
@@ -63,7 +63,7 @@
 
 ### 세션 (Sessions)
 
-하나의`qwen-code --acp`프로세스가 여러 ACP 세션을 관리합니다. 채널별 범위(Scope):**`user`**(기본값),**`thread`**, 또&#xB294;**`single`**. 라우팅 키는`<channelName>:<key>`로 네임스페이스가 지정됩니다.
+하나의`qwen-code --acp`프로세스가 여러 ACP 세션을 관리합니다. 채널별 범위(Scope):**`user`**(기본값),**`thread`**, 또는**`single`**. 라우팅 키는`<channelName>:<key>`로 네임스페이스가 지정됩니다.
 
 ### 에러 처리 (Error Handling)
 
@@ -115,7 +115,7 @@
 
 플러그인은 샌드박스 없이(in-process) 실행되며 npm 의존성과 동일한 신뢰 모델을 갖습니다.
 
-## 설정 (Configuration)
+## 설정 (설정)
 
 ```jsonc
 {
@@ -138,7 +138,7 @@
 
 인증 방식은 플러그인에 따라 다릅니다: 정적 토큰(Telegram), 앱 자격 증명(DingTalk), QR 코드 로그인(WeChat), 프록시 토큰(TMCP).
 
-## CLI 명령어 (CLI Commands)
+## CLI 명령어 (CLI 명령s)
 
 ```bash
 # 채널 관련

@@ -119,7 +119,7 @@ public static void runStreamingExample() {
                     logger.info("Usage information received: Input tokens: {}, Output tokens: {}",
                             assistantUsage.getUsage().getInputTokens(), assistantUsage.getUsage().getOutputTokens());
                 }
-            }.setDefaultPermissionOperation(Operation.allow));
+            }.set기본값PermissionOperation(Operation.allow));
     logger.info("Streaming example completed.");
 }
 ```

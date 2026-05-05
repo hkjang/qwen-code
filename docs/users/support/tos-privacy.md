@@ -22,8 +22,8 @@ Qwen Code는 AI 모델에 액세스하기 위해 세 가지 인증 방법을 지
 
 qwen.ai 계정을 사용하여 인증하면 다음 서비스 약관 및 개인정보 보호정책 문서가 적용됩니다.
 
-* **서비스 약관:**&#xADC0;하의 사용은 다음에 의해 규율됩니다.[Qwen 서비스 약관](https://qwen.ai/termsservice).
-* **개인정보 보호정책:**&#xADC0;하의 데이터 수집 및 사용은 다음에 설명되어 있습니다.[Qwen 개인 정보 보호 정책](https://qwen.ai/privacypolicy).
+* **서비스 약관:**귀하의 사용은 다음에 의해 규율됩니다.[Qwen 서비스 약관](https://qwen.ai/termsservice).
+* **개인정보 보호정책:**귀하의 데이터 수집 및 사용은 다음에 설명되어 있습니다.[Qwen 개인 정보 보호 정책](https://qwen.ai/privacypolicy).
 
 인증 설정, 할당량, 지원되는 기능에 대한 자세한 내용은 다음을 참조하세요.[인증 설정](../configuration/settings).
 
@@ -64,9 +64,9 @@ Qwen Code는 익명의 사용 통계를 수집할 수 있으며[원격 측정](.
 
 ### 인증방식에 따른 데이터 수집
 
-* **Qwen OAuth:**&#xC0AC;용 통계는 Qwen의 개인 정보 보호 정책에 따라 관리됩니다. Qwen Code의 구성 설정을 통해 선택 해제할 수 있습니다.
-* **Alibaba 클라우드 코딩 계획:**&#xC0AC;용 통계는 Alibaba Cloud의 개인정보 보호정책에 따라 관리됩니다. Qwen Code의 구성 설정을 통해 선택 해제할 수 있습니다.
-* **API 키:**&#xADC0;하가 선택한 API 제공업체가 수집하는 것 이상으로 Qwen Code는 추가 데이터를 수집하지 않습니다.
+* **Qwen OAuth:**사용 통계는 Qwen의 개인 정보 보호 정책에 따라 관리됩니다. Qwen Code의 구성 설정을 통해 선택 해제할 수 있습니다.
+* **Alibaba 클라우드 코딩 계획:**사용 통계는 Alibaba Cloud의 개인정보 보호정책에 따라 관리됩니다. Qwen Code의 구성 설정을 통해 선택 해제할 수 있습니다.
+* **API 키:**귀하가 선택한 API 제공업체가 수집하는 것 이상으로 Qwen Code는 추가 데이터를 수집하지 않습니다.
 
 ## 자주 묻는 질문(FAQ)
 
