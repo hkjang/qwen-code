@@ -19,6 +19,7 @@ import {
   t,
 } from '../../i18n/index.js';
 import {
+  // Dynamically supports registered languages including Korean (ko-KR)
   SUPPORTED_LANGUAGES,
   getSupportedLanguageIds,
 } from '../../i18n/languages.js';
