@@ -14,6 +14,7 @@ export type SupportedLanguage =
   | 'pt'
   | 'fr'
   | 'ca'
+  | 'ko'
   | string;
 
 export interface LanguageDefinition {
@@ -81,6 +82,12 @@ export const SUPPORTED_LANGUAGES: readonly LanguageDefinition[] = [
     id: 'ca-ES',
     fullName: 'Catalan',
     nativeName: 'Català',
+  },
+  {
+    code: 'ko',
+    id: 'ko-KR',
+    fullName: 'Korean',
+    nativeName: '한국어',
   },
 ];
 

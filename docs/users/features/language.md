@@ -6,11 +6,11 @@ Qwen Code는 다국어 워크플로용으로 제작되었습니다. CLI에서 UI
 
 사용자 관점에서 볼 때 Qwen Code의 "국제화"는 여러 계층에 걸쳐 있습니다.
 
-| 기능/설정              | 제어 대상                           | 저장 장소                        |
-| ------------------ | ------------------------------- | ---------------------------- |
-| `/language ui`     | 터미널 UI 텍스트(메뉴, 시스템 메시지, 프롬프트)   | `~/.qwen/settings.json`      |
-| `/language output` | AI가 응답하는 언어(UI 번역이 아닌 출력 기본 설정) | `~/.qwen/output-language.md` |
-| 사용자 정의 UI 언어 팩     | 내장된 UI 번역을 재정의/확장합니다.           | `~/.qwen/locales/*.js`       |
+| 기능/설정              | 제어 대상                                         | 저장 장소                    |
+| ---------------------- | ------------------------------------------------- | ---------------------------- |
+| `/language ui`         | 터미널 UI 텍스트(메뉴, 시스템 메시지, 프롬프트)   | `~/.qwen/settings.json`      |
+| `/language output`     | AI가 응답하는 언어(UI 번역이 아닌 출력 기본 설정) | `~/.qwen/output-language.md` |
+| 사용자 정의 UI 언어 팩 | 내장된 UI 번역을 재정의/확장합니다.               | `~/.qwen/locales/*.js`       |
 
 ## UI 언어
 
@@ -26,6 +26,7 @@ Qwen Code는 다국어 워크플로용으로 제작되었습니다. CLI에서 UI
 /language ui ru-RU    # Russian
 /language ui de-DE    # German
 /language ui ja-JP    # Japanese
+/language ui ko-KR    # Korean
 ```
 
 별칭도 지원됩니다.
@@ -36,6 +37,7 @@ Qwen Code는 다국어 워크플로용으로 제작되었습니다. CLI에서 UI
 /language ui ru       # Russian
 /language ui de       # German
 /language ui ja       # Japanese
+/language ui ko       # Korean
 ```
 
 ### 자동 감지
@@ -61,11 +63,12 @@ LLM 출력 언어는 다음 위치의 규칙 파일에 의해 제어됩니다.`~
 
 처음 시작할 때, 그렇지 않은 경우`output-language.md`파일이 존재하면 Qwen Code는 시스템 로케일에 따라 자동으로 파일을 생성합니다. 예를 들어:
 
-* 시스템 로케일`zh`중국어 응답에 대한 규칙을 만듭니다
-* 시스템 로케일`en`영어 응답에 대한 규칙을 만듭니다
-* 시스템 로케일`ru`러시아 반응에 대한 규칙을 만듭니다
-* 시스템 로케일`de`독일 응답에 대한 규칙을 만듭니다.
-* 시스템 로케일`ja`일본어 응답에 대한 규칙을 만듭니다.
+- 시스템 로케일`zh`중국어 응답에 대한 규칙을 만듭니다
+- 시스템 로케일`en`영어 응답에 대한 규칙을 만듭니다
+- 시스템 로케일`ru`러시아 반응에 대한 규칙을 만듭니다
+- 시스템 로케일`de`독일 응답에 대한 규칙을 만듭니다.
+- 시스템 로케일`ja`일본어 응답에 대한 규칙을 만듭니다.
+- 시스템 로케일`ko`한국어 응답에 대한 규칙을 만듭니다.
 
 ### 수동 설정
 
@@ -76,6 +79,7 @@ LLM 출력 언어는 다음 위치의 규칙 파일에 의해 제어됩니다.`~
 /language output English
 /language output Japanese
 /language output German
+/language output Korean
 ```
 
 모든 언어 이름이 작동합니다. LLM은 해당 언어로 응답하도록 지시를 받습니다.
@@ -110,14 +114,14 @@ export QWEN_CODE_LANG=zh
 
 UI 번역의 경우 다음에서 사용자 정의 언어 팩을 만들 수 있습니다.`~/.qwen/locales/`:
 
-* 예:`~/.qwen/locales/es.js`스페인어의 경우
-* 예:`~/.qwen/locales/fr.js`프랑스어용
+- 예:`~/.qwen/locales/es.js`스페인어의 경우
+- 예:`~/.qwen/locales/fr.js`프랑스어용
 
 사용자 디렉터리는 기본 제공 번역보다 우선합니다.
 
 > \[!팁]
 >
-> 기여를 환영합니다! 내장된 번역을 개선하거나 새로운 언어를 추가하려는 경우. 
+> 기여를 환영합니다! 내장된 번역을 개선하거나 새로운 언어를 추가하려는 경우.
 > 구체적인 예를 보려면 다음을 참조하세요.[PR #1238: feat(i18n): 러시아어 지원 추가](https://github.com/QwenLM/qwen-code/pull/1238).
 
 ### 언어 팩 형식
@@ -133,7 +137,7 @@ export default {
 
 ## 관련 명령
 
-* `/language`- 현재 언어 설정 표시
-* `/language ui [lang]`- UI 언어 설정
-* `/language output <language>`- LLM 출력 언어 설정
-* `/settings`- 설정 대화상자 열기
+- `/language`- 현재 언어 설정 표시
+- `/language ui [lang]`- UI 언어 설정
+- `/language output <language>`- LLM 출력 언어 설정
+- `/settings`- 설정 대화상자 열기
