@@ -409,6 +409,7 @@ const SETTINGS_SCHEMA = {
           'You can also use custom language codes (e.g., "es", "fr") by placing JS language files ' +
           'in ~/.qwen/locales/ (e.g., ~/.qwen/locales/es.js).',
         showInDialog: true,
+        // Dynamically populated from languages.ts including Korean (ko)
         options: [] as readonly SettingEnumOption[],
       },
       outputLanguage: {

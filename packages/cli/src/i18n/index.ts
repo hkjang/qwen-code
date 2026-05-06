@@ -53,7 +53,7 @@ const getLocalePath = (
   return path.join(baseDir, `${lang}.js`);
 };
 
-// Language detection
+// Language detection - matches registered languages including Korean (ko)
 export function detectSystemLanguage(): SupportedLanguage {
   const envLang = process.env['QWEN_CODE_LANG'] || process.env['LANG'];
   if (envLang) {
