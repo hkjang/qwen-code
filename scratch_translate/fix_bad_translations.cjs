@@ -54,6 +54,6 @@ function walk(dir) {
 }
 
 walk('docs');
-['README.md', 'CONTRIBUTING.md', 'SECURITY.md'].forEach(file => {
+['README.md', 'CONTRIBUTING.md', 'SECURITY.md'].forEach((file) => {
   if (fs.existsSync(file)) processFile(file);
 });

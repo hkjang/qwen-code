@@ -19,7 +19,7 @@ Fork C: [...MsgN | placeholder results | "Test C"]      ← shared cache
 
 ## 주요 구성 요소
 
-### 1. FORK\_AGENT(`forkSubagent.ts`)
+### 1. FORK_AGENT(`forkSubagent.ts`)
 
 합성 에이전트 구성, 등록되지 않음`builtInAgents`. 대체 기능이 있음`systemPrompt`그러나 실제로는 다음을 통해 상위의 렌더링된 시스템 프롬프트를 사용합니다.`generationConfigOverride`.
 
@@ -59,11 +59,11 @@ agent.ts (fork path)
 
 세 가지 경우:
 
-| 상위 기록은 다음으로 끝납니다. | extraHistory 건설                                                        | 작업\_프롬프트                       |
-| ----------------- | ---------------------------------------------------------------------- | ------------------------------ |
-| `model`(함수 호출 없음) | `[...rawHistory]`(변하지 않은)                                              | `buildChildMessage(directive)` |
-| `model`(함수 호출 포함) | `[...rawHistory, model(clone), user(responses+directive), model(ack)]` | `'Begin.'`                     |
-| `user`(특이한)       | `rawHistory.slice(0, -1)`(후행 사용자 삭제)                                   | `buildChildMessage(directive)` |
+| 상위 기록은 다음으로 끝납니다. | extraHistory 건설                                                      | 작업\_프롬프트                 |
+| ------------------------------ | ---------------------------------------------------------------------- | ------------------------------ |
+| `model`(함수 호출 없음)        | `[...rawHistory]`(변하지 않은)                                         | `buildChildMessage(directive)` |
+| `model`(함수 호출 포함)        | `[...rawHistory, model(clone), user(responses+directive), model(ack)]` | `'Begin.'`                     |
+| `user`(특이한)                 | `rawHistory.slice(0, -1)`(후행 사용자 삭제)                            | `buildChildMessage(directive)` |
 
 ### 4. 재귀 포크 방지(`forkSubagent.ts`)
 
@@ -96,17 +96,17 @@ agent.ts (fork path)
 
 만약에`getCacheSafeParams()`null을 반환하면(첫 번째 턴, 아직 기록이 없음) 포크는 다음으로 대체됩니다.
 
-* `FORK_AGENT.systemPrompt`시스템 지시를 위해
-* `prepareTools()`도구 선언용
+- `FORK_AGENT.systemPrompt`시스템 지시를 위해
+- `prepareTools()`도구 선언용
 
 이렇게 하면 캐시 공유 없이도 포크가 항상 작동합니다.
 
 ## 파일
 
-| 파일                                                   | 역할                                                                          |
-| ---------------------------------------------------- | --------------------------------------------------------------------------- |
-| `packages/core/src/agents/runtime/forkSubagent.ts`   | FORK\_AGENT 구성, buildForkedMessages(), isInForkChild(), buildChildMessage() |
-| `packages/core/src/tools/agent.ts`                   | 포크 경로: CacheSafeParams 검색, extraHistory 생성, 백그라운드 실행                        |
-| `packages/core/src/agents/runtime/agent-headless.ts` | 실행() 옵션: GenerationConfigOverride, toolsOverride                            |
-| `packages/core/src/agents/runtime/agent-core.ts`     | CreateChat옵션. GenerationConfigOverride                                      |
-| `packages/core/src/followup/forkedQuery.ts`          | CacheSafeParams 인프라(기존, 변경 사항 없음)                                           |
+| 파일                                                 | 역할                                                                         |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `packages/core/src/agents/runtime/forkSubagent.ts`   | FORK_AGENT 구성, buildForkedMessages(), isInForkChild(), buildChildMessage() |
+| `packages/core/src/tools/agent.ts`                   | 포크 경로: CacheSafeParams 검색, extraHistory 생성, 백그라운드 실행          |
+| `packages/core/src/agents/runtime/agent-headless.ts` | 실행() 옵션: GenerationConfigOverride, toolsOverride                         |
+| `packages/core/src/agents/runtime/agent-core.ts`     | CreateChat옵션. GenerationConfigOverride                                     |
+| `packages/core/src/followup/forkedQuery.ts`          | CacheSafeParams 인프라(기존, 변경 사항 없음)                                 |

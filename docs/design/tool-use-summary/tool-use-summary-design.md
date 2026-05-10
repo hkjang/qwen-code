@@ -8,21 +8,21 @@
 
 각 도구 배치가 완료된 후 Qwen Code는 배치를 요약하는 git-commit-subject-style 레이블을 반환하는 짧은 빠른 모델 호출을 실행합니다. 레이블이 인라인 희미하게 표시됩니다.`● <label>`전체 모드의 라인을 대체하고 일반 모드를 대체합니다.`Tool × N`컴팩트 모드의 헤더. 세대는 다음 차례의 API 스트림과 병렬로 실행되므로 최대 1초의 대기 시간이 메인 모델 스트리밍 뒤에 숨겨져 있습니다.
 
-| 차원         | 클로드 코드                                             | 퀀 코드                                                              |
-| ---------- | -------------------------------------------------- | ----------------------------------------------------------------- |
-| 트리거 포인트    | `query.ts`— 도구 배치가 완료된 후                           | `useGeminiStream.ts`→`handleCompletedTools`— 동일한 수명주기 지점          |
-| 세대 모델      | 하이쿠 결점`queryHaiku`                                 | 구성됨`fastModel`\~을 통해`GeminiClient.generateContent`                |
-| 하위 에이전트 동작 | `!toolUseContext.agentId`— 메인 세션만                  | 암시적 - 하위 에이전트가 실행됩니다.`agents/runtime/`, 아니다`useGeminiStream`      |
-| 스케줄링       | Fire-and-forget, 다음 턴의 스트림이 방출되기 직전에 대기            | Fire-and-forget, 해결 시 기록에 추가됨                                     |
-| 출력 형태      | `ToolUseSummaryMessage`SDK 스트림으로 생성됨               | `HistoryItemToolUseSummary`UI 기록에 추가 + 향후 SDK 사용을 위해 공장 내보내기      |
-| 문          | `CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES`환경, 기본값**끄다** | `experimental.emitToolUseSummaries`설정(기본값**\~에**) + 환경 재정의 |
-| 1차 소비자     | 모바일/SDK 클라이언트                                      | CLI 컴팩트 모드 + 전체 모드, 향후 SDK                                        |
-| 즉각적인       | Git-commit-subject, 과거형, 가장 구별되는 명사(verbatim port) | 동일한 시스템 프롬프트                                                      |
-| 입력 잘림      | 도구 필드당 300자`truncateJson`                          | 동일한                                                               |
-| 인텐트 접두사    | 어시스턴트 마지막 메시지의 처음 200자                             | 동일한                                                               |
-| 프롬프트 캐싱    | `enablePromptCaching: true`하이쿠 통화 중                | 아직 연결되지 않음(분기된 에이전트 경로 사용 가능, 향후 최적화로 플래그 지정됨)                    |
-| 라벨 후처리     | 원시 모델 텍스트                                          | `cleanSummary`(마크다운, 따옴표, 오류 접두사 제거, 최대 100자, ReDoS 제한)           |
-| 세션 지속성     | 스트림 전용; 각 세션이 재생성됩니다.                              | UI 기록만;`ChatRecordingService`지속되지 않는다`tool_use_summary`항목         |
+| 차원               | 클로드 코드                                                   | 퀀 코드                                                                         |
+| ------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 트리거 포인트      | `query.ts`— 도구 배치가 완료된 후                             | `useGeminiStream.ts`→`handleCompletedTools`— 동일한 수명주기 지점               |
+| 세대 모델          | 하이쿠 결점`queryHaiku`                                       | 구성됨`fastModel`\~을 통해`GeminiClient.generateContent`                        |
+| 하위 에이전트 동작 | `!toolUseContext.agentId`— 메인 세션만                        | 암시적 - 하위 에이전트가 실행됩니다.`agents/runtime/`, 아니다`useGeminiStream`  |
+| 스케줄링           | Fire-and-forget, 다음 턴의 스트림이 방출되기 직전에 대기      | Fire-and-forget, 해결 시 기록에 추가됨                                          |
+| 출력 형태          | `ToolUseSummaryMessage`SDK 스트림으로 생성됨                  | `HistoryItemToolUseSummary`UI 기록에 추가 + 향후 SDK 사용을 위해 공장 내보내기  |
+| 문                 | `CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES`환경, 기본값**끄다**     | `experimental.emitToolUseSummaries`설정(기본값**\~에**) + 환경 재정의           |
+| 1차 소비자         | 모바일/SDK 클라이언트                                         | CLI 컴팩트 모드 + 전체 모드, 향후 SDK                                           |
+| 즉각적인           | Git-commit-subject, 과거형, 가장 구별되는 명사(verbatim port) | 동일한 시스템 프롬프트                                                          |
+| 입력 잘림          | 도구 필드당 300자`truncateJson`                               | 동일한                                                                          |
+| 인텐트 접두사      | 어시스턴트 마지막 메시지의 처음 200자                         | 동일한                                                                          |
+| 프롬프트 캐싱      | `enablePromptCaching: true`하이쿠 통화 중                     | 아직 연결되지 않음(분기된 에이전트 경로 사용 가능, 향후 최적화로 플래그 지정됨) |
+| 라벨 후처리        | 원시 모델 텍스트                                              | `cleanSummary`(마크다운, 따옴표, 오류 접두사 제거, 최대 100자, ReDoS 제한)      |
+| 세션 지속성        | 스트림 전용; 각 세션이 재생성됩니다.                          | UI 기록만;`ChatRecordingService`지속되지 않는다`tool_use_summary`항목           |
 
 ## 2. 클로드 코드 구현 분석
 
@@ -44,13 +44,13 @@ tool_batch_complete → fork queryHaiku (fire-and-forget)
 
 ### 2.2 주요 소스 파일
 
-| 요소      | 파일                                                         | 핵심 논리                                                                                   |
-| ------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| 발전기     | `services/toolUseSummary/toolUseSummaryGenerator.ts:45-97` | `generateToolUseSummary({ tools, signal, isNonInteractiveSession, lastAssistantText })` |
-| 방아쇠     | `query.ts:1411-1482`                                       | 가드`emitToolUseSummaries`게이트 + 하위 에이전트 없음; 포크 하이쿠; 약속을 지키다                               |
-| 대기 + 방출 | `query.ts:1055-1060`                                       | 기다리다`pendingToolUseSummary`다음 회전 경계에서 양보 메시지                                            |
+| 요소          | 파일                                                       | 핵심 논리                                                                               |
+| ------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 발전기        | `services/toolUseSummary/toolUseSummaryGenerator.ts:45-97` | `generateToolUseSummary({ tools, signal, isNonInteractiveSession, lastAssistantText })` |
+| 방아쇠        | `query.ts:1411-1482`                                       | 가드`emitToolUseSummaries`게이트 + 하위 에이전트 없음; 포크 하이쿠; 약속을 지키다       |
+| 대기 + 방출   | `query.ts:1055-1060`                                       | 기다리다`pendingToolUseSummary`다음 회전 경계에서 양보 메시지                           |
 | 메시지 팩토리 | `utils/messages.ts:5105-5116`                              | `createToolUseSummaryMessage(summary, precedingToolUseIds)`                             |
-| 기능 게이트  | `query/config.ts:23,36-38`                                 | `emitToolUseSummaries: isEnvTruthy(CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES)`                |
+| 기능 게이트   | `query/config.ts:23,36-38`                                 | `emitToolUseSummaries: isEnvTruthy(CLAUDE_CODE_EMIT_TOOL_USE_SUMMARIES)`                |
 
 ### 2.3 디자인 결정
 
@@ -86,16 +86,16 @@ tool_batch_complete (handleCompletedTools)
 
 ### 3.2 주요 소스 파일
 
-| 요소        | 파일                                                                    | 핵심 논리                                                           |
-| --------- | --------------------------------------------------------------------- | --------------------------------------------------------------- |
-| 서비스       | `packages/core/src/services/toolUseSummary.ts`                        | `generateToolUseSummary`,`truncateJson`,`cleanSummary`, 메시지 팩토리 |
-| 구성 게이트    | `packages/core/src/config/config.ts:getEmitToolUseSummaries`          | 환경 재정의 → 설정 → 기본값(true)                                         |
-| 방아쇠       | `packages/cli/src/ui/hooks/useGeminiStream.ts:handleCompletedTools`   | 빠른 모델 호출을 실행하고 해결 시 addItem을 실행합니다.                             |
-| 풀 모드 렌더링  | `packages/cli/src/ui/components/HistoryItemDisplay.tsx`               | 렌더`● <label>`언제 줄`!compactMode`                                 |
-| 컴팩트 모드 조회 | `packages/cli/src/ui/components/MainContent.tsx`                      | `summaryByCallId`지도 →`compactLabel`각 tool\_group에 대한 Props         |
-| 컴팩트 헤더    | `packages/cli/src/ui/components/messages/CompactToolGroupDisplay.tsx` | 기본값을 대체합니다.`Tool × N`\~와 함께`<Summary> · N tools`라벨이 있을 때        |
-| 병합 처리     | `packages/cli/src/ui/utils/mergeCompactToolGroups.ts`                 | 간식`tool_use_summary`인접성을 위해 콤팩트하게 숨겨져 있음                        |
-| UI 유형     | `packages/cli/src/ui/types.ts:HistoryItemToolUseSummary`              | `{ type: 'tool_use_summary', summary, precedingToolUseIds }`    |
+| 요소             | 파일                                                                  | 핵심 논리                                                                  |
+| ---------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 서비스           | `packages/core/src/services/toolUseSummary.ts`                        | `generateToolUseSummary`,`truncateJson`,`cleanSummary`, 메시지 팩토리      |
+| 구성 게이트      | `packages/core/src/config/config.ts:getEmitToolUseSummaries`          | 환경 재정의 → 설정 → 기본값(true)                                          |
+| 방아쇠           | `packages/cli/src/ui/hooks/useGeminiStream.ts:handleCompletedTools`   | 빠른 모델 호출을 실행하고 해결 시 addItem을 실행합니다.                    |
+| 풀 모드 렌더링   | `packages/cli/src/ui/components/HistoryItemDisplay.tsx`               | 렌더`● <label>`언제 줄`!compactMode`                                       |
+| 컴팩트 모드 조회 | `packages/cli/src/ui/components/MainContent.tsx`                      | `summaryByCallId`지도 →`compactLabel`각 tool_group에 대한 Props            |
+| 컴팩트 헤더      | `packages/cli/src/ui/components/messages/CompactToolGroupDisplay.tsx` | 기본값을 대체합니다.`Tool × N`\~와 함께`<Summary> · N tools`라벨이 있을 때 |
+| 병합 처리        | `packages/cli/src/ui/utils/mergeCompactToolGroups.ts`                 | 간식`tool_use_summary`인접성을 위해 콤팩트하게 숨겨져 있음                 |
+| UI 유형          | `packages/cli/src/ui/types.ts:HistoryItemToolUseSummary`              | `{ type: 'tool_use_summary', summary, precedingToolUseIds }`               |
 
 ### 3.3`<Static>`추가 전용 제약조건
 
@@ -111,9 +111,9 @@ T0+ε tool_group renders through <Static> and is committed to the buffer
 T0+1s fast-model call resolves with a label
 ```
 
-T0+1에서는 이미 커밋된 tool\_group에 라벨을 소급하여 추가할 수 없습니다. 두 가지 옵션이 있습니다:
+T0+1에서는 이미 커밋된 tool_group에 라벨을 소급하여 추가할 수 없습니다. 두 가지 옵션이 있습니다:
 
-1. **tool\_group의 props + 호출 업데이트`refreshStatic()`.**작동하지만 모든 배치에서 전체 기록 다시 그리기가 발생합니다. 이는 앱에서 가장 비용이 많이 드는 UI 작업 중 하나입니다. 보이는 플래시. 화장품 라벨에는 허용되지 않습니다.
+1. **tool_group의 props + 호출 업데이트`refreshStatic()`.**작동하지만 모든 배치에서 전체 기록 다시 그리기가 발생합니다. 이는 앱에서 가장 비용이 많이 드는 UI 작업 중 하나입니다. 보이는 플래시. 화장품 라벨에는 허용되지 않습니다.
 2. **추가된 새로운 기록 항목으로 요약을 렌더링합니다.*\~ 후에*도구 그룹.**Static은 이를 기본적으로 처리합니다. 새 항목은 다시 칠하지 않고 깔끔하게 추가됩니다.
 
 이 PR은 전체 모드에서 옵션 2를 사용합니다. 그만큼`tool_use_summary`항목은 단일 희미하게 렌더링된 실제 기록 항목입니다.`● <label>`줄을 서다`HistoryItemDisplay`. 아니요`refreshStatic`필요합니다.
@@ -152,22 +152,22 @@ Full mode              Compact mode (with merge)
 
 ## 4. 클로드 코드의 편차(그리고 그 이유)
 
-| 편차                                             | 왜                                                                                                                    |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 환경 게이트 외에 설정 레이어                               | Qwen Code는 CLI에서 라벨을 렌더링합니다. 사용자에게는 셸별 환경 내보내기가 아닌 영구 스위치가 필요합니다.                                                    |
-| 기본**\~에**끄는 대신                          | 라벨은 두 디스플레이 모드 모두에서 즉시 사용자에게 표시됩니다. 사용자 구성`fastModel`이미 빠른 모델 기능을 선택하고 있습니다.                                         |
-| 헌신적인`cleanSummary`후처리                          | Qwen Code는 CC보다 더 많은 이기종 공급자를 지원합니다. 일부 모델은 앞에 추가`Label:`또는 따옴표로 묶으십시오. 경계에서 정규화하면 UI의 일관성이 유지됩니다.                   |
-| 백화점`HistoryItemToolUseSummary`스트림 메시지를 내보내는 대신 | CLI 우선 구현; SDK 스트림 경로는 향후 PR입니다. 그만큼`ToolUseSummaryMessage`해당 작업을 위해 공장이 이미 수출되었습니다.                                 |
-| 프롬프트 캐싱이 아직 연결되지 않았습니다.                        | 별도의 모델을 구성하지 않은 사용자의 경우 빠른 모델이 기본 모델과 동일한 경우가 많습니다. 캐시 공유를 추가하려면 다음을 통한 라우팅이 필요합니다.`forkedAgent.ts`; 후속 조치로 추적되었습니다. |
-| 듀얼 렌더 경로(풀 모드 인라인 + 컴팩트 모드 헤더)                 | Qwen Code의 기본값은`ui.compactMode: false`; 인라인 전체 모드 렌더링이 없으면 대부분의 사용자에게 이 기능이 표시되지 않습니다.                               |
+| 편차                                                           | 왜                                                                                                                                                                                             |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 환경 게이트 외에 설정 레이어                                   | Qwen Code는 CLI에서 라벨을 렌더링합니다. 사용자에게는 셸별 환경 내보내기가 아닌 영구 스위치가 필요합니다.                                                                                      |
+| 기본**\~에**끄는 대신                                          | 라벨은 두 디스플레이 모드 모두에서 즉시 사용자에게 표시됩니다. 사용자 구성`fastModel`이미 빠른 모델 기능을 선택하고 있습니다.                                                                  |
+| 헌신적인`cleanSummary`후처리                                   | Qwen Code는 CC보다 더 많은 이기종 공급자를 지원합니다. 일부 모델은 앞에 추가`Label:`또는 따옴표로 묶으십시오. 경계에서 정규화하면 UI의 일관성이 유지됩니다.                                    |
+| 백화점`HistoryItemToolUseSummary`스트림 메시지를 내보내는 대신 | CLI 우선 구현; SDK 스트림 경로는 향후 PR입니다. 그만큼`ToolUseSummaryMessage`해당 작업을 위해 공장이 이미 수출되었습니다.                                                                      |
+| 프롬프트 캐싱이 아직 연결되지 않았습니다.                      | 별도의 모델을 구성하지 않은 사용자의 경우 빠른 모델이 기본 모델과 동일한 경우가 많습니다. 캐시 공유를 추가하려면 다음을 통한 라우팅이 필요합니다.`forkedAgent.ts`; 후속 조치로 추적되었습니다. |
+| 듀얼 렌더 경로(풀 모드 인라인 + 컴팩트 모드 헤더)              | Qwen Code의 기본값은`ui.compactMode: false`; 인라인 전체 모드 렌더링이 없으면 대부분의 사용자에게 이 기능이 표시되지 않습니다.                                                                 |
 
 ## 5. 알려진 제한사항
 
-* **세션 지속성이 없습니다.** `tool_use_summary`채팅 녹음 JSONL에 기록되지 않습니다. 세션을 재개하면 라벨이 손실됩니다. 도구 그룹은 대체 헤더로 일반 헤더를 사용하여 렌더링됩니다. 낮은 우선순위: 사용자가 세션을 계속하면 레이블이 자연스럽게 재생성됩니다.
-* **아직 SDK 스트림 방출이 없습니다.**메시지 팩토리를 내보냈지만 CLI가 아직 피드하지 않습니다.`tool_use_summary`SDK 브리지로 들어갑니다. 후속홍보.
-* **즉각적인 캐싱이 없습니다.**각 배치에는 새로운 입력 토큰 비용이 발생합니다. 절대적 측면에서는 무시할 수 있지만(토큰 최대 300개) 턴당 수십 개의 배치를 실행하면 측정 가능합니다.
-* **병합된 압축 그룹에 대한 요약은 첫 번째 기여 배치의 레이블을 선택합니다.**사용자가 10개의 서로 다른 배치를 연속적으로 실행하는 경우(일반적이지 않은 긴밀한 루프) 병합된 압축 헤더에는 선행 배치의 의도만 표시됩니다. 절충안 허용: 병합된 보기에서 배치별 레이블을 펼치는 것은 첫 번째를 취하는 것보다 시각적으로 더 복잡합니다.
-* **빠른 모델이 필요합니다.**구성하지 않고`fastModel`, 생성을 건너뜁니다. 비용 프로필을 제한하기 위해 기본 모델로 돌아가는 것은 의도적으로 허용되지 않습니다.
+- **세션 지속성이 없습니다.** `tool_use_summary`채팅 녹음 JSONL에 기록되지 않습니다. 세션을 재개하면 라벨이 손실됩니다. 도구 그룹은 대체 헤더로 일반 헤더를 사용하여 렌더링됩니다. 낮은 우선순위: 사용자가 세션을 계속하면 레이블이 자연스럽게 재생성됩니다.
+- **아직 SDK 스트림 방출이 없습니다.**메시지 팩토리를 내보냈지만 CLI가 아직 피드하지 않습니다.`tool_use_summary`SDK 브리지로 들어갑니다. 후속홍보.
+- **즉각적인 캐싱이 없습니다.**각 배치에는 새로운 입력 토큰 비용이 발생합니다. 절대적 측면에서는 무시할 수 있지만(토큰 최대 300개) 턴당 수십 개의 배치를 실행하면 측정 가능합니다.
+- **병합된 압축 그룹에 대한 요약은 첫 번째 기여 배치의 레이블을 선택합니다.**사용자가 10개의 서로 다른 배치를 연속적으로 실행하는 경우(일반적이지 않은 긴밀한 루프) 병합된 압축 헤더에는 선행 배치의 의도만 표시됩니다. 절충안 허용: 병합된 보기에서 배치별 레이블을 펼치는 것은 첫 번째를 취하는 것보다 시각적으로 더 복잡합니다.
+- **빠른 모델이 필요합니다.**구성하지 않고`fastModel`, 생성을 건너뜁니다. 비용 프로필을 제한하기 위해 기본 모델로 돌아가는 것은 의도적으로 허용되지 않습니다.
 
 ## 6. 향후 작업
 

@@ -2,9 +2,9 @@
 
 사용자에게 확장 기능을 릴리스하는 세 가지 기본 방법은 다음과 같습니다.
 
-* [힘내 저장소](#releasing-through-a-git-repository)
-* [Github 릴리스](#releasing-through-github-releases)
-* [npm 레지스트리](#releasing-through-npm-registry)
+- [힘내 저장소](#releasing-through-a-git-repository)
+- [Github 릴리스](#releasing-through-github-releases)
+- [npm 레지스트리](#releasing-through-npm-registry)
 
 Git 리포지토리 릴리스는 가장 간단하고 유연한 접근 방식인 반면, GitHub 릴리스는 각 파일을 개별적으로 다운로드하는 git clone을 요구하는 대신 단일 아카이브로 제공되므로 초기 설치 시 더 효율적일 수 있습니다. 플랫폼별 바이너리 파일을 제공해야 하는 경우 Github 릴리스에는 플랫폼별 아카이브가 포함될 수도 있습니다. npm 레지스트리 릴리스는 특히 프라이빗 레지스트리와 함께 패키지 배포에 이미 npm을 사용하는 팀에 이상적입니다.
 
@@ -54,22 +54,22 @@ Qwen Code가 각 플랫폼에 대한 올바른 릴리스 자산을 자동으로 
 2. **플랫폼별:** `{platform}.{name}.{extension}`
 3. **일반적인:**하나의 자산만 제공되는 경우 일반 대체 수단으로 사용됩니다.
 
-* `{name}`: 확장 이름입니다.
-* `{platform}`: 운영 체제. 지원되는 값은 다음과 같습니다.
-  * `darwin`(맥OS)
-  * `linux`
-  * `win32`(윈도우)
-* `{arch}`: 건축. 지원되는 값은 다음과 같습니다.
-  * `x64`
-  * `arm64`
-* `{extension}`: 아카이브의 파일 확장자(예:`.tar.gz`또는`.zip`).
+- `{name}`: 확장 이름입니다.
+- `{platform}`: 운영 체제. 지원되는 값은 다음과 같습니다.
+  - `darwin`(맥OS)
+  - `linux`
+  - `win32`(윈도우)
+- `{arch}`: 건축. 지원되는 값은 다음과 같습니다.
+  - `x64`
+  - `arm64`
+- `{extension}`: 아카이브의 파일 확장자(예:`.tar.gz`또는`.zip`).
 
 **예:**
 
-* `darwin.arm64.my-tool.tar.gz`(Apple Silicon Mac에만 해당)
-* `darwin.my-tool.tar.gz`(모든 Mac용)
-* `linux.x64.my-tool.tar.gz`
-* `win32.my-tool.zip`
+- `darwin.arm64.my-tool.tar.gz`(Apple Silicon Mac에만 해당)
+- `darwin.my-tool.tar.gz`(모든 Mac용)
+- `linux.x64.my-tool.tar.gz`
+- `win32.my-tool.zip`
 
 #### Archive structure
 
@@ -125,9 +125,9 @@ jobs:
 
 Qwen 코드 확장을 범위가 지정된 npm 패키지로 게시할 수 있습니다(예:`@your-org/my-extension`). 이는 다음과 같은 경우에 적합합니다.
 
-* 귀하의 팀은 이미 패키지 배포를 위해 npm을 사용하고 있습니다.
-* 기존 인증 인프라에 대한 개인 레지스트리 지원이 필요합니다.
-* npm에서 처리되는 버전 확인 및 액세스 제어를 원합니다.
+- 귀하의 팀은 이미 패키지 배포를 위해 npm을 사용하고 있습니다.
+- 기존 인증 인프라에 대한 개인 레지스트리 지원이 필요합니다.
+- npm에서 처리되는 버전 확인 및 액세스 제어를 원합니다.
 
 ### 패키지 요구사항
 
@@ -176,9 +176,9 @@ qwen extensions install @your-org/my-extension --registry https://your-registry.
 
 ### 업데이트 동작
 
-* 버전 핀 없이 설치된 확장 프로그램(예:`@scope/pkg`) 추적`latest`dist-tag.
-* dist-tag로 설치된 확장 프로그램(예:`@scope/pkg@beta`) 해당 특정 태그를 추적합니다.
-* 정확한 버전에 고정된 확장 프로그램(예:`@scope/pkg@1.2.0`)은 항상 최신 상태로 간주되며 업데이트 메시지가 표시되지 않습니다.
+- 버전 핀 없이 설치된 확장 프로그램(예:`@scope/pkg`) 추적`latest`dist-tag.
+- dist-tag로 설치된 확장 프로그램(예:`@scope/pkg@beta`) 해당 특정 태그를 추적합니다.
+- 정확한 버전에 고정된 확장 프로그램(예:`@scope/pkg@1.2.0`)은 항상 최신 상태로 간주되며 업데이트 메시지가 표시되지 않습니다.
 
 ### 개인 레지스트리에 대한 인증
 

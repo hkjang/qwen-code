@@ -1,8 +1,8 @@
 ## 샌드박스 환경 사용자 정의(Docker/Podman)
 
-### 현재 프로젝트는 npm 패키지를 통해 설치 후 BUILD\_SANDBOX 기능 사용을 지원하지 않습니다.
+### 현재 프로젝트는 npm 패키지를 통해 설치 후 BUILD_SANDBOX 기능 사용을 지원하지 않습니다.
 
-1. 사용자 정의 샌드박스를 빌드하려면 소스 코드 저장소의 빌드 스크립트(scripts/build\_sandbox.js)에 액세스해야 합니다.
+1. 사용자 정의 샌드박스를 빌드하려면 소스 코드 저장소의 빌드 스크립트(scripts/build_sandbox.js)에 액세스해야 합니다.
 2. 이러한 빌드 스크립트는 npm에서 출시한 패키지에 포함되어 있지 않습니다.
 3. 코드에는 소스 코드가 아닌 환경의 빌드 요청을 명시적으로 거부하는 하드 코딩된 경로 검사가 포함되어 있습니다.
 
@@ -43,9 +43,9 @@ qwen -v
 
 #### 3、자신의 프로젝트 루트 디렉터리에 샌드박스 Dockerfile을 만듭니다.
 
-* 길:`.qwen/sandbox.Dockerfile`
+- 길:`.qwen/sandbox.Dockerfile`
 
-* 공식 미러 이미지 주소:<https://github.com/QwenLM/qwen-code/pkgs/container/qwen-code>
+- 공식 미러 이미지 주소:<https://github.com/QwenLM/qwen-code/pkgs/container/qwen-code>
 
 ```bash
 # Based on the official Qwen sandbox image (It is recommended to explicitly specify the version)
@@ -68,7 +68,7 @@ QWEN_SANDBOX=docker BUILD_SANDBOX=1 qwen -s
 
 #### npm 링크 제거
 
-* qwen의 공식 CLI를 복원하려면 npm 링크를 제거하세요.
+- qwen의 공식 CLI를 복원하려면 npm 링크를 제거하세요.
 
 ```bash
 # Method 1: Unlink globally

@@ -46,9 +46,9 @@
 
 모든 플랫폼이 변환되는 표준화된 메시지 형식입니다:
 
-* **아이디(ID)**:`senderId`,`senderName`,`chatId`,`channelName`
-* **내용 (Content)**:`text`, 선택적`imageBase64`/`imageMimeType`, 선택적`referencedText`
-* **컨텍스트 (Context)**:`isGroup`,`isMentioned`,`isReplyToBot`, 선택적`threadId`
+- **아이디(ID)**:`senderId`,`senderName`,`chatId`,`channelName`
+- **내용 (Content)**:`text`, 선택적`imageBase64`/`imageMimeType`, 선택적`referencedText`
+- **컨텍스트 (Context)**:`isGroup`,`isMentioned`,`isReplyToBot`, 선택적`threadId`
 
 플러그인 책임:`senderId`는 안정적이고 고유해야 합니다;`chatId`는 DM과 그룹을 구별해야 합니다; 게이트 로직을 위해 불리언 플래그가 정확해야 합니다;`text`에서 @멘션은 제거되어야 합니다.
 
@@ -67,9 +67,9 @@
 
 ### 에러 처리 (Error Handling)
 
-* **연결 실패 (Connection failures)**— 로그 기록됨; 하나 이상의 채널이 연결되면 서비스가 계속 실행됩니다.
-* **브릿지 충돌 (Bridge crashes)**— 지수 백오프 (최대 3회 재시도), 모든 채널에서`setBridge()`호출, 세션 복구.
-* **세션 직렬화 (Session serialization)**— 세션별 프라미스(promise) 체인을 통해 동시 프롬프트 충돌을 방지합니다.
+- **연결 실패 (Connection failures)**— 로그 기록됨; 하나 이상의 채널이 연결되면 서비스가 계속 실행됩니다.
+- **브릿지 충돌 (Bridge crashes)**— 지수 백오프 (최대 3회 재시도), 모든 채널에서`setBridge()`호출, 세션 복구.
+- **세션 직렬화 (Session serialization)**— 세션별 프라미스(promise) 체인을 통해 동시 프롬프트 충돌을 방지합니다.
 
 ## 플러그인 시스템 (Plugin System)
 
@@ -79,20 +79,20 @@
 
 `ChannelPlugin`은`channelType`,`displayName`,`requiredConfigFields`및`createChannel()`팩토리를 선언합니다. 플러그인은 세 가지 메서드를 구현합니다:
 
-| 메서드                         | 책임                        |
-| --------------------------- | ------------------------- |
+| 메서드                      | 책임                                          |
+| --------------------------- | --------------------------------------------- |
 | `connect()`                 | 플랫폼에 연결하고 메시지 핸들러를 등록합니다. |
-| `sendMessage(chatId, text)` | 에이전트 응답을 포맷팅하고 전달합니다.     |
-| `disconnect()`              | 종료 시 리소스를 정리합니다.          |
+| `sendMessage(chatId, text)` | 에이전트 응답을 포맷팅하고 전달합니다.        |
+| `disconnect()`              | 종료 시 리소스를 정리합니다.                  |
 
 수신 메시지의 경우 플러그인은`Envelope`을 만들고`this.handleInbound(envelope)`를 호출합니다 — 기본 클래스가 나머지 작업인 접근 제어, 그룹 게이팅, 페어링, 세션 라우팅, 프롬프트 직렬화, 슬래시 명령어, 지시어 주입, 답장 컨텍스트 및 충돌 복구를 처리합니다.
 
 ### 확장 포인트 (Extension Points)
 
-* `registerCommand()`를 통한 커스텀 슬래시 명령어.
-* `handleInbound()`를 타이핑/반응 표시로 래핑하여 작업 중임을 표시(Working indicators).
-* `onToolCall()`을 통한 도구 호출 훅(hooks).
-* `handleInbound()`전에 Envelope에 미디어를 첨부하여 미디어 처리.
+- `registerCommand()`를 통한 커스텀 슬래시 명령어.
+- `handleInbound()`를 타이핑/반응 표시로 래핑하여 작업 중임을 표시(Working indicators).
+- `onToolCall()`을 통한 도구 호출 훅(hooks).
+- `handleInbound()`전에 Envelope에 미디어를 첨부하여 미디어 처리.
 
 ### 검색 및 로딩 (Discovery & Loading)
 
@@ -177,28 +177,28 @@ packages/channels/
 
 ### 안정성 및 그룹 채팅 (Safety & Group Chat)
 
-* **그룹별 도구 제한 (Per-group tool restrictions)**— 그룹별`tools`/`toolsBySender`거부/허용 목록
-* **그룹 컨텍스트 기록 (Group context history)**— 최근 건너뛴 메시지의 링 버퍼(ring buffer), @멘션 시 앞에 추가됨
-* **정규식 멘션 패턴 (Regex mention patterns)**— 신뢰할 수 없는 @멘션 메타데이터를 위한 대체(fallback)`mentionPatterns`
-* **그룹별 지시어 (Per-group instructions)**— 그룹별 페르소나를 위한`GroupConfig`의`instructions`필드
-* **`/activation`명령어**— 런타임에 디스크에 저장되는`requireMention`토글
+- **그룹별 도구 제한 (Per-group tool restrictions)**— 그룹별`tools`/`toolsBySender`거부/허용 목록
+- **그룹 컨텍스트 기록 (Group context history)**— 최근 건너뛴 메시지의 링 버퍼(ring buffer), @멘션 시 앞에 추가됨
+- **정규식 멘션 패턴 (Regex mention patterns)**— 신뢰할 수 없는 @멘션 메타데이터를 위한 대체(fallback)`mentionPatterns`
+- **그룹별 지시어 (Per-group instructions)**— 그룹별 페르소나를 위한`GroupConfig`의`instructions`필드
+- **`/activation`명령어**— 런타임에 디스크에 저장되는`requireMention`토글
 
 ### 운영 도구 (Operational Tooling)
 
-* **`qwen channel doctor`**— 설정 검증, 환경 변수, 봇 토큰, 네트워크 상태 점검
-* **`qwen channel status --probe`**— 채널별 실제 연결 확인
+- **`qwen channel doctor`**— 설정 검증, 환경 변수, 봇 토큰, 네트워크 상태 점검
+- **`qwen channel status --probe`**— 채널별 실제 연결 확인
 
 ### 플랫폼 확장 (Platform Expansion)
 
-* **불화**— Bot API + Gateway, 서버/채널/DM/스레드 지원
-* **느슨하게**— Bolt SDK, Socket Mode, 워크스페이스/채널/DM/스레드 지원
+- **불화**— Bot API + Gateway, 서버/채널/DM/스레드 지원
+- **느슨하게**— Bolt SDK, Socket Mode, 워크스페이스/채널/DM/스레드 지원
 
 ### 다중 에이전트 (Multi-Agent)
 
-* **다중 에이전트 라우팅 (Multi-agent routing)**— 채널/그룹/사용자별로 바인딩이 있는 여러 에이전트 지원
-* **브로드캐스트 그룹 (Broadcast groups)**— 동일한 메시지에 대해 여러 에이전트가 응답
+- **다중 에이전트 라우팅 (Multi-agent routing)**— 채널/그룹/사용자별로 바인딩이 있는 여러 에이전트 지원
+- **브로드캐스트 그룹 (Broadcast groups)**— 동일한 메시지에 대해 여러 에이전트가 응답
 
 ### 플러그인 생태계 (Plugin Ecosystem)
 
-* **커뮤니티 플러그인 템플릿 (Community plugin template)**—`create-qwen-channel`스캐폴딩 도구
-* **플러그인 레지스트리/검색 (Plugin registry/discovery)**—`qwen extensions search`, 버전 호환성 확인
+- **커뮤니티 플러그인 템플릿 (Community plugin template)**—`create-qwen-channel`스캐폴딩 도구
+- **플러그인 레지스트리/검색 (Plugin registry/discovery)**—`qwen extensions search`, 버전 호환성 확인

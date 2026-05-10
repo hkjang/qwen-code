@@ -132,6 +132,6 @@ npm run lint:fix
 
 워크플로는 다양한 샌드박싱 환경에서 테스트를 실행하여 Qwen Code가 각각에서 테스트되는지 확인합니다.
 
-* `sandbox:none`: 샌드박싱 없이 테스트를 실행합니다.
-* `sandbox:docker`: Docker 컨테이너에서 테스트를 실행합니다.
-* `sandbox:podman`: Podman 컨테이너에서 테스트를 실행합니다.
+- `sandbox:none`: 샌드박싱 없이 테스트를 실행합니다.
+- `sandbox:docker`: Docker 컨테이너에서 테스트를 실행합니다.
+- `sandbox:podman`: Podman 컨테이너에서 테스트를 실행합니다.

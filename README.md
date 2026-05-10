@@ -172,15 +172,15 @@ API 키를 사용하여 Alibaba Cloud Model Studio 또는 지원되는 제공업
 
 **2단계:** 각 필드 이해하기
 
-| 필드 | 설명 |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `modelProviders` | 어떤 모델을 사용할 수 있고 어떻게 연결할지 선언합니다. `openai`, `anthropic`, `gemini`와 같은 키는 API 프로토콜을 나타냅니다. |
-| `modelProviders[].id` | API로 전송되는 모델 ID입니다 (예: `qwen3.6-plus`, `gpt-4o`). |
-| `modelProviders[].envKey` | API 키를 보유한 환경 변수의 이름입니다. |
-| `modelProviders[].baseUrl` | API 엔드포인트 URL입니다 (기본값이 아닌 경우 필수). |
-| `env` | API 키를 저장하기 위한 예비 장소입니다 (우선순위가 가장 낮으며, 민감한 키는 `.env` 파일이나 `export`를 권장합니다). |
-| `security.auth.selectedType` | 시작 시 사용할 프로토콜입니다 (`openai`, `anthropic`, `gemini`, `vertex-ai`). |
-| `model.name` | Qwen Code 시작 시 사용할 기본 모델입니다. |
+| 필드                         | 설명                                                                                                                          |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `modelProviders`             | 어떤 모델을 사용할 수 있고 어떻게 연결할지 선언합니다. `openai`, `anthropic`, `gemini`와 같은 키는 API 프로토콜을 나타냅니다. |
+| `modelProviders[].id`        | API로 전송되는 모델 ID입니다 (예: `qwen3.6-plus`, `gpt-4o`).                                                                  |
+| `modelProviders[].envKey`    | API 키를 보유한 환경 변수의 이름입니다.                                                                                       |
+| `modelProviders[].baseUrl`   | API 엔드포인트 URL입니다 (기본값이 아닌 경우 필수).                                                                           |
+| `env`                        | API 키를 저장하기 위한 예비 장소입니다 (우선순위가 가장 낮으며, 민감한 키는 `.env` 파일이나 `export`를 권장합니다).           |
+| `security.auth.selectedType` | 시작 시 사용할 프로토콜입니다 (`openai`, `anthropic`, `gemini`, `vertex-ai`).                                                 |
+| `model.name`                 | Qwen Code 시작 시 사용할 기본 모델입니다.                                                                                     |
 
 **3단계:** Qwen Code 시작 — 설정이 자동으로 적용됩니다:
 
@@ -510,19 +510,19 @@ asyncio.run(main())
 
 Qwen Code는 `settings.json`, 환경 변수 및 CLI 플래그를 통해 설정할 수 있습니다.
 
-| 파일 | 범위 | 설명 |
-| ----------------------- | ------------- | --------------------------------------------------------------------------------------- |
+| 파일                    | 범위          | 설명                                                                               |
+| ----------------------- | ------------- | ---------------------------------------------------------------------------------- |
 | `~/.qwen/settings.json` | 사용자 (전역) | 모든 Qwen Code 세션에 적용됩니다. **`modelProviders` 및 `env` 설정에 권장됩니다.** |
-| `.qwen/settings.json`   | 프로젝트 | 이 프로젝트에서 Qwen Code를 실행할 때만 적용됩니다. 사용자 설정을 덮어씁니다. |
+| `.qwen/settings.json`   | 프로젝트      | 이 프로젝트에서 Qwen Code를 실행할 때만 적용됩니다. 사용자 설정을 덮어씁니다.      |
 
 `settings.json`에서 가장 자주 사용되는 상위 필드:
 
-| 필드 | 설명 |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `modelProviders` | 프로토콜별로 사용 가능한 모델을 정의합니다 (`openai`, `anthropic`, `gemini`, `vertex-ai`). |
-| `env` | 예비 환경 변수 (예: API 키)입니다. 쉘의 `export` 및 `.env` 파일보다 우선순위가 낮습니다. |
-| `security.auth.selectedType` | 시작 시 사용할 프로토콜입니다 (예: `openai`). |
-| `model.name` | Qwen Code 시작 시 사용할 기본 모델입니다. |
+| 필드                         | 설명                                                                                       |
+| ---------------------------- | ------------------------------------------------------------------------------------------ |
+| `modelProviders`             | 프로토콜별로 사용 가능한 모델을 정의합니다 (`openai`, `anthropic`, `gemini`, `vertex-ai`). |
+| `env`                        | 예비 환경 변수 (예: API 키)입니다. 쉘의 `export` 및 `.env` 파일보다 우선순위가 낮습니다.   |
+| `security.auth.selectedType` | 시작 시 사용할 프로토콜입니다 (예: `openai`).                                              |
+| `model.name`                 | Qwen Code 시작 시 사용할 기본 모델입니다.                                                  |
 
 > 전체 `settings.json` 예시는 위의 [인증](#api-key-flexible) 섹션을, 모든 옵션에 대해서는 [설정 참조](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/settings/)를 확인하세요.
 
@@ -530,10 +530,10 @@ Qwen Code는 `settings.json`, 환경 변수 및 CLI 플래그를 통해 설정�
 
 ### Terminal-Bench 성능
 
-| 에이전트 | 모델 | 정확도 |
-| --------- | ------------------ | -------- |
-| Qwen Code | Qwen3-Coder-480A35 | 37.5%    |
-| Qwen Code | Qwen3-Coder-30BA3B | 31.3%    |
+| 에이전트  | 모델               | 정확도 |
+| --------- | ------------------ | ------ |
+| Qwen Code | Qwen3-Coder-480A35 | 37.5%  |
+| Qwen Code | Qwen3-Coder-30BA3B | 31.3%  |
 
 ## 생태계
 

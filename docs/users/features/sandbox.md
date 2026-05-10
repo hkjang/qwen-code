@@ -22,10 +22,10 @@ qwen --version
 
 The benefits of sandboxing include:
 
-* **보안**: 우발적인 시스템 손상이나 데이터 손실을 방지합니다.
-* **격리**: 프로젝트 디렉터리에 대한 파일 시스템 액세스를 제한합니다.
-* **일관성**: 다양한 시스템에 걸쳐 재현 가능한 환경을 보장합니다.
-* **안전**: 신뢰할 수 없는 코드나 실험적인 명령으로 작업할 때 위험을 줄입니다.
+- **보안**: 우발적인 시스템 손상이나 데이터 손실을 방지합니다.
+- **격리**: 프로젝트 디렉터리에 대한 파일 시스템 액세스를 제한합니다.
+- **일관성**: 다양한 시스템에 걸쳐 재현 가능한 환경을 보장합니다.
+- **안전**: 신뢰할 수 없는 코드나 실험적인 명령으로 작업할 때 위험을 줄입니다.
 
 > \[!메모]
 >
@@ -55,11 +55,11 @@ The benefits of sandboxing include:
 
 ### 방법 선택
 
-* **macOS에서**:
-  * 가벼운 샌드박싱을 원할 경우 안전벨트를 사용하세요(대부분의 사용자에게 권장).
-  * 전체 Linux 사용자 영역(예: Linux 바이너리가 필요한 도구)이 필요한 경우 Docker/Podman을 사용하세요.
-* **리눅스/윈도우에서**:
-  * Docker 또는 Podman을 사용하세요.
+- **macOS에서**:
+  - 가벼운 샌드박싱을 원할 경우 안전벨트를 사용하세요(대부분의 사용자에게 권장).
+  - 전체 Linux 사용자 영역(예: Linux 바이너리가 필요한 도구)이 필요한 경우 Docker/Podman을 사용하세요.
+- **리눅스/윈도우에서**:
+  - Docker 또는 Podman을 사용하세요.
 
 ## 빠른 시작
 
@@ -83,9 +83,9 @@ qwen -p "run the test suite"
 >
 > **공급자 선택 참고사항:**
 >
-> * \~에**macOS**,`QWEN_SANDBOX=true`일반적으로 선택`sandbox-exec`(안전벨트) 가능한 경우.
-> * \~에**리눅스/윈도우**,`QWEN_SANDBOX=true`필요하다`docker`또는`podman`설치됩니다.
-> * 공급자를 강제하려면 다음을 설정하십시오.`QWEN_SANDBOX=docker|podman|sandbox-exec`.
+> - \~에**macOS**,`QWEN_SANDBOX=true`일반적으로 선택`sandbox-exec`(안전벨트) 가능한 경우.
+> - \~에**리눅스/윈도우**,`QWEN_SANDBOX=true`필요하다`docker`또는`podman`설치됩니다.
+> - 공급자를 강제하려면 다음을 설정하십시오.`QWEN_SANDBOX=docker|podman|sandbox-exec`.
 
 ## 구성
 
@@ -101,9 +101,9 @@ qwen -p "run the test suite"
 
 ### 샌드박스 이미지 구성(Docker/Podman)
 
-* **CLI 플래그**:`--sandbox-image <image>`
-* **환경변수**:`QWEN_SANDBOX_IMAGE=<image>`
-* **설정 파일**:`tools.sandboxImage`당신의`settings.json`(예:`{"tools": {"sandboxImage": "ghcr.io/qwenlm/qwen-code:0.14.1"}}`)
+- **CLI 플래그**:`--sandbox-image <image>`
+- **환경변수**:`QWEN_SANDBOX_IMAGE=<image>`
+- **설정 파일**:`tools.sandboxImage`당신의`settings.json`(예:`{"tools": {"sandboxImage": "ghcr.io/qwenlm/qwen-code:0.14.1"}}`)
 
 우선순위(가장 높은 것에서 가장 낮은 것까지):
 
@@ -118,12 +118,12 @@ qwen -p "run the test suite"
 
 내장 프로필(다음을 통해 설정)`SEATBELT_PROFILE`환경은) :
 
-* `permissive-open`(기본값): 쓰기 제한, 네트워크 허용
-* `permissive-closed`: 쓰기 제한, 네트워크 없음
-* `permissive-proxied`: 쓰기 제한, 프록시를 통한 네트워크
-* `restrictive-open`: 엄격한 제한, 네트워크 허용
-* `restrictive-closed`: 최대 제한
-* `restrictive-proxied`: 엄격한 제한, 프록시를 통한 네트워크
+- `permissive-open`(기본값): 쓰기 제한, 네트워크 허용
+- `permissive-closed`: 쓰기 제한, 네트워크 없음
+- `permissive-proxied`: 쓰기 제한, 프록시를 통한 네트워크
+- `restrictive-open`: 엄격한 제한, 네트워크 허용
+- `restrictive-closed`: 최대 제한
+- `restrictive-proxied`: 엄격한 제한, 프록시를 통한 네트워크
 
 > \[!팁]
 >
@@ -158,8 +158,8 @@ export SANDBOX_FLAGS="--flag1 --flag2=value"
 
 아웃바운드 네트워크 액세스를 허용 목록으로 제한하려면 샌드박스와 함께 로컬 프록시를 실행할 수 있습니다.
 
-* 세트`QWEN_SANDBOX_PROXY_COMMAND=<command>`
-* 이 명령은 수신 대기하는 프록시 서버를 시작해야 합니다.`:::8877`
+- 세트`QWEN_SANDBOX_PROXY_COMMAND=<command>`
+- 이 명령은 수신 대기하는 프록시 서버를 시작해야 합니다.`:::8877`
 
 이는 특히 다음과 같은 경우에 유용합니다.`*-proxied`안전벨트 프로필.
 
@@ -180,14 +180,14 @@ export SANDBOX_SET_UID_GID=false  # Disable UID/GID mapping
 
 **"작업이 허용되지 않습니다"**
 
-* 작업을 수행하려면 샌드박스 외부에 액세스해야 합니다.
-* macOS 안전벨트: 좀 더 관대하게 시도해보세요`SEATBELT_PROFILE`.
-* Docker/Podman에서: 작업 영역이 마운트되어 있고 명령에 프로젝트 디렉터리 외부 액세스가 필요하지 않은지 확인하세요.
+- 작업을 수행하려면 샌드박스 외부에 액세스해야 합니다.
+- macOS 안전벨트: 좀 더 관대하게 시도해보세요`SEATBELT_PROFILE`.
+- Docker/Podman에서: 작업 영역이 마운트되어 있고 명령에 프로젝트 디렉터리 외부 액세스가 필요하지 않은지 확인하세요.
 
 **누락된 명령**
 
-* 컨테이너 샌드박스: 다음을 통해 추가하세요.`.qwen/sandbox.Dockerfile`또는`.qwen/sandbox.bashrc`.
-* 안전벨트: 호스트 바이너리가 사용되지만 샌드박스가 일부 경로에 대한 액세스를 제한할 수 있습니다.
+- 컨테이너 샌드박스: 다음을 통해 추가하세요.`.qwen/sandbox.Dockerfile`또는`.qwen/sandbox.bashrc`.
+- 안전벨트: 호스트 바이너리가 사용되지만 샌드박스가 일부 경로에 대한 액세스를 제한할 수 있습니다.
 
 **Docker 샌드박스에서는 Java를 사용할 수 없습니다.**
 
@@ -214,8 +214,8 @@ QWEN_SANDBOX=docker BUILD_SANDBOX=1 qwen -s
 
 **네트워크 문제**
 
-* 샌드박스 프로필이 네트워크를 허용하는지 확인하세요.
-* 프록시 구성을 확인하십시오.
+- 샌드박스 프로필이 네트워크를 허용하는지 확인하세요.
+- 프록시 구성을 확인하십시오.
 
 ### 디버그 모드
 
@@ -237,13 +237,13 @@ qwen -s -p "run shell command: mount | grep workspace"
 
 ## 보안 참고사항
 
-* 샌드박싱은 모든 위험을 줄여주기는 하지만 모든 위험을 제거하지는 않습니다.
-* 작업을 허용하는 가장 제한적인 프로필을 사용하십시오.
-* 컨테이너 오버헤드는 첫 번째 가져오기/빌드 이후 최소화됩니다.
-* GUI 응용 프로그램은 샌드박스에서 작동하지 않을 수 있습니다.
+- 샌드박싱은 모든 위험을 줄여주기는 하지만 모든 위험을 제거하지는 않습니다.
+- 작업을 허용하는 가장 제한적인 프로필을 사용하십시오.
+- 컨테이너 오버헤드는 첫 번째 가져오기/빌드 이후 최소화됩니다.
+- GUI 응용 프로그램은 샌드박스에서 작동하지 않을 수 있습니다.
 
 ## 관련 문서
 
-* [구성](../configuration/settings): 전체 구성 옵션.
-* [명령](../features/commands): 사용 가능한 명령입니다.
-* [문제 해결](../support/troubleshooting): 일반적인 문제 해결.
+- [구성](../configuration/settings): 전체 구성 옵션.
+- [명령](../features/commands): 사용 가능한 명령입니다.
+- [문제 해결](../support/troubleshooting): 일반적인 문제 해결.

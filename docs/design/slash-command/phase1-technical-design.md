@@ -4,18 +4,18 @@
 
 ### 1.1 목표
 
-* 소스(Source), 실행 유형(CommandType), 모드 기능(SupportedModes) 및 가시성(UserInvocable/ModelInvocable)의 4가지 차원을 포괄하는 통합 명령 메타데이터 모델을 구축합니다.
-* 비대화형/ACP 모드에서의 하드코딩된 화이트리스트를 기능 기반 필터링으로 대체합니다.
-* 2/3단계 기능 확장을 위한 안정적인 기반 인터페이스를 제공합니다.
+- 소스(Source), 실행 유형(CommandType), 모드 기능(SupportedModes) 및 가시성(UserInvocable/ModelInvocable)의 4가지 차원을 포괄하는 통합 명령 메타데이터 모델을 구축합니다.
+- 비대화형/ACP 모드에서의 하드코딩된 화이트리스트를 기능 기반 필터링으로 대체합니다.
+- 2/3단계 기능 확장을 위한 안정적인 기반 인터페이스를 제공합니다.
 
 ### 1.2 제약 조건
 
-* **동작 변경 없음**: 비대화형 및 ACP 모드에서 사용 가능한 기존 명령 세트는 변경되지 않습니다. (예외: 잘못 차단되던 MCP_PROMPT 수정 등 버그 수정 사항 제외)
-* **하위 호환성**: `SlashCommand` 인터페이스의 모든 새 필드는 선택 사항이거나 합리적인 기본값을 가집니다. 기존 명령 코드를 즉시 대량으로 수정할 필요는 없습니다.
-* **새로운 실행 구조 없음**: ModeAdapter 또는 CommandExecutor와 같은 새로운 실행 구조를 도입하지 않고, 기존의 `CommandService` 및 필터링 로직만 확장합니다.
-* **기존 기능 유지**: 명령에 로컬 하위 명령을 추가하거나 작업(Action) 구현을 수정하지 않습니다.
+- **동작 변경 없음**: 비대화형 및 ACP 모드에서 사용 가능한 기존 명령 세트는 변경되지 않습니다. (예외: 잘못 차단되던 MCP_PROMPT 수정 등 버그 수정 사항 제외)
+- **하위 호환성**: `SlashCommand` 인터페이스의 모든 새 필드는 선택 사항이거나 합리적인 기본값을 가집니다. 기존 명령 코드를 즉시 대량으로 수정할 필요는 없습니다.
+- **새로운 실행 구조 없음**: ModeAdapter 또는 CommandExecutor와 같은 새로운 실행 구조를 도입하지 않고, 기존의 `CommandService` 및 필터링 로직만 확장합니다.
+- **기존 기능 유지**: 명령에 로컬 하위 명령을 추가하거나 작업(Action) 구현을 수정하지 않습니다.
 
-***
+---
 
 ## 2. 새로운 타입 정의
 
@@ -88,22 +88,22 @@ export interface SlashCommand {
 }
 ```
 
-***
+---
 
 ## 3. 로더(Loader)별 필드 채움 사양
 
 각 로더는 명령을 로드할 때 해당 메타데이터를 채웁니다. 예를 들어, `BuiltinCommandLoader`는 `source: 'builtin-command'`를 설정하고, `McpPromptLoader`는 `source: 'mcp-prompt'` 및 `commandType: 'prompt'`를 설정합니다.
 
-***
+---
 
 ## 4. 내장 명령 분류 기준
 
 내장 명령은 `commandType`에 따라 `local` 또는 `local-jsx`로 분류됩니다.
 
-* `local`: UI 렌더링에 의존하지 않고 텍스트 기반의 메시지나 프롬프트를 반환하는 명령 (예: `btw`, `bug`, `export`).
-* `local-jsx`: React/Ink UI 컴포넌트 렌더링이나 대화창(Dialog) 노출이 필요한 명령 (예: `about`, `help`, `settings`).
+- `local`: UI 렌더링에 의존하지 않고 텍스트 기반의 메시지나 프롬프트를 반환하는 명령 (예: `btw`, `bug`, `export`).
+- `local-jsx`: React/Ink UI 컴포넌트 렌더링이나 대화창(Dialog) 노출이 필요한 명령 (예: `about`, `help`, `settings`).
 
-***
+---
 
 ## 5. `getEffectiveSupportedModes` 추론 규칙
 
@@ -113,25 +113,25 @@ export interface SlashCommand {
 2. `commandType`이 `prompt`이면 모든 모드 (`['interactive', 'non_interactive', 'acp']`)를 허용합니다.
 3. `commandType`이 `local` 또는 `local-jsx`이면 기본적으로 `['interactive']`만 허용하며, 비대화형 지원을 위해서는 명시적인 선언이 필요합니다. (Claude Code의 설계 철학 반영)
 
-***
+---
 
 ## 6. `CommandService` 확장
 
 `getCommandsForMode(mode)`와 `getModelInvocableCommands()` 메서드가 추가되어 모드별 필터링과 모델 호출 가능 명령 조회를 담당합니다.
 
-***
+---
 
 ## 7. `nonInteractiveCliCommands.ts` 리팩토링
 
 하드코딩된 `ALLOWED_BUILTIN_COMMANDS_NON_INTERACTIVE` 화이트리스트 상수를 제거하고, `filterCommandsForMode` 함수를 사용하도록 수정합니다. `handleSlashCommand` 함수의 파라미터에서 화이트리스트 관련 인자도 제거됩니다.
 
-***
+---
 
 ## 8. 행동 영향 분석
 
 리팩토링 후에도 기존 비대화형 모드에서 작동하던 명령들은 동일하게 작동하며, 기존에 MCP_PROMPT가 비대화형 모드에서 차단되던 버그가 해결됩니다. 그 외의 내장 명령들은 2단계에서 하나씩 검증하며 기능을 열어줄 예정입니다.
 
-***
+---
 
 ## 9. 테스트 전략
 

@@ -46,16 +46,16 @@ qwen extensions link /path/to/my-channel-extension
 
 모든 표준 채널 옵션은 맞춤 채널에서 작동합니다.
 
-| 옵션             | 설명                               |
-| -------------- | -------------------------------- |
-| `senderPolicy` | `allowlist`,`pairing`, 또는`open`  |
-| `allowedUsers` | 발신자 ID의 정적 허용 목록                 |
-| `sessionScope` | `user`,`thread`, 또는`single`      |
-| `cwd`          | 에이전트의 작업 디렉터리                    |
-| `instructions` | 각 세션의 첫 번째 메시지 앞에 추가됨            |
-| `model`        | 채널에 대한 모델 재정의                    |
-| `groupPolicy`  | `disabled`,`allowlist`, 또는`open` |
-| `groups`       | 그룹별 설정                           |
+| 옵션           | 설명                                 |
+| -------------- | ------------------------------------ |
+| `senderPolicy` | `allowlist`,`pairing`, 또는`open`    |
+| `allowedUsers` | 발신자 ID의 정적 허용 목록           |
+| `sessionScope` | `user`,`thread`, 또는`single`        |
+| `cwd`          | 에이전트의 작업 디렉터리             |
+| `instructions` | 각 세션의 첫 번째 메시지 앞에 추가됨 |
+| `model`        | 채널에 대한 모델 재정의              |
+| `groupPolicy`  | `disabled`,`allowlist`, 또는`open`   |
+| `groups`       | 그룹별 설정                          |
 
 보다[개요](./overview)각 옵션에 대한 자세한 내용은
 
@@ -73,14 +73,14 @@ qwen channel start my-bot
 
 사용자 정의 채널은 기본 제공 채널이 수행하는 모든 기능을 자동으로 지원합니다.
 
-* **발신자 정책**—`allowlist`,`pairing`, 그리고`open`접근 제어
-* **그룹 정책**— 선택적 @mention 게이팅을 사용한 그룹별 설정
-* **세션 라우팅**— 사용자별, 스레드별 또는 단일 공유 세션
-* **DM 페어링**— 알 수 없는 사용자를 위한 전체 페어링 코드 흐름
-* **슬래시 명령**—`/help`,`/clear`,`/status`즉시 작업
-* **맞춤 지침**— 각 세션의 첫 번째 메시지 앞에 추가됩니다.
-* **충돌 복구**— 세션 보존을 통한 자동 재시작
-* **세션별 ​​직렬화**— 경합 상태를 방지하기 위해 메시지가 대기열에 추가됩니다.
+- **발신자 정책**—`allowlist`,`pairing`, 그리고`open`접근 제어
+- **그룹 정책**— 선택적 @mention 게이팅을 사용한 그룹별 설정
+- **세션 라우팅**— 사용자별, 스레드별 또는 단일 공유 세션
+- **DM 페어링**— 알 수 없는 사용자를 위한 전체 페어링 코드 흐름
+- **슬래시 명령**—`/help`,`/clear`,`/status`즉시 작업
+- **맞춤 지침**— 각 세션의 첫 번째 메시지 앞에 추가됩니다.
+- **충돌 복구**— 세션 보존을 통한 자동 재시작
+- **세션별 ​​직렬화**— 경합 상태를 방지하기 위해 메시지가 대기열에 추가됩니다.
 
 ## 나만의 채널 플러그인 구축
 

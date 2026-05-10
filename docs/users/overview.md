@@ -32,7 +32,7 @@ cd your-project
 qwen
 ```
 
-인증 방법을 선택하세요 —**API 키**또는**[Alibaba Cloud 코딩 계획](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)**([국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) — 프롬프트에 따라 구성합니다. API 설정 가이드([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model\&url=3023091) / [국제](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model\&url=2974721)) 단계별 지침을 참조하세요. 그런 다음 코드베이스를 이해하는 것부터 시작하겠습니다. 다음 명령 중 하나를 시도해 보십시오.
+인증 방법을 선택하세요 —**API 키**또는**[Alibaba Cloud 코딩 계획](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)**([국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) — 프롬프트에 따라 구성합니다. API 설정 가이드([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3023091) / [국제](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model&url=2974721)) 단계별 지침을 참조하세요. 그런 다음 코드베이스를 이해하는 것부터 시작하겠습니다. 다음 명령 중 하나를 시도해 보십시오.
 
 ```
 what does this project do?
@@ -52,14 +52,14 @@ what does this project do?
 
 ## Qwen Code가 당신을 위해 하는 일
 
-* **설명을 통해 기능 구축**: 일반 언어로 빌드하려는 내용을 Qwen Code에 알려줍니다. 계획을 세우고, 코드를 작성하고, 작동하는지 확인합니다.
-* **문제 디버그 및 수정**: 버그를 설명하거나 오류 메시지를 붙여넣습니다. Qwen Code는 코드베이스를 분석하고 문제를 식별하고 수정 사항을 구현합니다.
-* **모든 코드베이스 탐색**: 팀의 코드베이스에 대해 무엇이든 물어보고 사려 깊은 답변을 받으세요. Qwen Code는 전체 프로젝트 구조에 대한 인식을 유지하고 웹에서 최신 정보를 찾을 수 있으며[MCP](./features/mcp)Google Drive, Figma, Slack과 같은 외부 데이터 소스에서 가져올 수 있습니다.
-* **지루한 작업 자동화**: 성가신 린트 문제를 수정하고, 병합 충돌을 해결하고, 릴리스 노트를 작성합니다. 개발자 컴퓨터에서 단일 명령으로 이 모든 작업을 수행하거나 CI에서 자동으로 수행합니다.
-* **[후속 제안](./features/followup-suggestions)**: Qwen Code는 다음에 입력할 내용을 예측하고 이를 고스트 텍스트로 표시합니다. 수락하려면 Tab 키를 누르고, 닫으려면 계속 입력하세요.
+- **설명을 통해 기능 구축**: 일반 언어로 빌드하려는 내용을 Qwen Code에 알려줍니다. 계획을 세우고, 코드를 작성하고, 작동하는지 확인합니다.
+- **문제 디버그 및 수정**: 버그를 설명하거나 오류 메시지를 붙여넣습니다. Qwen Code는 코드베이스를 분석하고 문제를 식별하고 수정 사항을 구현합니다.
+- **모든 코드베이스 탐색**: 팀의 코드베이스에 대해 무엇이든 물어보고 사려 깊은 답변을 받으세요. Qwen Code는 전체 프로젝트 구조에 대한 인식을 유지하고 웹에서 최신 정보를 찾을 수 있으며[MCP](./features/mcp)Google Drive, Figma, Slack과 같은 외부 데이터 소스에서 가져올 수 있습니다.
+- **지루한 작업 자동화**: 성가신 린트 문제를 수정하고, 병합 충돌을 해결하고, 릴리스 노트를 작성합니다. 개발자 컴퓨터에서 단일 명령으로 이 모든 작업을 수행하거나 CI에서 자동으로 수행합니다.
+- **[후속 제안](./features/followup-suggestions)**: Qwen Code는 다음에 입력할 내용을 예측하고 이를 고스트 텍스트로 표시합니다. 수락하려면 Tab 키를 누르고, 닫으려면 계속 입력하세요.
 
 ## 개발자가 Qwen Code를 좋아하는 이유
 
-* **터미널에서 작동**: 다른 채팅창이 아닙니다. 다른 IDE가 아닙니다. Qwen Code는 이미 작업하고 있는 곳에서 이미 좋아하는 도구를 사용하여 여러분을 만납니다.
-* **조치를 취합니다**: Qwen Code는 파일을 직접 편집하고, 명령을 실행하고, 커밋을 생성할 수 있습니다. 더 필요하신가요?[MCP](./features/mcp)Qwen Code를 사용하면 Google Drive에서 디자인 문서를 읽고 Jira에서 티켓을 업데이트하거나*당신의*맞춤형 개발자 도구.
-* **유닉스 철학**: Qwen Code는 구성 및 스크립트가 가능합니다.`tail -f app.log | qwen -p "Slack me if you see any anomalies appear in this log stream"` *공장*. CI를 실행할 수 있습니다.`qwen -p "If there are new text strings, translate them into French and raise a PR for @lang-fr-team to review"`.
+- **터미널에서 작동**: 다른 채팅창이 아닙니다. 다른 IDE가 아닙니다. Qwen Code는 이미 작업하고 있는 곳에서 이미 좋아하는 도구를 사용하여 여러분을 만납니다.
+- **조치를 취합니다**: Qwen Code는 파일을 직접 편집하고, 명령을 실행하고, 커밋을 생성할 수 있습니다. 더 필요하신가요?[MCP](./features/mcp)Qwen Code를 사용하면 Google Drive에서 디자인 문서를 읽고 Jira에서 티켓을 업데이트하거나*당신의*맞춤형 개발자 도구.
+- **유닉스 철학**: Qwen Code는 구성 및 스크립트가 가능합니다.`tail -f app.log | qwen -p "Slack me if you see any anomalies appear in this log stream"` _공장_. CI를 실행할 수 있습니다.`qwen -p "If there are new text strings, translate them into French and raise a PR for @lang-fr-team to review"`.

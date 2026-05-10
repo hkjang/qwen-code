@@ -17,14 +17,14 @@ rm -rf "$(npm config get cache)/_npx"
 
 **윈도우의 경우**
 
-*명령 프롬프트*
+_명령 프롬프트_
 
 ```cmd
 :: 경로는 일반적으로 다음과 같습니다 %LocalAppData%\npm-cache\_npx
 rmdir /s /q "%LocalAppData%\npm-cache\_npx"
 ```
 
-*파워셸*
+_파워셸_
 
 ```powershell
 # 경로는 일반적으로 다음과 같습니다 $env:LocalAppData\npm-cache\_npx

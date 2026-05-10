@@ -68,22 +68,22 @@ export class MyChannel extends ChannelBase {
 
 플랫폼 데이터에서 빌드한 정규화된 메시지 개체입니다. 부울 플래그는 게이트 로직을 구동하므로 정확해야 합니다.
 
-| 필드               | 유형    | 필수의 | 메모                                         |
-| ---------------- | ----- | --- | ------------------------------------------ |
-| `channelName`    | 끈     | 예   | 사용`this.name`                              |
-| `senderId`       | 끈     | 예   | 메시지 전체에서 안정적이어야 합니다(세션 라우팅 + 액세스 제어에 사용됨). |
-| `senderName`     | 끈     | 예   | 표시 이름                                      |
-| `chatId`         | 끈     | 예   | DM과 그룹을 구분해야 합니다.                          |
-| `text`           | 끈     | 예   | 스트립 봇 @멘션                                  |
-| `threadId`       | 끈     | 아니요 | 을 위한`sessionScope: "thread"`               |
-| `messageId`      | 끈     | 아니요 | 플랫폼 메시지 ID - 응답 상관 관계에 유용합니다.              |
-| `isGroup`        | 부울    | 예   | GroupGate는 이에 의존합니다.                       |
-| `isMentioned`    | 부울    | 예   | GroupGate는 이에 의존합니다.                       |
-| `isReplyToBot`   | 부울    | 예   | GroupGate는 이에 의존합니다.                       |
-| `referencedText` | 끈     | 아니요 | 인용된 메시지 - 컨텍스트로 추가됨                        |
-| `imageBase64`    | 끈     | 아니요 | Base64로 인코딩된 이미지(레거시 — 선호`attachments`)    |
-| `imageMimeType`  | 끈     | 아니요 | 예를 들어,`image/jpeg`(레거시 — 선호`attachments`)  |
-| `attachments`    | 부착\[] | 아니요 | 구조화된 미디어 첨부 파일(아래 참조)                      |
+| 필드             | 유형    | 필수의 | 메모                                                                     |
+| ---------------- | ------- | ------ | ------------------------------------------------------------------------ |
+| `channelName`    | 끈      | 예     | 사용`this.name`                                                          |
+| `senderId`       | 끈      | 예     | 메시지 전체에서 안정적이어야 합니다(세션 라우팅 + 액세스 제어에 사용됨). |
+| `senderName`     | 끈      | 예     | 표시 이름                                                                |
+| `chatId`         | 끈      | 예     | DM과 그룹을 구분해야 합니다.                                             |
+| `text`           | 끈      | 예     | 스트립 봇 @멘션                                                          |
+| `threadId`       | 끈      | 아니요 | 을 위한`sessionScope: "thread"`                                          |
+| `messageId`      | 끈      | 아니요 | 플랫폼 메시지 ID - 응답 상관 관계에 유용합니다.                          |
+| `isGroup`        | 부울    | 예     | GroupGate는 이에 의존합니다.                                             |
+| `isMentioned`    | 부울    | 예     | GroupGate는 이에 의존합니다.                                             |
+| `isReplyToBot`   | 부울    | 예     | GroupGate는 이에 의존합니다.                                             |
+| `referencedText` | 끈      | 아니요 | 인용된 메시지 - 컨텍스트로 추가됨                                        |
+| `imageBase64`    | 끈      | 아니요 | Base64로 인코딩된 이미지(레거시 — 선호`attachments`)                     |
+| `imageMimeType`  | 끈      | 아니요 | 예를 들어,`image/jpeg`(레거시 — 선호`attachments`)                       |
+| `attachments`    | 부착\[] | 아니요 | 구조화된 미디어 첨부 파일(아래 참조)                                     |
 
 ### 첨부파일
 
@@ -174,6 +174,6 @@ protected override onPromptEnd(chatId: string, sessionId: string, messageId?: st
 
 ## 참조 구현
 
-* **플러그인 예시**(`packages/channels/plugin-example/`) — 최소한의 WebSocket 기반 어댑터, 좋은 시작점
-* **전보**(`packages/channels/telegram/`) — 모든 기능을 갖추고 있습니다: 이미지, 파일, 서식, 입력 표시기
-* **딩톡**(`packages/channels/dingtalk/`) — 서식 있는 텍스트를 처리하는 스트림 기반
+- **플러그인 예시**(`packages/channels/plugin-example/`) — 최소한의 WebSocket 기반 어댑터, 좋은 시작점
+- **전보**(`packages/channels/telegram/`) — 모든 기능을 갖추고 있습니다: 이미지, 파일, 서식, 입력 표시기
+- **딩톡**(`packages/channels/dingtalk/`) — 서식 있는 텍스트를 처리하는 스트림 기반

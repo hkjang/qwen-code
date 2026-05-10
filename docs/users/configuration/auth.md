@@ -2,9 +2,9 @@
 
 Qwen Code는 세 가지 인증 방법을 지원합니다. CLI를 실행하려는 방법과 일치하는 것을 선택하십시오.
 
-* **Qwen OAuth**: 귀하의 계정으로 로그인하세요.`qwen.ai`브라우저에서 계정.**무료 등급은 2026년 4월 15일에 중단되었습니다.**— 다른 방법으로 전환하십시오.
-* **Alibaba Cloud 코딩 계획**: Alibaba Cloud의 API 키를 사용하세요. 다양한 모델 옵션과 더 높은 할당량을 갖춘 유료 구독입니다.
-* **API 키**: 자신만의 API 키를 가져오세요. 자신의 요구에 맞게 유연하게 — OpenAI, Anthropic, Gemini 및 기타 호환 가능한 엔드포인트를 지원합니다.
+- **Qwen OAuth**: 귀하의 계정으로 로그인하세요.`qwen.ai`브라우저에서 계정.**무료 등급은 2026년 4월 15일에 중단되었습니다.**— 다른 방법으로 전환하십시오.
+- **Alibaba Cloud 코딩 계획**: Alibaba Cloud의 API 키를 사용하세요. 다양한 모델 옵션과 더 높은 할당량을 갖춘 유료 구독입니다.
+- **API 키**: 자신만의 API 키를 가져오세요. 자신의 요구에 맞게 유연하게 — OpenAI, Anthropic, Gemini 및 기타 호환 가능한 엔드포인트를 지원합니다.
 
 ## 옵션 1: Qwen OAuth(중단됨)
 
@@ -12,10 +12,10 @@ Qwen Code는 세 가지 인증 방법을 지원합니다. CLI를 실행하려는
 >
 > Qwen OAuth 무료 등급은 2026년 4월 15일에 중단되었습니다. 기존 캐시된 토큰은 잠시 동안 계속 작동할 수 있지만 새 요청은 거부됩니다. 알리바바 클라우드 코딩 플랜으로 전환해주세요.[오픈라우터](https://openrouter.ai),[불꽃놀이 AI](https://app.fireworks.ai), 또는 다른 제공업체. 달리다`qwen auth`구성합니다.
 
-* **작동 원리**: 처음 시작할 때 Qwen Code는 브라우저 로그인 페이지를 엽니다. 완료한 후에는 자격 증명이 로컬로 캐시되므로 일반적으로 다시 로그인할 필요가 없습니다.
-* **요구사항**: 에`qwen.ai`계정 + 인터넷 접속(적어도 첫 번째 로그인의 경우).
-* **이익**: API 키 관리 없음, 자동 자격 증명 새로 고침.
-* **비용 및 할당량**: 2026년 4월 15일부터 무료 등급이 중단되었습니다.
+- **작동 원리**: 처음 시작할 때 Qwen Code는 브라우저 로그인 페이지를 엽니다. 완료한 후에는 자격 증명이 로컬로 캐시되므로 일반적으로 다시 로그인할 필요가 없습니다.
+- **요구사항**: 에`qwen.ai`계정 + 인터넷 접속(적어도 첫 번째 로그인의 경우).
+- **이익**: API 키 관리 없음, 자동 자격 증명 새로 고침.
+- **비용 및 할당량**: 2026년 4월 15일부터 무료 등급이 중단되었습니다.
 
 CLI를 시작하고 브라우저 흐름을 따릅니다.
 
@@ -38,17 +38,17 @@ qwen auth qwen-oauth
 
 다양한 모델 옵션과 더 높은 사용 할당량으로 예측 가능한 비용을 원하는 경우 이를 사용하세요.
 
-* **작동 원리**: 월 고정 요금으로 코딩 플랜을 구독한 후, 전용 엔드포인트와 구독 API 키를 사용하도록 Qwen Code를 구성하세요.
-* **요구사항**: 다음에서 활성 코딩 계획 구독을 얻습니다.[Alibaba Cloud ModelStudio(베이징)](https://bailian.console.aliyun.com/cn-beijing?tab=coding-plan#/efm/coding-plan-index)또는[Alibaba Cloud ModelStudio(intl)](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index), 계정 지역에 따라 다릅니다.
-* **이익**: 다양한 모델 옵션, 더 높은 사용 할당량, 예측 가능한 월별 비용, 다양한 모델(Qwen, GLM, Kimi, Minimax 등)에 대한 액세스.
-* **비용 및 할당량**: Aliyun ModelStudio 코딩 계획 문서 보기[베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model\&url=3005961)[국제](https://modelstudio.console.alibabacloud.com/?tab=doc#/doc/?type=model\&url=2840914).
+- **작동 원리**: 월 고정 요금으로 코딩 플랜을 구독한 후, 전용 엔드포인트와 구독 API 키를 사용하도록 Qwen Code를 구성하세요.
+- **요구사항**: 다음에서 활성 코딩 계획 구독을 얻습니다.[Alibaba Cloud ModelStudio(베이징)](https://bailian.console.aliyun.com/cn-beijing?tab=coding-plan#/efm/coding-plan-index)또는[Alibaba Cloud ModelStudio(intl)](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index), 계정 지역에 따라 다릅니다.
+- **이익**: 다양한 모델 옵션, 더 높은 사용 할당량, 예측 가능한 월별 비용, 다양한 모델(Qwen, GLM, Kimi, Minimax 등)에 대한 액세스.
+- **비용 및 할당량**: Aliyun ModelStudio 코딩 계획 문서 보기[베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3005961)[국제](https://modelstudio.console.alibabacloud.com/?tab=doc#/doc/?type=model&url=2840914).
 
 Alibaba Cloud Coding Plan은 두 지역에서 사용할 수 있습니다.
 
-| 지역                       | 콘솔 URL                                                                       |
-| ------------------------ | ---------------------------------------------------------------------------- |
+| 지역                        | 콘솔 URL                                                                     |
+| --------------------------- | ---------------------------------------------------------------------------- |
 | Aliyun ModelStudio (베이징) | [bailian.console.aliyun.com](https://bailian.console.aliyun.com)             |
-| 알리바바 클라우드(intl)          | [bailian.console.alibabacloud.com](https://bailian.console.alibabacloud.com) |
+| 알리바바 클라우드(intl)     | [bailian.console.alibabacloud.com](https://bailian.console.alibabacloud.com) |
 
 ### 대화형 설정
 
@@ -142,12 +142,12 @@ API 키 인증을 시작하는 가장 간단한 방법은 모든 것을 단일�
 
 각 필드의 역할은 다음과 같습니다.
 
-| 필드                           | 설명                                                                                             |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- |
-| `modelProviders`             | 사용 가능한 모델과 해당 모델에 연결하는 방법을 선언합니다. 키(`openai`,`anthropic`,`gemini`)는 API 프로토콜을 나타냅니다.           |
-| `env`                        | API 키를 직접 저장합니다.`settings.json`대체(가장 낮은 우선순위 — 쉘`export`그리고`.env`파일이 우선 적용됩니다).                |
+| 필드                         | 설명                                                                                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `modelProviders`             | 사용 가능한 모델과 해당 모델에 연결하는 방법을 선언합니다. 키(`openai`,`anthropic`,`gemini`)는 API 프로토콜을 나타냅니다.          |
+| `env`                        | API 키를 직접 저장합니다.`settings.json`대체(가장 낮은 우선순위 — 쉘`export`그리고`.env`파일이 우선 적용됩니다).                   |
 | `security.auth.selectedType` | 시작 시 사용할 프로토콜을 Qwen Code에 알려줍니다(예:`openai`,`anthropic`,`gemini`). 이것이 없으면 실행해야합니다`/auth`대화식으로. |
-| `model.name`                 | Qwen Code 시작 시 활성화되는 기본 모델입니다. 다음 중 하나와 일치해야 합니다.`id`당신의 가치`modelProviders`.                   |
+| `model.name`                 | Qwen Code 시작 시 활성화되는 기본 모델입니다. 다음 중 하나와 일치해야 합니다.`id`당신의 가치`modelProviders`.                      |
 
 파일을 저장한 후 실행해 보세요.`qwen`— 대화형 없음`/auth`설정이 필요합니다.
 
@@ -159,11 +159,11 @@ API 키 인증을 시작하는 가장 간단한 방법은 모든 것을 단일�
 
 #### 지원되는 프로토콜
 
-| 규약        | `modelProviders`열쇠 | 환경변수                                                       | 공급자                                                                             |
-| --------- | ------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| OpenAI 호환 | `openai`           | `OPENAI_API_KEY`,`OPENAI_BASE_URL`,`OPENAI_MODEL`          | OpenAI, Azure OpenAI, OpenRouter, ModelScope, Alibaba Cloud, 모든 OpenAI 호환 엔드포인트 |
-| 인류학       | `anthropic`        | `ANTHROPIC_API_KEY`,`ANTHROPIC_BASE_URL`,`ANTHROPIC_MODEL` | 인류애적인 클로드                                                                       |
-| 구글 젠AI    | `gemini`           | `GEMINI_API_KEY`,`GEMINI_MODEL`                            | 구글 제미니                                                                          |
+| 규약        | `modelProviders`열쇠 | 환경변수                                                   | 공급자                                                                                   |
+| ----------- | -------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| OpenAI 호환 | `openai`             | `OPENAI_API_KEY`,`OPENAI_BASE_URL`,`OPENAI_MODEL`          | OpenAI, Azure OpenAI, OpenRouter, ModelScope, Alibaba Cloud, 모든 OpenAI 호환 엔드포인트 |
+| 인류학      | `anthropic`          | `ANTHROPIC_API_KEY`,`ANTHROPIC_BASE_URL`,`ANTHROPIC_MODEL` | 인류애적인 클로드                                                                        |
+| 구글 젠AI   | `gemini`             | `GEMINI_API_KEY`,`GEMINI_MODEL`                            | 구글 제미니                                                                              |
 
 #### 1단계: 모델 및 공급자 구성`~/.qwen/settings.json`
 
@@ -210,13 +210,13 @@ API 키 인증을 시작하는 가장 간단한 방법은 모든 것을 단일�
 
 **`ModelConfig`필드(내부의 각 항목`modelProviders`):**
 
-| 필드                 | 필수의 | 설명                                                    |
-| ------------------ | --- | ----------------------------------------------------- |
-| `id`               | 예   | API로 전송된 모델 ID(예:`gpt-4o`,`claude-sonnet-4-20250514`) |
-| `name`             | 아니요 | 표시 이름`/model`선택기(기본값은`id`)                            |
-| `envKey`           | 예   | API 키의 환경 변수 이름(예:`OPENAI_API_KEY`)                   |
-| `baseUrl`          | 아니요 | API 엔드포인트 재정의(프록시 또는 사용자 정의 엔드포인트에 유용함)               |
-| `generationConfig` | 아니요 | 미세 조정`timeout`,`maxRetries`,`samplingParams`, 등.      |
+| 필드               | 필수의 | 설명                                                               |
+| ------------------ | ------ | ------------------------------------------------------------------ |
+| `id`               | 예     | API로 전송된 모델 ID(예:`gpt-4o`,`claude-sonnet-4-20250514`)       |
+| `name`             | 아니요 | 표시 이름`/model`선택기(기본값은`id`)                              |
+| `envKey`           | 예     | API 키의 환경 변수 이름(예:`OPENAI_API_KEY`)                       |
+| `baseUrl`          | 아니요 | API 엔드포인트 재정의(프록시 또는 사용자 정의 엔드포인트에 유용함) |
+| `generationConfig` | 아니요 | 미세 조정`timeout`,`maxRetries`,`samplingParams`, 등.              |
 
 > \[!메모]
 >
@@ -283,12 +283,12 @@ API 키를 직접 정의할 수도 있습니다.`~/.qwen/settings.json`아래에
 
 **우선순위 요약:**
 
-| 우선 사항    | 원천                          | 동작 무시                             |
-| -------- | --------------------------- | --------------------------------- |
-| 1(가장 높음) | CLI 플래그(`--openai-api-key`) | 항상 승리                             |
-| 2        | 시스템 환경(`export`, 인라인)       | 재정의`.env`그리고`settings.json`→`env` |
-| 3        | `.env`파일                    | 시스템 환경에 없는 경우에만 설정됩니다.            |
-| 4(최저)    | `settings.json`→`env`       | 시스템 환경에 없는 경우에만 설정됩니다.`.env`      |
+| 우선 사항    | 원천                           | 동작 무시                                     |
+| ------------ | ------------------------------ | --------------------------------------------- |
+| 1(가장 높음) | CLI 플래그(`--openai-api-key`) | 항상 승리                                     |
+| 2            | 시스템 환경(`export`, 인라인)  | 재정의`.env`그리고`settings.json`→`env`       |
+| 3            | `.env`파일                     | 시스템 환경에 없는 경우에만 설정됩니다.       |
+| 4(최저)      | `settings.json`→`env`          | 시스템 환경에 없는 경우에만 설정됩니다.`.env` |
 
 #### 3단계: 다음을 사용하여 모델 전환`/model`
 
@@ -338,14 +338,14 @@ Select authentication method:
 
 ### 하위 명령
 
-| 명령                                                   | 설명                             |
-| ---------------------------------------------------- | ------------------------------ |
-| `qwen auth`                                          | 대화형 인증 설정                      |
-| `qwen auth coding-plan`                              | Alibaba Cloud Coding Plan으로 인증 |
-| `qwen auth coding-plan --region china --key sk-sp-…` | 비대화형 코딩 계획 설정(스크립팅용)           |
-| `qwen auth api-key`                                  | API 키로 인증                      |
+| 명령                                                 | 설명                                |
+| ---------------------------------------------------- | ----------------------------------- |
+| `qwen auth`                                          | 대화형 인증 설정                    |
+| `qwen auth coding-plan`                              | Alibaba Cloud Coding Plan으로 인증  |
+| `qwen auth coding-plan --region china --key sk-sp-…` | 비대화형 코딩 계획 설정(스크립팅용) |
+| `qwen auth api-key`                                  | API 키로 인증                       |
 | `qwen auth qwen-oauth`                               | Qwen OAuth로 인증(단종)             |
-| `qwen auth status`                                   | 현재 인증 상태 표시                    |
+| `qwen auth status`                                   | 현재 인증 상태 표시                 |
 
 **예:**
 
@@ -368,6 +368,6 @@ qwen auth status
 
 ## 보안 참고사항
 
-* 버전 제어에 API 키를 커밋하지 마세요.
-* 선호하다`.qwen/.env`프로젝트-로컬 비밀을 위해(git 외부에 보관)
-* 확인을 위해 자격 증명을 인쇄하는 경우 터미널 출력을 민감한 것으로 처리하십시오.
+- 버전 제어에 API 키를 커밋하지 마세요.
+- 선호하다`.qwen/.env`프로젝트-로컬 비밀을 위해(git 외부에 보관)
+- 확인을 위해 자격 증명을 인쇄하는 경우 터미널 출력을 민감한 것으로 처리하십시오.

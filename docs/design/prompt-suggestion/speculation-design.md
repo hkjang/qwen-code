@@ -108,22 +108,22 @@ Abort:
 
 ## 툴 게이트 보안
 
-| 도구                                                     | 행동   | 상태                                        |
-| ------------------------------------------------------ | ---- | ----------------------------------------- |
-| read\_file, grep, glob, ls, lsp                        | 허용하다 | 오버레이를 통해 확인된 읽기 경로                        |
-| 편집, 쓰기\_파일                                             | 리디렉션 | 자동 편집/Yolo 승인 모드에서만                       |
-| 편집, 쓰기\_파일                                             | 경계   | 기본/계획 승인 모드                               |
-| 껍데기                                                    | 허용하다 | `isShellCommandReadOnlyAST()`true를 반환합니다. |
-| 껍데기                                                    | 경계   | 읽기 전용이 아닌 명령                              |
-| 웹\_페치, 웹\_검색                                           | 경계   | 네트워크 요청에는 사용자 동의가 필요합니다.                  |
-| 에이전트, 스킬, 메모리, Ask\_user, todo\_write,exit\_plan\_mode | 경계   | 추측 중에는 사용자와 상호작용할 수 없습니다.                 |
-| 알 수 없음/MCP 도구                                          | 경계   | 안전한 기본값                                   |
+| 도구                                                        | 행동     | 상태                                            |
+| ----------------------------------------------------------- | -------- | ----------------------------------------------- |
+| read_file, grep, glob, ls, lsp                              | 허용하다 | 오버레이를 통해 확인된 읽기 경로                |
+| 편집, 쓰기\_파일                                            | 리디렉션 | 자동 편집/Yolo 승인 모드에서만                  |
+| 편집, 쓰기\_파일                                            | 경계     | 기본/계획 승인 모드                             |
+| 껍데기                                                      | 허용하다 | `isShellCommandReadOnlyAST()`true를 반환합니다. |
+| 껍데기                                                      | 경계     | 읽기 전용이 아닌 명령                           |
+| 웹\_페치, 웹\_검색                                          | 경계     | 네트워크 요청에는 사용자 동의가 필요합니다.     |
+| 에이전트, 스킬, 메모리, Ask_user, todo_write,exit_plan_mode | 경계     | 추측 중에는 사용자와 상호작용할 수 없습니다.    |
+| 알 수 없음/MCP 도구                                         | 경계     | 안전한 기본값                                   |
 
 ### 경로 재작성
 
-* **쓰기 도구**:`rewritePathArgs()`리디렉션`file_path`다음을 통해 오버레이`overlayFs.redirectWrite()`
-* **도구 읽기**:`resolveReadPaths()`리디렉션`file_path`다음을 통해 오버레이`overlayFs.resolveReadPath()`이전에 작성했다면
-* **다시 쓰기 실패**: 경계로 처리됨(예: cwd 외부의 절대 경로가 포함됨)`redirectWrite`)
+- **쓰기 도구**:`rewritePathArgs()`리디렉션`file_path`다음을 통해 오버레이`overlayFs.redirectWrite()`
+- **도구 읽기**:`resolveReadPaths()`리디렉션`file_path`다음을 통해 오버레이`overlayFs.resolveReadPath()`이전에 작성했다면
+- **다시 쓰기 실패**: 경계로 처리됨(예: cwd 외부의 절대 경로가 포함됨)`redirectWrite`)
 
 ## 경계 처리
 
@@ -157,9 +157,9 @@ Context: original conversation + "commit this" + speculated messages
 
 추측이 완료되면,`acceptSpeculation`다음을 통해 결과를 렌더링합니다.`historyManager.addItem()`:
 
-* **사용자 메시지**: 다음과 같이 렌더링됨`type: 'user'`아이템
-* **입체 문자**: 다음과 같이 렌더링됨`type: 'gemini'`아이템
-* **도구 호출**: 다음과 같이 렌더링됨`type: 'tool_group'`구조화된 아이템`IndividualToolCallDisplay`항목(도구 이름, 인수 설명, 결과 텍스트, 상태)
+- **사용자 메시지**: 다음과 같이 렌더링됨`type: 'user'`아이템
+- **입체 문자**: 다음과 같이 렌더링됨`type: 'gemini'`아이템
+- **도구 호출**: 다음과 같이 렌더링됨`type: 'tool_group'`구조화된 아이템`IndividualToolCallDisplay`항목(도구 이름, 인수 설명, 결과 텍스트, 상태)
 
 이는 단순한 텍스트가 아닌 도구 호출 세부 정보를 포함한 전체 추측 결과를 사용자에게 보여줍니다.
 
@@ -176,30 +176,30 @@ interface CacheSafeParams {
 }
 ```
 
-* 메인 턴이 성공할 때마다 저장됨`GeminiClient.sendMessageStream()`
-* 다음 날짜에 지워짐`startChat()` / `resetChat()`세션 간 유출을 방지하기 위해
-* 기록이 40개 항목으로 잘렸습니다.`createForkedChat`얕은 복사본을 사용합니다(매개변수는 이미 심층 복제된 스냅샷입니다).
-* 사고 모드가 명시적으로 비활성화되었습니다(`thinkingConfig: { includeThoughts: false }`) — 추론 토큰은 추측에 필요하지 않으며 비용/레이턴시을 낭비합니다. 이는 캐시 접두사 일치에 영향을 미치지 않습니다(systemInstruction + 도구 + 기록으로만 결정됨).
-* 버전 감지를 통해`JSON.stringify`시스템명령 + 도구 비교
+- 메인 턴이 성공할 때마다 저장됨`GeminiClient.sendMessageStream()`
+- 다음 날짜에 지워짐`startChat()` / `resetChat()`세션 간 유출을 방지하기 위해
+- 기록이 40개 항목으로 잘렸습니다.`createForkedChat`얕은 복사본을 사용합니다(매개변수는 이미 심층 복제된 스냅샷입니다).
+- 사고 모드가 명시적으로 비활성화되었습니다(`thinkingConfig: { includeThoughts: false }`) — 추론 토큰은 추측에 필요하지 않으며 비용/레이턴시을 낭비합니다. 이는 캐시 접두사 일치에 영향을 미치지 않습니다(systemInstruction + 도구 + 기록으로만 결정됨).
+- 버전 감지를 통해`JSON.stringify`시스템명령 + 도구 비교
 
 ### 캐시 메커니즘
 
 DashScope는 이미 다음을 통해 접두사 캐싱을 활성화합니다.
 
-* `X-DashScope-CacheControl: enable`헤더
-* `cache_control: { type: 'ephemeral' }`메시지 및 도구에 대한 주석
+- `X-DashScope-CacheControl: enable`헤더
+- `cache_control: { type: 'ephemeral' }`메시지 및 도구에 대한 주석
 
 갈래`GeminiChat`동일하게 사용`generationConfig`(도구 포함) 및 기록 접두사를 사용하므로 DashScope의 기존 캐시 메커니즘은 자동으로 캐시 적중을 생성합니다.
 
 ## 상수
 
-| 끊임없는                       | 값   | 설명                         |
-| -------------------------- | --- | -------------------------- |
-| MAX\_SPECULATION\_TURNS    | 20  | 최대 API 왕복                  |
-| MAX\_SPECULATION\_MESSAGES | 100 | 추측된 기록의 최대 메시지 수           |
-| SUGGESTION\_DELAY\_MS      | 300 | 제안 표시 전 지연                 |
-| ACCEPT\_DEBOUNCE\_MS       | 100 | 신속한 승인을 위한 디바운스 잠금         |
-| MAX\_HISTORY\_FOR\_CACHE   | 40  | CacheSafeParams에 저장된 기록 항목 |
+| 끊임없는                 | 값  | 설명                               |
+| ------------------------ | --- | ---------------------------------- |
+| MAX_SPECULATION_TURNS    | 20  | 최대 API 왕복                      |
+| MAX_SPECULATION_MESSAGES | 100 | 추측된 기록의 최대 메시지 수       |
+| SUGGESTION_DELAY_MS      | 300 | 제안 표시 전 지연                  |
+| ACCEPT_DEBOUNCE_MS       | 100 | 신속한 승인을 위한 디바운스 잠금   |
+| MAX_HISTORY_FOR_CACHE    | 40  | CacheSafeParams에 저장된 기록 항목 |
 
 ## 파일 구조
 

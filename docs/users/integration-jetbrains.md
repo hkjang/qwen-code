@@ -4,15 +4,15 @@
 
 ### 특징
 
-* **네이티브 에이전트 경험**: JetBrains IDE 내에 통합된 AI 보조 패널
-* **에이전트 클라이언트 프로토콜**: 고급 IDE 상호 작용이 가능한 ACP에 대한 완벽한 지원
-* **기호 관리**: 대화 컨텍스트에 추가하기 위한 #-멘션 파일
-* **대화 기록**: IDE 내 과거 대화에 접근
+- **네이티브 에이전트 경험**: JetBrains IDE 내에 통합된 AI 보조 패널
+- **에이전트 클라이언트 프로토콜**: 고급 IDE 상호 작용이 가능한 ACP에 대한 완벽한 지원
+- **기호 관리**: 대화 컨텍스트에 추가하기 위한 #-멘션 파일
+- **대화 기록**: IDE 내 과거 대화에 접근
 
 ### 요구사항
 
-* ACP를 지원하는 JetBrains IDE(IntelliJ IDEA, WebStorm, PyCharm 등)
-* Qwen 코드 CLI가 설치되었습니다.
+- ACP를 지원하는 JetBrains IDE(IntelliJ IDEA, WebStorm, PyCharm 등)
+- Qwen 코드 CLI가 설치되었습니다.
 
 ### 설치
 
@@ -70,12 +70,12 @@
 
 ### 에이전트가 나타나지 않음
 
-* 달리다`qwen --version`설치를 확인하기 위해 터미널에서
-* JetBrains IDE 버전이 ACP를 지원하는지 확인하세요.
-* JetBrains IDE를 다시 시작하세요.
+- 달리다`qwen --version`설치를 확인하기 위해 터미널에서
+- JetBrains IDE 버전이 ACP를 지원하는지 확인하세요.
+- JetBrains IDE를 다시 시작하세요.
 
 ### Qwen 코드가 응답하지 않습니다
 
-* 인터넷 연결을 확인하세요
-* 다음을 실행하여 CLI가 작동하는지 확인하세요.`qwen`터미널에서
-* [GitHub에 문제 제출](https://github.com/qwenlm/qwen-code/issues)문제가 지속되는 경우
+- 인터넷 연결을 확인하세요
+- 다음을 실행하여 CLI가 작동하는지 확인하세요.`qwen`터미널에서
+- [GitHub에 문제 제출](https://github.com/qwenlm/qwen-code/issues)문제가 지속되는 경우

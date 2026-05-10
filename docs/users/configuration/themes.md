@@ -6,20 +6,20 @@ Qwen Code는 색 구성표와 모양을 사용자 정의할 수 있는 다양한
 
 Qwen Code에는 미리 정의된 테마가 포함되어 있으며,`/theme`CLI 내의 명령:
 
-* **어두운 테마:**
-  * `ANSI`
-  * `Atom One`
-  * `Ayu`
-  * `기본값`
-  * `Dracula`
-  * `GitHub`
-* **가벼운 테마:**
-  * `ANSI Light`
-  * `Ayu Light`
-  * `기본값 Light`
-  * `GitHub Light`
-  * `Google Code`
-  * `Xcode`
+- **어두운 테마:**
+  - `ANSI`
+  - `Atom One`
+  - `Ayu`
+  - `기본값`
+  - `Dracula`
+  - `GitHub`
+- **가벼운 테마:**
+  - `ANSI Light`
+  - `Ayu Light`
+  - `기본값 Light`
+  - `GitHub Light`
+  - `Google Code`
+  - `Xcode`
 
 ### 테마 변경
 
@@ -34,7 +34,7 @@ Qwen Code에는 미리 정의된 테마가 포함되어 있으며,`/theme`CLI �
 
 선택한 테마는 Qwen Code에 저장됩니다.[구성](../configuration/settings)따라서 귀하의 선호도는 세션 전반에 걸쳐 기억됩니다.
 
-***
+---
 
 ## 사용자 정의 색상 테마
 
@@ -61,36 +61,36 @@ Qwen Code를 사용하면 자신만의 사용자 정의 색상 테마를 만들 
 
 **컬러 키:**
 
-* `Background`
-* `Foreground`
-* `LightBlue`
-* `AccentBlue`
-* `AccentPurple`
-* `AccentCyan`
-* `AccentGreen`
-* `AccentYellow`
-* `AccentRed`
-* `Comment`
-* `Gray`
-* `DiffAdded`(선택 사항, diff에 추가된 줄의 경우)
-* `Diff제거됨`(선택 사항, diff에서 제거된 줄의 경우)
-* `DiffModified`(선택 사항, diff의 수정된 라인의 경우)
+- `Background`
+- `Foreground`
+- `LightBlue`
+- `AccentBlue`
+- `AccentPurple`
+- `AccentCyan`
+- `AccentGreen`
+- `AccentYellow`
+- `AccentRed`
+- `Comment`
+- `Gray`
+- `DiffAdded`(선택 사항, diff에 추가된 줄의 경우)
+- `Diff제거됨`(선택 사항, diff에서 제거된 줄의 경우)
+- `DiffModified`(선택 사항, diff의 수정된 라인의 경우)
 
 **필수 속성:**
 
-* `name`(다음의 키와 일치해야 합니다.`customThemes`객체이고 문자열이어야 함)
-* `type`(문자열이어야 합니다.`"custom"`)
-* `Background`
-* `Foreground`
-* `LightBlue`
-* `AccentBlue`
-* `AccentPurple`
-* `AccentCyan`
-* `AccentGreen`
-* `AccentYellow`
-* `AccentRed`
-* `Comment`
-* `Gray`
+- `name`(다음의 키와 일치해야 합니다.`customThemes`객체이고 문자열이어야 함)
+- `type`(문자열이어야 합니다.`"custom"`)
+- `Background`
+- `Foreground`
+- `LightBlue`
+- `AccentBlue`
+- `AccentPurple`
+- `AccentCyan`
+- `AccentGreen`
+- `AccentYellow`
+- `AccentRed`
+- `Comment`
+- `Gray`
 
 16진수 코드(예:`#FF0000`)**또는**표준 CSS 색상 이름(예:`coral`,`teal`,`blue`) 모든 색상 값에 대해. 보다[CSS 색상 이름](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#color_keywords)지원되는 이름의 전체 목록을 보려면
 
@@ -144,17 +144,17 @@ Qwen Code를 사용하면 자신만의 사용자 정의 색상 테마를 만들 
 
 ### 사용자 정의 테마 사용
 
-* 다음을 사용하여 사용자 정의 테마를 선택하십시오.`/theme`Qwen Code의 명령. 사용자 정의 테마가 테마 선택 대화 상자에 나타납니다.
-* 또는 추가하여 기본값으로 설정하십시오.`"theme": "MyCustomTheme"`에`ui`당신의 반대`settings.json`.
-* 사용자 정의 테마는 사용자, 프로젝트 또는 시스템 수준에서 설정하고 동일한 기준을 따를 수 있습니다.[구성 우선순위](../configuration/settings)다른 설정으로.
+- 다음을 사용하여 사용자 정의 테마를 선택하십시오.`/theme`Qwen Code의 명령. 사용자 정의 테마가 테마 선택 대화 상자에 나타납니다.
+- 또는 추가하여 기본값으로 설정하십시오.`"theme": "MyCustomTheme"`에`ui`당신의 반대`settings.json`.
+- 사용자 정의 테마는 사용자, 프로젝트 또는 시스템 수준에서 설정하고 동일한 기준을 따를 수 있습니다.[구성 우선순위](../configuration/settings)다른 설정으로.
 
 ## 테마 미리보기
 
-| 어두운 테마 |                                                                                   시사                                                                                  |   라이트 테마   |                                                                                   시사                                                                                  |
-| :----: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|   안시   |     <img src="https://gw.alicdn.com/imgextra/i2/O1CN01ZInJiq1GdSZc9gHsI_!!6000000000645-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |  ANSI 라이트  |     <img src="https://gw.alicdn.com/imgextra/i2/O1CN01IiJQFC1h9E3MXQj6W_!!6000000004234-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |
+| 어두운 테마 |                                                                                 시사                                                                                  |  라이트 테마  |                                                                                 시사                                                                                  |
+| :---------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|    안시     |     <img src="https://gw.alicdn.com/imgextra/i2/O1CN01ZInJiq1GdSZc9gHsI_!!6000000000645-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |  ANSI 라이트  |     <img src="https://gw.alicdn.com/imgextra/i2/O1CN01IiJQFC1h9E3MXQj6W_!!6000000004234-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |
 | 아톰 원다크 |     <img src="https://gw.alicdn.com/imgextra/i2/O1CN01Zlx1SO1Sw21SkTKV3_!!6000000002310-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |    은어 빛    | <img src="https://gw.alicdn.com/imgextra/i3/O1CN01zEUc1V1jeUJsnCgQb_!!6000000004573-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
-|   아유   | <img src="https://gw.alicdn.com/imgextra/i3/O1CN019upo6v1SmPhmRjzfN_!!6000000002289-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |    기본 조명   | <img src="https://gw.alicdn.com/imgextra/i4/O1CN01RHjrEs1u7TXq3M6l3_!!6000000005990-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
-|   기본   |     <img src="https://gw.alicdn.com/imgextra/i4/O1CN016pIeXz1pFC8owmR4Q_!!6000000005330-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     | GitHub 라이트 | <img src="https://gw.alicdn.com/imgextra/i4/O1CN01US2b0g1VETCPAVWLA_!!6000000002621-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
-|  드라큘라  |     <img src="https://gw.alicdn.com/imgextra/i4/O1CN016htnWH20c3gd2LpUR_!!6000000006869-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |    구글 코드   | <img src="https://gw.alicdn.com/imgextra/i1/O1CN01Ng29ab23iQ2BuYKz8_!!6000000007289-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
-| GitHub | <img src="https://gw.alicdn.com/imgextra/i4/O1CN01fFCRda1IQIQ9qDNqv_!!6000000000887-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |    Xcode   | <img src="https://gw.alicdn.com/imgextra/i1/O1CN010E3QAi1Huh5o1E9LN_!!6000000000818-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
+|    아유     | <img src="https://gw.alicdn.com/imgextra/i3/O1CN019upo6v1SmPhmRjzfN_!!6000000002289-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |   기본 조명   | <img src="https://gw.alicdn.com/imgextra/i4/O1CN01RHjrEs1u7TXq3M6l3_!!6000000005990-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
+|    기본     |     <img src="https://gw.alicdn.com/imgextra/i4/O1CN016pIeXz1pFC8owmR4Q_!!6000000005330-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     | GitHub 라이트 | <img src="https://gw.alicdn.com/imgextra/i4/O1CN01US2b0g1VETCPAVWLA_!!6000000002621-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
+|  드라큘라   |     <img src="https://gw.alicdn.com/imgextra/i4/O1CN016htnWH20c3gd2LpUR_!!6000000006869-2-tps-1140-934.png" style="zoom:30%;text-align:center;margin: 0 auto;" />     |   구글 코드   | <img src="https://gw.alicdn.com/imgextra/i1/O1CN01Ng29ab23iQ2BuYKz8_!!6000000007289-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |
+|   GitHub    | <img src="https://gw.alicdn.com/imgextra/i4/O1CN01fFCRda1IQIQ9qDNqv_!!6000000000887-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |     Xcode     | <img src="https://gw.alicdn.com/imgextra/i1/O1CN010E3QAi1Huh5o1E9LN_!!6000000000818-2-tps-1140-934.png" alt=" " style="zoom:30%;text-align:center;margin: 0 auto;" /> |

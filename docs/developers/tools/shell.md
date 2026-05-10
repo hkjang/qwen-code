@@ -12,10 +12,10 @@ Windows에서는 명령이 다음과 같이 실행됩니다.`cmd.exe /c`. 다른
 
 `run_shell_command`다음 인수를 사용합니다.
 
-* `command`(문자열, 필수): 실행할 정확한 쉘 명령입니다.
-* `description`(문자열, 선택 사항): 사용자에게 표시되는 명령 목적에 대한 간략한 설명입니다.
-* `directory`(문자열, 선택 사항): 명령을 실행할 디렉터리(프로젝트 루트 기준)입니다. 제공되지 않으면 명령은 프로젝트 루트에서 실행됩니다.
-* `is_background`(부울, 필수): 명령을 백그라운드에서 실행할지 여부입니다. 이 매개변수는 명령 실행 모드에 대한 명시적인 결정을 보장하는 데 필요합니다. 추가 명령을 차단하지 않고 계속 실행해야 하는 개발 서버, 감시자 또는 데몬과 같은 장기 실행 프로세스의 경우 true로 설정합니다. 계속하기 전에 완료해야 하는 일회성 명령의 경우 false로 설정합니다.
+- `command`(문자열, 필수): 실행할 정확한 쉘 명령입니다.
+- `description`(문자열, 선택 사항): 사용자에게 표시되는 명령 목적에 대한 간략한 설명입니다.
+- `directory`(문자열, 선택 사항): 명령을 실행할 디렉터리(프로젝트 루트 기준)입니다. 제공되지 않으면 명령은 프로젝트 루트에서 실행됩니다.
+- `is_background`(부울, 필수): 명령을 백그라운드에서 실행할지 여부입니다. 이 매개변수는 명령 실행 모드에 대한 명시적인 결정을 보장하는 데 필요합니다. 추가 명령을 차단하지 않고 계속 실행해야 하는 개발 서버, 감시자 또는 데몬과 같은 장기 실행 프로세스의 경우 true로 설정합니다. 계속하기 전에 완료해야 하는 일회성 명령의 경우 false로 설정합니다.
 
 ## 사용방법`run_shell_command`퀀코드와 함께
 
@@ -31,32 +31,32 @@ Windows에서는 명령이 다음과 같이 실행됩니다.`cmd.exe /c`. 다른
 
 **백그라운드 실행 사용(`is_background: true`) 을 위한:**
 
-* 장기 실행 개발 서버:`npm run start`,`npm run dev`,`yarn dev`
-* 감시자 빌드:`npm run watch`,`webpack --watch`
-* 데이터베이스 서버:`mongod`,`mysql`,`redis-server`
-* 웹 서버:`python -m http.server`,`php -S localhost:8000`
-* 수동으로 중지할 때까지 무기한 실행될 것으로 예상되는 모든 명령
+- 장기 실행 개발 서버:`npm run start`,`npm run dev`,`yarn dev`
+- 감시자 빌드:`npm run watch`,`webpack --watch`
+- 데이터베이스 서버:`mongod`,`mysql`,`redis-server`
+- 웹 서버:`python -m http.server`,`php -S localhost:8000`
+- 수동으로 중지할 때까지 무기한 실행될 것으로 예상되는 모든 명령
 
 **포그라운드 실행 사용(`is_background: false`) 을 위한:**
 
-* 일회성 명령:`ls`,`cat`,`grep`
-* 빌드 명령:`npm run build`,`make`
-* 설치 명령:`npm install`,`pip install`
-* Git 작업:`git commit`,`git push`
-* 테스트 실행:`npm test`,`pytest`
+- 일회성 명령:`ls`,`cat`,`grep`
+- 빌드 명령:`npm run build`,`make`
+- 설치 명령:`npm install`,`pip install`
+- Git 작업:`git commit`,`git push`
+- 테스트 실행:`npm test`,`pytest`
 
 ### 실행정보
 
 이 도구는 다음을 포함하여 실행에 대한 자세한 정보를 반환합니다.
 
-* `Command`: 실행된 명령입니다.
-* `Directory`: 명령이 실행된 디렉터리입니다.
-* `Stdout`: 표준 출력 스트림의 출력입니다.
-* `Stderr`: 표준 오류 스트림의 출력입니다.
-* `Error`: 하위 프로세스에서 보고된 오류 메시지입니다.
-* `Exit Code`: 명령의 종료 코드입니다.
-* `Signal`: 명령이 신호에 의해 종료된 경우 신호 번호입니다.
-* `Background PIDs`: 시작된 모든 백그라운드 프로세스에 대한 PID 목록입니다.
+- `Command`: 실행된 명령입니다.
+- `Directory`: 명령이 실행된 디렉터리입니다.
+- `Stdout`: 표준 출력 스트림의 출력입니다.
+- `Stderr`: 표준 오류 스트림의 출력입니다.
+- `Error`: 하위 프로세스에서 보고된 오류 메시지입니다.
+- `Exit Code`: 명령의 종료 코드입니다.
+- `Signal`: 명령이 신호에 의해 종료된 경우 신호 번호입니다.
+- `Background PIDs`: 시작된 모든 백그라운드 프로세스에 대한 PID 목록입니다.
 
 용법:
 
@@ -168,11 +168,11 @@ run_shell_command(command="docker-compose up", description="Start all services",
 
 ## 중요 사항
 
-* **보안:**보안 취약성을 방지하려면 명령, 특히 사용자 입력으로 구성된 명령을 실행할 때 주의하십시오.
-* **오류 처리:**확인해보세요`Stderr`,`Error`, 그리고`Exit Code`명령이 성공적으로 실행되었는지 확인하는 필드입니다.
-* **백그라운드 프로세스:**언제`is_background=true`또는 명령에 다음이 포함된 경우`&`, 도구가 즉시 반환되고 프로세스는 백그라운드에서 계속 실행됩니다. 그만큼`Background PIDs`필드에는 백그라운드 프로세스의 프로세스 ID가 포함됩니다.
-* **백그라운드 실행 선택:**그만큼`is_background`매개변수는 필수이며 실행 모드에 대한 명시적인 제어를 제공합니다. 추가할 수도 있습니다.`&`수동 백그라운드 실행 명령에`is_background`매개변수는 계속 지정되어야 합니다. 매개변수는 보다 명확한 의도를 제공하고 백그라운드 실행 설정을 자동으로 처리합니다.
-* **명령 설명:**사용시`is_background=true`, 명령 설명에는 다음이 포함됩니다.`[background]`실행 모드를 명확하게 표시하는 표시기입니다.
+- **보안:**보안 취약성을 방지하려면 명령, 특히 사용자 입력으로 구성된 명령을 실행할 때 주의하십시오.
+- **오류 처리:**확인해보세요`Stderr`,`Error`, 그리고`Exit Code`명령이 성공적으로 실행되었는지 확인하는 필드입니다.
+- **백그라운드 프로세스:**언제`is_background=true`또는 명령에 다음이 포함된 경우`&`, 도구가 즉시 반환되고 프로세스는 백그라운드에서 계속 실행됩니다. 그만큼`Background PIDs`필드에는 백그라운드 프로세스의 프로세스 ID가 포함됩니다.
+- **백그라운드 실행 선택:**그만큼`is_background`매개변수는 필수이며 실행 모드에 대한 명시적인 제어를 제공합니다. 추가할 수도 있습니다.`&`수동 백그라운드 실행 명령에`is_background`매개변수는 계속 지정되어야 합니다. 매개변수는 보다 명확한 의도를 제공하고 백그라운드 실행 설정을 자동으로 처리합니다.
+- **명령 설명:**사용시`is_background=true`, 명령 설명에는 다음이 포함됩니다.`[background]`실행 모드를 명확하게 표시하는 표시기입니다.
 
 ## 환경 변수
 
@@ -182,8 +182,8 @@ run_shell_command(command="docker-compose up", description="Start all services",
 
 실행할 수 있는 명령을 제한할 수 있습니다.`run_shell_command`도구를 사용하여`tools.core`그리고`tools.exclude`구성 파일의 설정.
 
-* `tools.core`: 제한하다`run_shell_command`특정 명령 세트에 항목을 추가합니다.`core`아래에 나열`tools`형식의 카테고리`run_shell_command(<command>)`. 예를 들어,`"tools": {"core": ["run_shell_command(git)"]}`만 허용합니다`git`명령. 일반 포함`run_shell_command`와일드카드 역할을 하여 명시적으로 차단되지 않은 모든 명령을 허용합니다.
-* `tools.exclude`: 특정 명령을 차단하려면`exclude`아래에 나열`tools`형식의 카테고리`run_shell_command(<command>)`. 예를 들어,`"tools": {"exclude": ["run_shell_command(rm)"]}`차단할 것이다`rm`명령.
+- `tools.core`: 제한하다`run_shell_command`특정 명령 세트에 항목을 추가합니다.`core`아래에 나열`tools`형식의 카테고리`run_shell_command(<command>)`. 예를 들어,`"tools": {"core": ["run_shell_command(git)"]}`만 허용합니다`git`명령. 일반 포함`run_shell_command`와일드카드 역할을 하여 명시적으로 차단되지 않은 모든 명령을 허용합니다.
+- `tools.exclude`: 특정 명령을 차단하려면`exclude`아래에 나열`tools`형식의 카테고리`run_shell_command(<command>)`. 예를 들어,`"tools": {"exclude": ["run_shell_command(rm)"]}`차단할 것이다`rm`명령.
 
 유효성 검사 논리는 안전하고 유연하도록 설계되었습니다.
 
@@ -205,9 +205,9 @@ run_shell_command(command="docker-compose up", description="Start all services",
 }
 ```
 
-* `git status`: 허용된
-* `npm install`: 허용된
-* `ls -l`: 차단됨
+- `git status`: 허용된
+- `npm install`: 허용된
+- `ls -l`: 차단됨
 
 **특정 명령 접두사 차단**
 
@@ -222,9 +222,9 @@ run_shell_command(command="docker-compose up", description="Start all services",
 }
 ```
 
-* `rm -rf /`: 차단됨
-* `git status`: 허용된
-* `npm install`: 허용된
+- `rm -rf /`: 차단됨
+- `git status`: 허용된
+- `npm install`: 허용된
 
 **차단 목록이 우선 적용됩니다.**
 
@@ -239,8 +239,8 @@ run_shell_command(command="docker-compose up", description="Start all services",
 }
 ```
 
-* `git push origin main`: 차단됨
-* `git status`: 허용된
+- `git push origin main`: 차단됨
+- `git status`: 허용된
 
 **모든 쉘 명령 차단**
 
@@ -254,8 +254,8 @@ run_shell_command(command="docker-compose up", description="Start all services",
 }
 ```
 
-* `ls -l`: 차단됨
-* `any other command`: 차단됨
+- `ls -l`: 차단됨
+- `any other command`: 차단됨
 
 ## 다음에 대한 보안 참고 사항`excludeTools`
 

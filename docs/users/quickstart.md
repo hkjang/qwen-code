@@ -8,9 +8,9 @@
 
 다음 사항을 확인하세요.
 
-* 에이**단말기**또는 명령 프롬프트 열기
-* 작업할 코드 프로젝트
-* Alibaba Cloud Model Studio의 API 키([베이징](https://bailian.console.aliyun.com/) / [국제](https://modelstudio.console.alibabacloud.com/)) 또는 Alibaba Cloud 코딩 계획([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index) / [국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) 구독
+- 에이**단말기**또는 명령 프롬프트 열기
+- 작업할 코드 프로젝트
+- Alibaba Cloud Model Studio의 API 키([베이징](https://bailian.console.aliyun.com/) / [국제](https://modelstudio.console.alibabacloud.com/)) 또는 Alibaba Cloud 코딩 계획([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index) / [국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) 구독
 
 ## 1단계: Qwen 코드 설치
 
@@ -68,8 +68,8 @@ qwen
 
 원하는 인증 방법을 선택하세요:
 
-* **Alibaba Cloud 코딩 계획**: 선택하다`Alibaba Cloud Coding Plan`다양한 모델 옵션이 포함된 월 고정 요금으로 이용 가능합니다. 참조[코딩 계획 가이드](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)([국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) 설정 지침을 확인하세요.
-* **API 키**: 선택하다`API Key`을 클릭한 다음 Alibaba Cloud Model Studio의 API 키([베이징](https://bailian.console.aliyun.com/) / [국제](https://modelstudio.console.alibabacloud.com/)). API 설정 가이드([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model\&url=3023091) / [국제](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model\&url=2974721)) 자세한 내용은
+- **Alibaba Cloud 코딩 계획**: 선택하다`Alibaba Cloud Coding Plan`다양한 모델 옵션이 포함된 월 고정 요금으로 이용 가능합니다. 참조[코딩 계획 가이드](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)([국제](https://modelstudio.console.alibabacloud.com/?tab=coding-plan#/efm/coding-plan-index)) 설정 지침을 확인하세요.
+- **API 키**: 선택하다`API Key`을 클릭한 다음 Alibaba Cloud Model Studio의 API 키([베이징](https://bailian.console.aliyun.com/) / [국제](https://modelstudio.console.alibabacloud.com/)). API 설정 가이드([베이징](https://bailian.console.aliyun.com/cn-beijing/?tab=doc#/doc/?type=model&url=3023091) / [국제](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=doc#/doc/?type=model&url=2974721)) 자세한 내용은
 
 > ⚠️**메모**: Qwen OAuth는 2026년 4월 15일부로 서비스가 중단되었습니다. 이전에 Qwen OAuth를 사용 중이셨다면 위 방법 중 하나로 전환해주세요.
 
@@ -177,10 +177,10 @@ there's a bug where users can submit empty forms - fix it
 
 Qwen 코드는 다음을 수행합니다.
 
-* 관련 코드를 찾으세요
-* 맥락을 이해하라
-* 솔루션 구현
-* 가능한 경우 테스트 실행
+- 관련 코드를 찾으세요
+- 맥락을 이해하라
+- 솔루션 구현
+- 가능한 경우 테스트 실행
 
 ### 다른 일반적인 워크플로 테스트
 
@@ -218,21 +218,21 @@ review my changes and suggest improvements
 
 일상적으로 사용하는 가장 중요한 명령은 다음과 같습니다.
 
-| 명령                   | 기능                           | 예                          |
-| -------------------- | ---------------------------- | -------------------------- |
-| `qwen`               | Qwen 코드 시작                   | `qwen`                     |
-| `/auth`              | 인증 방법 변경(세션 중)               | `/auth`                    |
-| `qwen auth`          | 터미널에서 인증 구성                  | `qwen auth`                |
-| `qwen auth api-key`  | API 키 인증 구성                  | `qwen auth api-key`        |
-| `qwen auth status`   | 현재 인증 상태 확인                  | `qwen auth status`         |
-| `/help`              | 사용 가능한 명령에 대한 도움말 정보 표시      | `/help`또는`/?`              |
+| 명령                 | 기능                                               | 예                         |
+| -------------------- | -------------------------------------------------- | -------------------------- |
+| `qwen`               | Qwen 코드 시작                                     | `qwen`                     |
+| `/auth`              | 인증 방법 변경(세션 중)                            | `/auth`                    |
+| `qwen auth`          | 터미널에서 인증 구성                               | `qwen auth`                |
+| `qwen auth api-key`  | API 키 인증 구성                                   | `qwen auth api-key`        |
+| `qwen auth status`   | 현재 인증 상태 확인                                | `qwen auth status`         |
+| `/help`              | 사용 가능한 명령에 대한 도움말 정보 표시           | `/help`또는`/?`            |
 | `/compress`          | 토큰을 저장하려면 채팅 기록을 요약으로 대체하세요. | `/compress`                |
-| `/clear`             | 터미널 화면 내용 지우기                | `/clear`(지름길:`Ctrl+L`)     |
-| `/theme`             | Qwen Code 시각적 테마 변경          | `/theme`                   |
-| `/language`          | 언어 설정 보기 또는 변경               | `/language`                |
-| →`ui [language]`     | UI 인터페이스 언어 설정               | `/language ui zh-CN`       |
-| →`output [language]` | LLM 출력 언어 설정                 | `/language output Chinese` |
-| `/quit`              | 즉시 Qwen 코드 종료                | `/quit`또는`/exit`           |
+| `/clear`             | 터미널 화면 내용 지우기                            | `/clear`(지름길:`Ctrl+L`)  |
+| `/theme`             | Qwen Code 시각적 테마 변경                         | `/theme`                   |
+| `/language`          | 언어 설정 보기 또는 변경                           | `/language`                |
+| →`ui [language]`     | UI 인터페이스 언어 설정                            | `/language ui zh-CN`       |
+| →`output [language]` | LLM 출력 언어 설정                                 | `/language output Chinese` |
+| `/quit`              | 즉시 Qwen 코드 종료                                | `/quit`또는`/exit`         |
 
 참조[CLI 참조](./features/commands)전체 명령 목록을 보려면
 
@@ -240,12 +240,12 @@ review my changes and suggest improvements
 
 **귀하의 요청을 구체적으로 작성하십시오**
 
-* 대신: "버그 수정"
-* 시도: "잘못된 자격 증명을 입력한 후 사용자에게 빈 화면이 표시되는 로그인 버그 수정"
+- 대신: "버그 수정"
+- 시도: "잘못된 자격 증명을 입력한 후 사용자에게 빈 화면이 표시되는 로그인 버그 수정"
 
 **단계별 지침 사용**
 
-* 복잡한 작업을 여러 단계로 나누세요.
+- 복잡한 작업을 여러 단계로 나누세요.
 
 ```
 1. create a new database table for user profiles
@@ -255,7 +255,7 @@ review my changes and suggest improvements
 
 **Qwen Code를 먼저 탐색해 보세요.**
 
-* 변경하기 전에 Qwen Code가 코드를 이해하도록 하세요.
+- 변경하기 전에 Qwen Code가 코드를 이해하도록 하세요.
 
 ```
 analyze the database schema
@@ -267,13 +267,13 @@ build a dashboard showing products that are most frequently returned by our UK c
 
 **바로가기로 시간을 절약하세요**
 
-* 누르다`?`사용 가능한 모든 키보드 단축키를 보려면
-* 명령 완성을 위해 Tab 사용
-* 명령 기록을 보려면 ↑를 누르세요.
-* 유형`/`모든 슬래시 명령을 보려면
+- 누르다`?`사용 가능한 모든 키보드 단축키를 보려면
+- 명령 완성을 위해 Tab 사용
+- 명령 기록을 보려면 ↑를 누르세요.
+- 유형`/`모든 슬래시 명령을 보려면
 
 ## 도움 받기
 
-* **퀀코드에서**: 유형`/help`아니면 "어떻게..."라고 물어보세요.
-* **선적 서류 비치**: 당신은 여기에 있습니다! 다른 가이드 찾아보기
-* **지역 사회**: 우리와 함께하세요[GitHub 토론](https://github.com/QwenLM/qwen-code/discussions)팁과 지원을 받으려면
+- **퀀코드에서**: 유형`/help`아니면 "어떻게..."라고 물어보세요.
+- **선적 서류 비치**: 당신은 여기에 있습니다! 다른 가이드 찾아보기
+- **지역 사회**: 우리와 함께하세요[GitHub 토론](https://github.com/QwenLM/qwen-code/discussions)팁과 지원을 받으려면
